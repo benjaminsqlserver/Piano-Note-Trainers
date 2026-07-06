@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>White Key Note Names Trainer — Piano Note Trainers</title>
+<meta name="description" content="Learn the letter names of the 7 white piano keys (A-G) through guided playback and a flashcard quiz." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="white">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 01 · Natural notes</div>
+    <h1>White Key Note Names Trainer</h1>
+    <p>Learn the letter names of the 7 white piano keys — A, B, C, D, E, F, G — through guided playback and a flashcard quiz.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="trainer" role="tab" aria-selected="true">Guided Trainer</button>
+    <button type="button" data-tab="quiz" role="tab" aria-selected="false">Flashcard Quiz</button>
+  </div>
+
+  <!-- ===================== GUIDED TRAINER ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="trainer">
+    <div class="stack">
+
+      <div class="card">
+        <div class="controls-row">
+          <div class="field">
+            <label for="wt-note">Start note</label>
+            <select id="wt-note"></select>
+          </div>
+          <div class="field">
+            <label for="wt-octave">Octave</label>
+            <input type="number" id="wt-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field">
+            <label for="wt-span">Span (octaves)</label>
+            <input type="number" id="wt-span" min="1" max="3" value="1" />
+          </div>
+          <div class="field">
+            <label>Direction</label>
+            <div class="segmented" data-segmented="wt-direction">
+              <button type="button" class="is-active" data-value="ascending">Ascending</button>
+              <button type="button" data-value="descending">Descending</button>
+              <button type="button" data-value="both">Both</button>
+            </div>
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="wt-tempo">Tempo: <span id="wt-tempo-value">100</span> BPM</label>
+            <input type="range" id="wt-tempo" min="40" max="200" value="100" />
+          </div>
+          <div class="field">
+            <label for="wt-output">Sound output</label>
+            <select id="wt-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="wt-play">▶ Play</button>
+          <button class="btn btn-danger" id="wt-stop" disabled>■ Stop</button>
+          <button class="btn btn-toggle" id="wt-practice">Practice mode: OFF</button>
+          <select id="wt-input" class="field" style="display:none;"><option value="">Select your MIDI keyboard</option></select>
+        </div>
+
+        <div class="alert alert-warning" id="wt-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth
+          and practice mode (listening to a real keyboard) is disabled.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="wt-direction-label">Ascending</div>
+        <div class="now-playing__value" id="wt-current-letter">—</div>
+        <div class="now-playing__sub" id="wt-current-label"></div>
+        <div class="progress"><div class="progress__bar" id="wt-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="wt-keyboard"></div></div>
+
+      <div class="card">
+        <h3 id="wt-table-title" style="font-size:1rem;">White keys — Ascending</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Letter</th><th>Octave</th><th>MIDI #</th><th>Tonic</th></tr></thead>
+            <tbody id="wt-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== FLASHCARD QUIZ ===================== -->
+  <section class="tabpanel" data-tabpanel="quiz">
+    <div class="stack">
+
+      <div class="card">
+        <div class="controls-row">
+          <div class="field">
+            <label>Quiz type</label>
+            <div class="segmented" data-segmented="wt-quizmode">
+              <button type="button" class="is-active" data-value="name">Name the key</button>
+              <button type="button" data-value="find">Find the key</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="wt-quiz-minoct">Lowest octave</label>
+            <input type="number" id="wt-quiz-minoct" min="2" max="6" value="3" />
+          </div>
+          <div class="field">
+            <label for="wt-quiz-maxoct">Highest octave</label>
+            <input type="number" id="wt-quiz-maxoct" min="2" max="6" value="5" />
+          </div>
+          <button class="btn btn-primary" id="wt-quiz-next">🔀 New question</button>
+          <button class="btn btn-ghost" id="wt-quiz-hear">🔊 Hear it</button>
+        </div>
+        <div class="status-row">
+          <span>Score: <span id="wt-quiz-score">0 / 0</span></span>
+          <span>Streak: <span id="wt-quiz-streak">0</span></span>
+        </div>
+      </div>
+
+      <div class="card now-playing" id="wt-quiz-display">
+        <div class="now-playing__sub" id="wt-quiz-prompt">Which white key is highlighted?</div>
+        <div class="now-playing__value" id="wt-quiz-letter" style="display:none;">—</div>
+        <div id="wt-quiz-feedback"></div>
+      </div>
+
+      <div class="card"><div id="wt-quiz-keyboard"></div></div>
+
+      <div class="card" id="wt-quiz-letters-card">
+        <h3 style="font-size:0.95rem;">Which letter is it?</h3>
+        <div class="actions-row" id="wt-quiz-letters"></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/music-services.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/white-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

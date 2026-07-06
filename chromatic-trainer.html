@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chromatic &amp; Solfa MIDI Trainer — Piano Note Trainers</title>
+<meta name="description" content="Practice the ascending and descending chromatic scale in all 12 keys, with movable-do solfa names." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="chromatic">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 04 · All 12 keys</div>
+    <h1>Chromatic &amp; Solfa MIDI Trainer</h1>
+    <p>Practice the ascending and descending chromatic scale in any of the 12 keys, with movable-do solfa syllables (Do, Di, Re, Ri…).</p>
+  </header>
+
+  <div class="stack">
+
+    <div class="card">
+      <div class="controls-row">
+        <div class="field">
+          <label for="ct-key">Key</label>
+          <select id="ct-key"></select>
+        </div>
+        <div class="field">
+          <label for="ct-octave">Octave</label>
+          <input type="number" id="ct-octave" min="2" max="6" value="4" />
+        </div>
+        <div class="field">
+          <label>Direction</label>
+          <div class="segmented" data-segmented="ct-direction">
+            <button type="button" class="is-active" data-value="ascending">Ascending</button>
+            <button type="button" data-value="descending">Descending</button>
+            <button type="button" data-value="both">Both</button>
+          </div>
+        </div>
+        <div class="field" style="min-width:220px;">
+          <label for="ct-tempo">Tempo: <span id="ct-tempo-value">100</span> BPM</label>
+          <input type="range" id="ct-tempo" min="40" max="200" value="100" />
+        </div>
+        <div class="field">
+          <label for="ct-output">Sound output</label>
+          <select id="ct-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn btn-success" id="ct-play">▶ Play</button>
+        <button class="btn btn-danger" id="ct-stop" disabled>■ Stop</button>
+        <button class="btn btn-toggle" id="ct-practice">Practice mode: OFF</button>
+        <select id="ct-input" class="field" style="display:none;"><option value="">Select your MIDI keyboard</option></select>
+      </div>
+
+      <div class="alert alert-warning" id="ct-midi-warning" style="display:none;">
+        Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth
+        and practice mode (listening to a real keyboard) is disabled.
+      </div>
+    </div>
+
+    <div class="card now-playing">
+      <div class="eyebrow" id="ct-direction-label">Ascending</div>
+      <div class="now-playing__value" id="ct-current-solfa">—</div>
+      <div class="now-playing__sub" id="ct-current-note"></div>
+      <div class="progress"><div class="progress__bar" id="ct-progress"></div></div>
+    </div>
+
+    <div class="card"><div id="ct-keyboard"></div></div>
+
+    <div class="card">
+      <h3 id="ct-table-title" style="font-size:1rem;">Chromatic scale — Ascending</h3>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Note</th><th>Solfa</th><th>MIDI #</th><th>Tonic</th></tr></thead>
+          <tbody id="ct-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/music-services.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/chromatic-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

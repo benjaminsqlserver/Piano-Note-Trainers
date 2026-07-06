@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Piano Note Trainers — Learn Every Key by Name</title>
+<meta name="description" content="Four interactive lessons that teach the letter names of every piano key — white, sharp, flat, and the full chromatic scale — through guided playback and flashcard quizzes." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="home">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <section class="hero">
+    <div class="hero__inner">
+      <div class="eyebrow">Piano Note Trainers</div>
+      <h1>Learn every key by name</h1>
+      <p>Four short, focused lessons — white keys, sharps, flats, and the full chromatic scale — each with guided playback and a flashcard quiz. Tap the keyboard below to hear it in action.</p>
+    </div>
+    <div class="hero-keyboard" id="hero-keyboard"></div>
+  </section>
+
+  <section>
+    <div class="page-header" style="margin-bottom:1rem;">
+      <h2 style="font-size:1.3rem;">Choose a lesson</h2>
+    </div>
+    <div class="lesson-grid">
+
+      <a class="lesson-card" href="white-key-trainer.html">
+        <span class="lesson-card__tag">Lesson 01</span>
+        <h2>White Keys</h2>
+        <p>The 7 natural letter names — A through G — with guided runs and a flashcard quiz.</p>
+        <span class="lesson-card__cta">Start lesson →</span>
+      </a>
+
+      <a class="lesson-card" href="sharp-key-trainer.html">
+        <span class="lesson-card__tag">Lesson 02</span>
+        <h2>Sharp Keys</h2>
+        <p>What a sharp (♯) is, all 7 sharp keys, and where the enharmonic exceptions land.</p>
+        <span class="lesson-card__cta">Start lesson →</span>
+      </a>
+
+      <a class="lesson-card" href="flat-key-trainer.html">
+        <span class="lesson-card__tag">Lesson 03</span>
+        <h2>Flat Keys</h2>
+        <p>What a flat (♭) is, all 7 flat keys, and where the enharmonic exceptions land.</p>
+        <span class="lesson-card__cta">Start lesson →</span>
+      </a>
+
+      <a class="lesson-card" href="chromatic-trainer.html">
+        <span class="lesson-card__tag">Lesson 04</span>
+        <h2>Chromatic &amp; Solfa</h2>
+        <p>All 12 keys, ascending and descending, with movable-do solfa syllables.</p>
+        <span class="lesson-card__cta">Start lesson →</span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="about-strip">
+    <div class="card">
+      <h3 style="font-size:1rem;">Play along with real MIDI</h3>
+      <p style="margin:0;font-size:0.9rem;color:#5b594f;">Every lesson works instantly with a built-in synthesizer, and upgrades automatically to real MIDI hardware — output or input — in Chromium-based browsers via the Web MIDI API.</p>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1rem;">Works on any device</h3>
+      <p style="margin:0;font-size:0.9rem;color:#5b594f;">Built with plain HTML, CSS, and JavaScript — no build step, no framework — and laid out to work well on phones, tablets, and desktops alike.</p>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1rem;">Open and free to use</h3>
+      <p style="margin:0;font-size:0.9rem;color:#5b594f;">Released under the MIT License by HepziBen Technologies Limited — see the <a href="LICENSE">LICENSE</a> file for details.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/home.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

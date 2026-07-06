@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flat Key Note Names Trainer — Piano Note Trainers</title>
+<meta name="description" content="Learn what a flat is and the names of all 7 flat keys through an interactive explorer, guided playback, and a flashcard quiz." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="flat">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 03 · Lowered notes</div>
+    <h1>Flat Key Note Names Trainer</h1>
+    <p>Learn what a flat (♭) is — lowering a note by one semitone — and the names of all 7 flat keys: A♭, B♭, C♭, D♭, E♭, F♭, G♭.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="learn" role="tab" aria-selected="true">Learn</button>
+    <button type="button" data-tab="trainer" role="tab" aria-selected="false">Guided Trainer</button>
+    <button type="button" data-tab="quiz" role="tab" aria-selected="false">Flashcard Quiz</button>
+  </div>
+
+  <!-- ===================== LEARN ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="learn">
+    <div class="stack">
+
+      <div class="card">
+        <h3 style="font-size:1.1rem;">What does "flat" mean?</h3>
+        <p>A <strong>flat</strong> (♭) lowers a note's pitch by one <strong>semitone</strong> — the smallest step used in Western music, equal to the distance from any piano key to the very next key down, black or white. Written after a letter name, "C♭" means "the note C, lowered one semitone." On a keyboard that usually lands you on a black key, since most white keys have a black key sitting right below them.</p>
+        <p>Every one of the 7 natural letters — A, B, C, D, E, F, G — can be flattened, giving the 7 flat keys this app teaches: <strong>A♭, B♭, C♭, D♭, E♭, F♭, G♭</strong>.</p>
+        <div class="alert alert-info">
+          Two of the natural letter pairs — B/C and E/F — sit only a semitone apart already, with no black key between them. So flattening C or F doesn't reach a black key at all: it lands squarely on the previous white key. That's why <strong>C♭ sounds identical to B</strong>, and <strong>F♭ sounds identical to E</strong>. Two different names, the exact same piano key — musicians call this an <strong>enharmonic equivalent</strong>.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Tap a flat key to hear it and see where it lives:</h3>
+        <div class="actions-row" id="at-learn-buttons"></div>
+
+        <div class="card now-playing">
+          <div class="now-playing__value" id="at-learn-letter">C♭</div>
+          <div id="at-learn-info"></div>
+        </div>
+
+        <div id="at-learn-keyboard" style="margin-top:1rem;"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">All 7 flat keys at a glance</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Flat key</th><th>Built from</th><th>Piano key color</th><th>Same sound as</th></tr></thead>
+            <tbody id="at-learn-table-body"></tbody>
+          </table>
+        </div>
+        <p style="font-size:0.82rem;color:#7a776c;margin-top:0.5rem;">Tip: read down the "Flat key" column in order (C♭, D♭, E♭, F♭, G♭, A♭, B♭) and you're actually playing the C♭ major scale — every natural letter, each lowered a semitone.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== GUIDED TRAINER ===================== -->
+  <section class="tabpanel" data-tabpanel="trainer">
+    <div class="stack">
+
+      <div class="card">
+        <div class="controls-row">
+          <div class="field">
+            <label for="at-note">Start note</label>
+            <select id="at-note"></select>
+          </div>
+          <div class="field">
+            <label for="at-octave">Octave</label>
+            <input type="number" id="at-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field">
+            <label for="at-span">Span (octaves)</label>
+            <input type="number" id="at-span" min="1" max="3" value="1" />
+          </div>
+          <div class="field">
+            <label>Direction</label>
+            <div class="segmented" data-segmented="at-direction">
+              <button type="button" class="is-active" data-value="ascending">Ascending</button>
+              <button type="button" data-value="descending">Descending</button>
+              <button type="button" data-value="both">Both</button>
+            </div>
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="at-tempo">Tempo: <span id="at-tempo-value">100</span> BPM</label>
+            <input type="range" id="at-tempo" min="40" max="200" value="100" />
+          </div>
+          <div class="field">
+            <label for="at-output">Sound output</label>
+            <select id="at-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="at-play">▶ Play</button>
+          <button class="btn btn-danger" id="at-stop" disabled>■ Stop</button>
+          <button class="btn btn-toggle" id="at-practice">Practice mode: OFF</button>
+          <select id="at-input" class="field" style="display:none;"><option value="">Select your MIDI keyboard</option></select>
+        </div>
+
+        <div class="alert alert-warning" id="at-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth
+          and practice mode (listening to a real keyboard) is disabled.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="at-direction-label">Ascending</div>
+        <div class="now-playing__value" id="at-current-letter">—</div>
+        <div class="now-playing__sub" id="at-current-label"></div>
+        <div class="now-playing__note" id="at-current-enharmonic"></div>
+        <div class="progress"><div class="progress__bar" id="at-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="at-keyboard"></div></div>
+
+      <div class="card">
+        <h3 id="at-table-title" style="font-size:1rem;">Flat keys — Ascending</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Letter</th><th>Octave</th><th>MIDI #</th><th>Same as</th><th>Tonic</th></tr></thead>
+            <tbody id="at-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== FLASHCARD QUIZ ===================== -->
+  <section class="tabpanel" data-tabpanel="quiz">
+    <div class="stack">
+
+      <div class="card">
+        <div class="controls-row">
+          <div class="field">
+            <label>Quiz type</label>
+            <div class="segmented" data-segmented="at-quizmode">
+              <button type="button" class="is-active" data-value="name">Name the key</button>
+              <button type="button" data-value="find">Find the key</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="at-quiz-minoct">Lowest octave</label>
+            <input type="number" id="at-quiz-minoct" min="2" max="6" value="3" />
+          </div>
+          <div class="field">
+            <label for="at-quiz-maxoct">Highest octave</label>
+            <input type="number" id="at-quiz-maxoct" min="2" max="6" value="5" />
+          </div>
+          <button class="btn btn-primary" id="at-quiz-next">🔀 New question</button>
+          <button class="btn btn-ghost" id="at-quiz-hear">🔊 Hear it</button>
+        </div>
+        <div class="status-row">
+          <span>Score: <span id="at-quiz-score">0 / 0</span></span>
+          <span>Streak: <span id="at-quiz-streak">0</span></span>
+        </div>
+      </div>
+
+      <div class="card now-playing" id="at-quiz-display">
+        <div class="now-playing__sub" id="at-quiz-prompt">Which flat key is highlighted?</div>
+        <div class="now-playing__value" id="at-quiz-letter" style="display:none;">—</div>
+        <div id="at-quiz-feedback"></div>
+        <div class="now-playing__note" id="at-quiz-enharmonic-note"></div>
+      </div>
+
+      <div class="card"><div id="at-quiz-keyboard"></div></div>
+
+      <div class="card" id="at-quiz-letters-card">
+        <h3 style="font-size:0.95rem;">Which flat key is it?</h3>
+        <div class="actions-row" id="at-quiz-letters"></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script>window.ACCIDENTAL_KIND = 'flat';</script>
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/music-services.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/accidental-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
