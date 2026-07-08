@@ -10,6 +10,7 @@ const LINKS = [
   { page: 'sharp', href: 'sharp-key-trainer.html', label: 'Sharp Keys' },
   { page: 'flat', href: 'flat-key-trainer.html', label: 'Flat Keys' },
   { page: 'chromatic', href: 'chromatic-trainer.html', label: 'Chromatic & Solfa' },
+  { page: 'major-scale', href: 'major-scale-trainer.html', label: 'Major Scale' },
 ];
 
 function brandMarkSvg() {
