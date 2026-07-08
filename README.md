@@ -20,6 +20,7 @@ JavaScript framework.
 | 2 | **Sharp Keys** (`sharp-key-trainer.html`) | What a sharp (♯) is, all 7 sharp keys, and the two enharmonic exceptions (B♯ = C, E♯ = F) |
 | 3 | **Flat Keys** (`flat-key-trainer.html`) | What a flat (♭) is, all 7 flat keys, and the two enharmonic exceptions (C♭ = B, F♭ = E) |
 | 4 | **Chromatic & Solfa** (`chromatic-trainer.html`) | The ascending/descending chromatic scale in all 12 keys, with movable-do solfa syllables |
+| 5 | **Major Scale** (`major-scale-trainer.html`) | The major (Ionian) scale in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
 
 Each lesson page includes:
 
@@ -33,6 +34,13 @@ Each lesson page includes:
   with a running score and streak.
 - The Sharp and Flat lessons additionally include a **Learn** tab with a
   plain-language explanation and an interactive explorer.
+- The Major Scale lesson additionally includes an **Improvisation Demo**
+  tab: pick any of the 12 keys and it loads a short, original MIDI file (a
+  diatonic "1‑3‑5‑8‑5‑3‑1, 2‑4‑6‑8‑6‑4‑2" sequence-in-thirds pattern built
+  entirely from that key's major scale) with a dependency-free in-browser
+  MIDI file reader, then plays it back — through the built-in synth or a
+  connected MIDI device — highlighted on the keyboard in sync, with an
+  adjustable playback-speed slider.
 
 The home page (`index.html`) is a landing page with an interactive
 hero keyboard and cards linking to each lesson.
@@ -46,6 +54,7 @@ PianoNoteTrainers/
 ├─ sharp-key-trainer.html       # Lesson 2
 ├─ flat-key-trainer.html        # Lesson 3
 ├─ chromatic-trainer.html       # Lesson 4
+├─ major-scale-trainer.html     # Lesson 5
 ├─ css/
 │  └─ styles.css                # Shared, responsive design system
 ├─ js/
@@ -53,11 +62,14 @@ PianoNoteTrainers/
 │  ├─ tabs.js                   # Shared tab / segmented-control helper
 │  ├─ audio-engine.js           # Shared WebAudio synth + Web MIDI wrapper
 │  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer
-│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic)
+│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major scale)
+│  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader
 │  ├─ home.js                   # Home page hero keyboard
 │  ├─ white-trainer.js          # Lesson 1 page logic
 │  ├─ accidental-trainer.js     # Shared logic for Lessons 2 & 3 (sharp/flat)
-│  └─ chromatic-trainer.js      # Lesson 4 page logic
+│  ├─ chromatic-trainer.js      # Lesson 4 page logic
+│  └─ major-scale-trainer.js    # Lesson 5 page logic (guided trainer + improvisation demo)
+├─ midi/                        # Sample MIDI files for Lesson 5's Improvisation Demo (one per key)
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file
 ```

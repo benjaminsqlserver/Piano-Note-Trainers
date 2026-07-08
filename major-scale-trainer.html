@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Major Scale Trainer &amp; Improvisation Demo — Piano Note Trainers</title>
+<meta name="description" content="Learn the major scale in all 12 keys with guided playback, then hear a short improvisation demo built from major-scale tones, highlighted on an on-screen piano." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="major-scale">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 05 · All 12 keys</div>
+    <h1>Major Scale Trainer &amp; Improvisation Demo</h1>
+    <p>Learn the major (Ionian) scale in any of the 12 keys through guided playback, then switch to the Improvisation Demo to hear a short, scale-based melodic idea — a classic "sequence in thirds" lick — played back and highlighted on the keyboard in every key.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="trainer" role="tab" aria-selected="true">Guided Trainer</button>
+    <button type="button" data-tab="improv" role="tab" aria-selected="false">Improvisation Demo</button>
+  </div>
+
+  <!-- ===================== GUIDED TRAINER ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="trainer">
+    <div class="stack">
+
+      <div class="card">
+        <div class="controls-row">
+          <div class="field">
+            <label for="ms-key">Key</label>
+            <select id="ms-key"></select>
+          </div>
+          <div class="field">
+            <label for="ms-octave">Octave</label>
+            <input type="number" id="ms-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field">
+            <label>Direction</label>
+            <div class="segmented" data-segmented="ms-direction">
+              <button type="button" class="is-active" data-value="ascending">Ascending</button>
+              <button type="button" data-value="descending">Descending</button>
+              <button type="button" data-value="both">Both</button>
+            </div>
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="ms-tempo">Tempo: <span id="ms-tempo-value">100</span> BPM</label>
+            <input type="range" id="ms-tempo" min="40" max="200" value="100" />
+          </div>
+          <div class="field">
+            <label for="ms-output">Sound output</label>
+            <select id="ms-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="ms-play">▶ Play</button>
+          <button class="btn btn-danger" id="ms-stop" disabled>■ Stop</button>
+          <button class="btn btn-toggle" id="ms-practice">Practice mode: OFF</button>
+          <select id="ms-input" class="field" style="display:none;"><option value="">Select your MIDI keyboard</option></select>
+        </div>
+
+        <div class="alert alert-warning" id="ms-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth
+          and practice mode (listening to a real keyboard) is disabled.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="ms-direction-label">Ascending</div>
+        <div class="now-playing__value" id="ms-current-note">—</div>
+        <div class="now-playing__sub" id="ms-current-degree"></div>
+        <div class="progress"><div class="progress__bar" id="ms-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="ms-keyboard"></div></div>
+
+      <div class="card">
+        <h3 id="ms-table-title" style="font-size:1rem;">Major scale — Ascending</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Note</th><th>Solfa</th><th>MIDI #</th><th>Tonic</th></tr></thead>
+            <tbody id="ms-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== IMPROVISATION DEMO ===================== -->
+  <section class="tabpanel" data-tabpanel="improv">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Each key below loads a short, original MIDI file — a diatonic "1‑3‑5‑8‑5‑3‑1, 2‑4‑6‑8‑6‑4‑2" sequence pattern built entirely from that key's major scale — a classic exercise for building improvisation vocabulary. Pick a key and press Play to hear it and watch it light up on the keyboard.</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="mi-key">Key</label>
+            <select id="mi-key"></select>
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="mi-tempo">Playback speed: <span id="mi-tempo-value">100</span>%</label>
+            <input type="range" id="mi-tempo" min="50" max="200" value="100" />
+          </div>
+          <div class="field">
+            <label for="mi-output">Sound output</label>
+            <select id="mi-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="mi-play">▶ Play demo</button>
+          <button class="btn btn-danger" id="mi-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="mi-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+        <div class="alert alert-danger" id="mi-load-error" style="display:none;"></div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="mi-key-label">Key of C</div>
+        <div class="now-playing__value" id="mi-current-note">—</div>
+        <div class="now-playing__sub" id="mi-current-step"></div>
+        <div class="progress"><div class="progress__bar" id="mi-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="mi-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Notes in this demo</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Note</th><th>Solfa</th><th>MIDI #</th><th>Starts at</th></tr></thead>
+            <tbody id="mi-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/music-services.js"></script>
+<script src="js/midi-file-reader.js"></script>
+<script src="js/midi-data.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/major-scale-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
