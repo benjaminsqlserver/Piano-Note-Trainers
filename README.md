@@ -21,6 +21,7 @@ JavaScript framework.
 | 3 | **Flat Keys** (`flat-key-trainer.html`) | What a flat (♭) is, all 7 flat keys, and the two enharmonic exceptions (C♭ = B, F♭ = E) |
 | 4 | **Chromatic & Solfa** (`chromatic-trainer.html`) | The ascending/descending chromatic scale in all 12 keys, with movable-do solfa syllables |
 | 5 | **Major Scale** (`major-scale-trainer.html`) | The major (Ionian) scale in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
+| 6 | **Dorian Scale** (`dorian-scale-trainer.html`) | The Dorian mode (natural minor with a raised 6th) in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
 
 Each lesson page includes:
 
@@ -41,6 +42,10 @@ Each lesson page includes:
   MIDI file reader, then plays it back — through the built-in synth or a
   connected MIDI device — highlighted on the keyboard in sync, with an
   adjustable playback-speed slider.
+- The Dorian Scale lesson works the same way, with its own Improvisation
+  Demo tab built from a "1‑3‑5‑8‑5‑3‑1, 2‑4‑6‑8‑6‑4‑2" pattern in each key's
+  Dorian scale — the natural 6th degree is what gives the Dorian mode its
+  distinctive brighter-than-minor sound.
 
 The home page (`index.html`) is a landing page with an interactive
 hero keyboard and cards linking to each lesson.
@@ -55,6 +60,7 @@ PianoNoteTrainers/
 ├─ flat-key-trainer.html        # Lesson 3
 ├─ chromatic-trainer.html       # Lesson 4
 ├─ major-scale-trainer.html     # Lesson 5
+├─ dorian-scale-trainer.html    # Lesson 6
 ├─ css/
 │  └─ styles.css                # Shared, responsive design system
 ├─ js/
@@ -62,14 +68,16 @@ PianoNoteTrainers/
 │  ├─ tabs.js                   # Shared tab / segmented-control helper
 │  ├─ audio-engine.js           # Shared WebAudio synth + Web MIDI wrapper
 │  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer
-│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major scale)
+│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian scale)
 │  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader
+│  ├─ midi-data.js              # Base64-embedded improvisation-demo MIDI data (major + Dorian)
 │  ├─ home.js                   # Home page hero keyboard
 │  ├─ white-trainer.js          # Lesson 1 page logic
 │  ├─ accidental-trainer.js     # Shared logic for Lessons 2 & 3 (sharp/flat)
 │  ├─ chromatic-trainer.js      # Lesson 4 page logic
-│  └─ major-scale-trainer.js    # Lesson 5 page logic (guided trainer + improvisation demo)
-├─ midi/                        # Sample MIDI files for Lesson 5's Improvisation Demo (one per key)
+│  ├─ major-scale-trainer.js    # Lesson 5 page logic (guided trainer + improvisation demo)
+│  └─ dorian-scale-trainer.js   # Lesson 6 page logic (guided trainer + improvisation demo)
+├─ midi/                        # Sample MIDI files for Lessons 5 & 6's Improvisation Demos (one per key each)
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file
 ```

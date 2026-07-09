@@ -290,6 +290,77 @@ const MajorScaleService = (() => {
   return { keys, buildAscending, buildDescending, buildAscendingThenDescending, solfaForSemitoneFromRoot };
 })();
 
+// ---------------------------------------------------------------- Dorian scale
+
+const DorianScaleService = (() => {
+  // Dorian mode semitone steps from the root: degree 0 = root, degree 7 =
+  // octave. Same as the natural minor scale but with a raised (natural) 6th
+  // degree, which is the characteristic note of the Dorian sound.
+  const STEP_SEMITONES = [0, 2, 3, 5, 7, 9, 10, 12];
+  const DEGREE_NAMES = ['1 (root)', '2', '3', '4', '5', '6', '7', '8 (octave)'];
+  const STEP_SOLFA = ['Do', 'Re', 'Me', 'Fa', 'Sol', 'La', 'Te', 'Do'];
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+  const keys = [
+    { semitoneFromC: 0, name: 'C' },
+    { semitoneFromC: 1, name: 'C#' },
+    { semitoneFromC: 2, name: 'D' },
+    { semitoneFromC: 3, name: 'D#' },
+    { semitoneFromC: 4, name: 'E' },
+    { semitoneFromC: 5, name: 'F' },
+    { semitoneFromC: 6, name: 'F#' },
+    { semitoneFromC: 7, name: 'G' },
+    { semitoneFromC: 8, name: 'G#' },
+    { semitoneFromC: 9, name: 'A' },
+    { semitoneFromC: 10, name: 'A#' },
+    { semitoneFromC: 11, name: 'B' },
+  ].map((k) => ({
+    ...k,
+    fileSlug: k.name.replace('#', 's'), // matches midi/dorian-scale-<slug>.mid
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + k.semitoneFromC; },
+  }));
+
+  function noteNameFor(absSemitoneFromC) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return SHARP_NAMES[idx];
+  }
+
+  function buildAscending(key, octave) {
+    const tonicMidi = key.midiNoteForOctave(octave);
+    return STEP_SEMITONES.map((semitone, degree) => ({
+      midiNote: tonicMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone),
+      degreeName: DEGREE_NAMES[degree],
+      solfa: STEP_SOLFA[degree],
+      isTonic: degree === 0 || degree === 7,
+    }));
+  }
+
+  function buildDescending(key, octave) {
+    return buildAscending(key, octave).slice().reverse();
+  }
+
+  function buildAscendingThenDescending(key, octave) {
+    const asc = buildAscending(key, octave);
+    const desc = buildDescending(key, octave);
+    return asc.concat(desc.slice(1));
+  }
+
+  // Movable-do solfa for the 7 Dorian-scale degrees (natural minor solfa,
+  // but "La" instead of "Le" for the raised 6th). Keyed by semitone distance
+  // from the root.
+  const SOLFA_BY_DEGREE = ['Do', 'Re', 'Me', 'Fa', 'Sol', 'La', 'Te'];
+  const SEMITONE_TO_DEGREE_INDEX = { 0: 0, 2: 1, 3: 2, 5: 3, 7: 4, 9: 5, 10: 6 };
+
+  function solfaForSemitoneFromRoot(semitoneFromRoot) {
+    const pc = ((semitoneFromRoot % 12) + 12) % 12;
+    const idx = SEMITONE_TO_DEGREE_INDEX[pc];
+    return idx === undefined ? null : SOLFA_BY_DEGREE[idx];
+  }
+
+  return { keys, buildAscending, buildDescending, buildAscendingThenDescending, solfaForSemitoneFromRoot };
+})();
+
 // ------------------------------------------------------------- Chromatic/solfa
 
 const ChromaticScaleService = (() => {

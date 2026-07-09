@@ -11,6 +11,7 @@ const LINKS = [
   { page: 'flat', href: 'flat-key-trainer.html', label: 'Flat Keys' },
   { page: 'chromatic', href: 'chromatic-trainer.html', label: 'Chromatic & Solfa' },
   { page: 'major-scale', href: 'major-scale-trainer.html', label: 'Major Scale' },
+  { page: 'dorian-scale', href: 'dorian-scale-trainer.html', label: 'Dorian Scale' },
 ];
 
 function brandMarkSvg() {
