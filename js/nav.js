@@ -12,6 +12,7 @@ const LINKS = [
   { page: 'chromatic', href: 'chromatic-trainer.html', label: 'Chromatic & Solfa' },
   { page: 'major-scale', href: 'major-scale-trainer.html', label: 'Major Scale' },
   { page: 'dorian-scale', href: 'dorian-scale-trainer.html', label: 'Dorian Scale' },
+  { page: 'phrygian-scale', href: 'phrygian-scale-trainer.html', label: 'Phrygian Scale' },
 ];
 
 function brandMarkSvg() {

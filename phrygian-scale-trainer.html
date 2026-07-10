@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Phrygian Scale Trainer &amp; Improvisation Demo — Piano Note Trainers</title>
+<meta name="description" content="Learn the Phrygian scale in all 12 keys with guided playback, then hear a short improvisation demo built from Phrygian-scale tones, highlighted on an on-screen piano." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="phrygian-scale">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 07 · All 12 keys</div>
+    <h1>Phrygian Scale Trainer &amp; Improvisation Demo</h1>
+    <p>Learn the Phrygian scale in any of the 12 keys through guided playback, then switch to the Improvisation Demo to hear a short, scale-based melodic idea — a classic "sequence in thirds" lick built from the Phrygian mode's characteristic flat 2nd — played back and highlighted on the keyboard in every key.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="trainer" role="tab" aria-selected="true">Guided Trainer</button>
+    <button type="button" data-tab="improv" role="tab" aria-selected="false">Improvisation Demo</button>
+  </div>
+
+  <!-- ===================== GUIDED TRAINER ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="trainer">
+    <div class="stack">
+
+      <div class="card">
+        <div class="controls-row">
+          <div class="field">
+            <label for="ps-key">Key</label>
+            <select id="ps-key"></select>
+          </div>
+          <div class="field">
+            <label for="ps-octave">Octave</label>
+            <input type="number" id="ps-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field">
+            <label>Direction</label>
+            <div class="segmented" data-segmented="ps-direction">
+              <button type="button" class="is-active" data-value="ascending">Ascending</button>
+              <button type="button" data-value="descending">Descending</button>
+              <button type="button" data-value="both">Both</button>
+            </div>
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="ps-tempo">Tempo: <span id="ps-tempo-value">100</span> BPM</label>
+            <input type="range" id="ps-tempo" min="40" max="200" value="100" />
+          </div>
+          <div class="field">
+            <label for="ps-output">Sound output</label>
+            <select id="ps-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="ps-play">▶ Play</button>
+          <button class="btn btn-danger" id="ps-stop" disabled>■ Stop</button>
+          <button class="btn btn-toggle" id="ps-practice">Practice mode: OFF</button>
+          <select id="ps-input" class="field" style="display:none;"><option value="">Select your MIDI keyboard</option></select>
+        </div>
+
+        <div class="alert alert-warning" id="ps-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth
+          and practice mode (listening to a real keyboard) is disabled.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="ps-direction-label">Ascending</div>
+        <div class="now-playing__value" id="ps-current-note">—</div>
+        <div class="now-playing__sub" id="ps-current-degree"></div>
+        <div class="progress"><div class="progress__bar" id="ps-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="ps-keyboard"></div></div>
+
+      <div class="card">
+        <h3 id="ps-table-title" style="font-size:1rem;">Phrygian scale — Ascending</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Note</th><th>Solfa</th><th>MIDI #</th><th>Tonic</th></tr></thead>
+            <tbody id="ps-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== IMPROVISATION DEMO ===================== -->
+  <section class="tabpanel" data-tabpanel="improv">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Each key below loads a short, original MIDI file — a "1‑3‑5‑8‑5‑3‑1, 2‑4‑6‑8‑6‑4‑2" sequence pattern built entirely from that key's Phrygian scale — a classic exercise for building modal improvisation vocabulary. Pick a key and press Play to hear it and watch it light up on the keyboard.</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="pi-key">Key</label>
+            <select id="pi-key"></select>
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="pi-tempo">Playback speed: <span id="pi-tempo-value">100</span>%</label>
+            <input type="range" id="pi-tempo" min="50" max="200" value="100" />
+          </div>
+          <div class="field">
+            <label for="pi-output">Sound output</label>
+            <select id="pi-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="pi-play">▶ Play demo</button>
+          <button class="btn btn-danger" id="pi-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="pi-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+        <div class="alert alert-danger" id="pi-load-error" style="display:none;"></div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="pi-key-label">Key of C</div>
+        <div class="now-playing__value" id="pi-current-note">—</div>
+        <div class="now-playing__sub" id="pi-current-step"></div>
+        <div class="progress"><div class="progress__bar" id="pi-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="pi-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Notes in this demo</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Note</th><th>Solfa</th><th>MIDI #</th><th>Starts at</th></tr></thead>
+            <tbody id="pi-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/music-services.js"></script>
+<script src="js/midi-file-reader.js"></script>
+<script src="js/midi-data.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/phrygian-scale-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

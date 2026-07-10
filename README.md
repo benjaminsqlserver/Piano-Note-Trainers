@@ -22,6 +22,7 @@ JavaScript framework.
 | 4 | **Chromatic & Solfa** (`chromatic-trainer.html`) | The ascending/descending chromatic scale in all 12 keys, with movable-do solfa syllables |
 | 5 | **Major Scale** (`major-scale-trainer.html`) | The major (Ionian) scale in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
 | 6 | **Dorian Scale** (`dorian-scale-trainer.html`) | The Dorian mode (natural minor with a raised 6th) in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
+| 7 | **Phrygian Scale** (`phrygian-scale-trainer.html`) | The Phrygian mode (natural minor with a lowered 2nd) in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
 
 Each lesson page includes:
 
@@ -46,6 +47,10 @@ Each lesson page includes:
   Demo tab built from a "1‑3‑5‑8‑5‑3‑1, 2‑4‑6‑8‑6‑4‑2" pattern in each key's
   Dorian scale — the natural 6th degree is what gives the Dorian mode its
   distinctive brighter-than-minor sound.
+- The Phrygian Scale lesson works the same way too, with its own
+  Improvisation Demo tab built from a "1‑3‑5‑8‑5‑3‑1, 2‑4‑6‑8‑6‑4‑2" pattern
+  in each key's Phrygian scale — the lowered 2nd degree is what gives the
+  Phrygian mode its distinctive darker, Spanish/exotic-sounding character.
 
 The home page (`index.html`) is a landing page with an interactive
 hero keyboard and cards linking to each lesson.
@@ -61,6 +66,7 @@ PianoNoteTrainers/
 ├─ chromatic-trainer.html       # Lesson 4
 ├─ major-scale-trainer.html     # Lesson 5
 ├─ dorian-scale-trainer.html    # Lesson 6
+├─ phrygian-scale-trainer.html  # Lesson 7
 ├─ css/
 │  └─ styles.css                # Shared, responsive design system
 ├─ js/
@@ -68,16 +74,17 @@ PianoNoteTrainers/
 │  ├─ tabs.js                   # Shared tab / segmented-control helper
 │  ├─ audio-engine.js           # Shared WebAudio synth + Web MIDI wrapper
 │  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer
-│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian scale)
+│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale)
 │  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader
-│  ├─ midi-data.js              # Base64-embedded improvisation-demo MIDI data (major + Dorian)
+│  ├─ midi-data.js              # Base64-embedded improvisation-demo MIDI data (major + Dorian + Phrygian)
 │  ├─ home.js                   # Home page hero keyboard
 │  ├─ white-trainer.js          # Lesson 1 page logic
 │  ├─ accidental-trainer.js     # Shared logic for Lessons 2 & 3 (sharp/flat)
 │  ├─ chromatic-trainer.js      # Lesson 4 page logic
 │  ├─ major-scale-trainer.js    # Lesson 5 page logic (guided trainer + improvisation demo)
-│  └─ dorian-scale-trainer.js   # Lesson 6 page logic (guided trainer + improvisation demo)
-├─ midi/                        # Sample MIDI files for Lessons 5 & 6's Improvisation Demos (one per key each)
+│  ├─ dorian-scale-trainer.js   # Lesson 6 page logic (guided trainer + improvisation demo)
+│  └─ phrygian-scale-trainer.js # Lesson 7 page logic (guided trainer + improvisation demo)
+├─ midi/                        # Sample MIDI files for Lessons 5, 6 & 7's Improvisation Demos (one per key each)
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file
 ```
