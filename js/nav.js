@@ -15,6 +15,7 @@ const LINKS = [
   { page: 'phrygian-scale', href: 'phrygian-scale-trainer.html', label: 'Phrygian Scale' },
   { page: 'major-chord', href: 'major-chord-trainer.html', label: 'Major Chords' },
   { page: 'minor-chord', href: 'minor-chord-trainer.html', label: 'Minor Chords' },
+  { page: 'augmented-chord', href: 'augmented-chord-trainer.html', label: 'Augmented Chords' },
 ];
 
 function brandMarkSvg() {

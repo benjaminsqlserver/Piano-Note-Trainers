@@ -729,3 +729,161 @@ const MinorChordService = (() => {
     buildProgression,
   };
 })();
+
+const AugmentedChordService = (() => {
+  // An augmented triad is built by stacking two identical intervals on top
+  // of a root:
+  //   root -> +4 semitones -> major 3rd
+  //   major 3rd -> +4 more semitones (root +8 total) -> augmented 5th
+  // So every augmented triad, in any of the 12 keys, is just the pitch-class
+  // pattern [0, 4, 8] measured in semitones from its root -- two stacked
+  // major thirds. Because 4 + 4 + 4 = 12, the augmented triad is perfectly
+  // symmetrical: it divides the octave into three equal parts, which is why
+  // it has no single "correct" spelling of its 5th (it can be written as a
+  // sharp 5 or, enharmonically, as a flat 6) and why -- unlike major or
+  // minor triads -- it sounds identical no matter which of its three notes
+  // is treated as the root.
+  const INTERVALS_FROM_ROOT = [0, 4, 8];
+  const CHORD_TONE_LABELS = ['Root', 'Major 3rd', 'Augmented 5th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note -- this note names the chord.',
+    'Count 4 semitones up from the root.',
+    'Count 4 more semitones up from the 3rd (8 semitones from the root).',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  // The 12 keys in simple chromatic order (used by the Learn tab and by the
+  // key picker on the Chord Progression tab).
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  // The circle of fourths: starting on C, each next key is a perfect 4th
+  // (5 semitones) higher than the last. Same order as the major- and
+  // minor-chord lessons -- the circle of fourths is a property of the 12
+  // pitch classes, not of chord quality, so it applies equally well to
+  // augmented chords.
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds an augmented triad (root, 3rd, augmented 5th) for `key` at `octave`. */
+  function buildTriad(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function triadMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  // Quality tables used only by the mixed-quality progression below. An
+  // augmented triad, taken on its own, has no pull toward "home" -- its
+  // symmetry means every inversion sounds the same -- so it works best as a
+  // passing chord rather than a destination. The classic, genuinely
+  // pleasant use of it is as a chromatic bridge: keep the root and 3rd of
+  // the tonic chord and simply raise the 5th by a semitone (e.g. G -> G#),
+  // then let that raised 5th resolve up by one more semitone into the 6th
+  // degree of the scale. That turns a plain I -> vi jump into a smooth
+  // stepwise bass line: I -> I+ -> vi -> IV.
+  const QUALITY_INTERVALS = {
+    major: [0, 4, 7],
+    minor: [0, 3, 7],
+    augmented: [0, 4, 8],
+  };
+  const QUALITY_LABELS = {
+    major: ['Root', 'Major 3rd', 'Perfect 5th'],
+    minor: ['Root', 'Minor 3rd', 'Perfect 5th'],
+    augmented: ['Root', 'Major 3rd', 'Augmented 5th'],
+  };
+  const QUALITY_SUFFIX = {
+    major: 'major',
+    minor: 'minor',
+    augmented: 'augmented',
+  };
+
+  function buildTriadWithQuality(key, octave, quality, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    const intervals = QUALITY_INTERVALS[quality];
+    const labels = QUALITY_LABELS[quality];
+    return intervals.map((semitone, i) => ({
+      role: labels[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  // A pleasant four-chord progression containing exactly one augmented
+  // triad: I (tonic major) - I+ (the same chord with its 5th raised a
+  // semitone -- the one augmented chord) - vi (relative minor) - IV
+  // (subdominant major). The bass line moves in single steps the whole way
+  // (root -> raised 5th -> 6th -> 4th), which is exactly what makes the
+  // augmented chord sound like a natural bridge instead of a jarring
+  // outsider, and it works the same way in every one of the 12 keys.
+  const progression = {
+    id: 'I-Iaug-vi-IV',
+    label: 'I – I+ – vi – IV',
+    description: 'A classic chromatic-bridge progression: the tonic (I), that same chord with its 5th raised a semitone to make it augmented (I+), the relative minor (vi), and the subdominant (IV). Only one chord in the whole progression -- I+ -- is augmented; the rest are ordinary major and minor triads. The augmented chord exists purely to walk the bass smoothly from the 5th up to the 6th degree (G to G# to A in the key of C), which is what makes this progression sound pleasant rather than jarring, in every one of the 12 keys.',
+    degrees: [
+      { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+      { roman: 'I+', name: 'Augmented tonic', semitoneFromKey: 0, quality: 'augmented' },
+      { roman: 'vi', name: 'Relative minor', semitoneFromKey: 9, quality: 'minor' },
+      { roman: 'IV', name: 'Subdominant', semitoneFromKey: 5, quality: 'major' },
+    ],
+  };
+
+  /** Builds the I-I+-vi-IV progression's four triads for `key` at `octave`. */
+  function buildProgression(key, octave, preferFlats) {
+    return progression.degrees.map((degree) => {
+      const degreeKey = {
+        semitoneFromC: key.semitoneFromC + degree.semitoneFromKey,
+        midiNoteForOctave(o) { return key.midiNoteForOctave(o) + degree.semitoneFromKey; },
+      };
+      const notes = buildTriadWithQuality(degreeKey, octave, degree.quality, preferFlats);
+      return {
+        roman: degree.roman,
+        name: degree.name,
+        quality: degree.quality,
+        chordName: `${notes[0].noteName} ${QUALITY_SUFFIX[degree.quality]}`,
+        notes,
+      };
+    });
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    progression,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildTriad,
+    triadMidiNotes,
+    buildProgression,
+  };
+})();
