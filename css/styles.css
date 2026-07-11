@@ -154,6 +154,88 @@ a { color: inherit; }
   background: rgba(201,162,39,0.12);
 }
 
+/* ---- Grouped dropdown menus (Note Names / Scales / Chords) ---- */
+
+.site-nav__group {
+  position: relative;
+}
+
+.site-nav__group-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ivory-dim);
+  cursor: pointer;
+  transition: color 150ms ease, background 150ms ease;
+}
+
+.site-nav__group-toggle:hover {
+  color: var(--ivory);
+  background: rgba(255,255,255,0.06);
+}
+
+.site-nav__group-toggle.is-active {
+  color: var(--brass-bright);
+  background: rgba(201,162,39,0.12);
+}
+
+.site-nav__chevron {
+  transition: transform 150ms ease;
+}
+
+.site-nav__group.is-open .site-nav__chevron {
+  transform: rotate(180deg);
+}
+
+.site-nav__dropdown {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  min-width: 200px;
+  background: var(--stage);
+  border: 1px solid var(--stage-line);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  z-index: 110;
+}
+
+.site-nav__group.is-open .site-nav__dropdown {
+  display: block;
+}
+
+.site-nav__dropdown a {
+  display: block;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ivory-dim);
+  white-space: nowrap;
+  transition: color 150ms ease, background 150ms ease;
+}
+
+.site-nav__dropdown a:hover {
+  color: var(--ivory);
+  background: rgba(255,255,255,0.06);
+}
+
+.site-nav__dropdown a.is-active {
+  color: var(--brass-bright);
+  background: rgba(201,162,39,0.12);
+}
+
 .site-nav__toggle {
   display: none;
   background: none;
@@ -201,9 +283,39 @@ a { color: inherit; }
 
   .site-nav__links.is-open { display: flex; }
 
-  .site-nav__links a {
+  .site-nav__links > li > a {
     border-radius: 8px;
     padding: 0.75rem;
+  }
+
+  /* Group buttons become full-width accordion headers, and their
+     dropdowns become an inline expanding panel instead of a floating
+     popover. */
+  .site-nav__group-toggle {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .site-nav__dropdown {
+    display: none;
+    position: static;
+    box-shadow: none;
+    border: none;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    margin: 0.15rem 0 0.35rem;
+    padding: 0.15rem;
+    min-width: 0;
+  }
+
+  .site-nav__group.is-open .site-nav__dropdown {
+    display: block;
+  }
+
+  .site-nav__dropdown a {
+    padding: 0.65rem 0.75rem 0.65rem 1.5rem;
   }
 }
 
