@@ -24,6 +24,7 @@ JavaScript framework.
 | 6 | **Dorian Scale** (`dorian-scale-trainer.html`) | The Dorian mode (natural minor with a raised 6th) in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
 | 7 | **Phrygian Scale** (`phrygian-scale-trainer.html`) | The Phrygian mode (natural minor with a lowered 2nd) in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
 | 8 | **Major Chords** (`major-chord-trainer.html`) | How a major triad is built by counting semitones (root, +4 to the 3rd, +3 more to the 5th), plus two MIDI exercises: all 12 major chords around the circle of fourths, and a pleasant I‑IV‑V‑I chord progression played in every key |
+| 9 | **Minor Chords** (`minor-chord-trainer.html`) | How a minor triad is built by counting semitones (root, +3 to the 3rd, +4 more to the 5th), plus two MIDI exercises: all 12 minor chords around the circle of fourths, and a pleasant i‑iv‑v‑i chord progression (built from the natural minor scale) played in every key |
 
 Each lesson page includes:
 
@@ -61,6 +62,17 @@ Each lesson page includes:
   B → E → A → D → G → C), and **Chord Progression**, which plays a pleasant
   four-chord I‑IV‑V‑I progression — built entirely from major triads — in
   a chosen key or cycled through all 12 keys.
+- The Minor Chords lesson works the same way, with a **Learn** tab that
+  walks through building a minor triad one semitone-count at a time
+  (root → +3 semitones → minor 3rd → +4 more semitones → perfect 5th) —
+  the same 7-semitone root-to-5th span as a major triad, but with the 3rd
+  pulled down one semitone — plus a table of all 12 minor triads. Its
+  **Circle of Fourths** exercise plays all 12 minor chords in the same
+  C → F → B♭ → E♭ → A♭ → D♭ → G♭/F♯ → B → E → A → D → G → C sequence, and
+  its **Chord Progression** exercise plays a pleasant four-chord i‑iv‑v‑i
+  progression built from each key's natural (Aeolian) minor scale — which
+  is what keeps the v chord minor instead of major — in a chosen key or
+  cycled through all 12 keys.
 
 The home page (`index.html`) is a landing page with an interactive
 hero keyboard and cards linking to each lesson.

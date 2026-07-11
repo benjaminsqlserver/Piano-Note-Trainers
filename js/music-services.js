@@ -614,3 +614,118 @@ const MajorChordService = (() => {
     buildProgression,
   };
 })();
+
+const MinorChordService = (() => {
+  // A minor triad is built by stacking two intervals on top of a root:
+  //   root -> +3 semitones -> minor 3rd
+  //   minor 3rd -> +4 semitones (root +7 total) -> perfect 5th
+  // So every minor triad, in any of the 12 keys, is just the pitch-class
+  // pattern [0, 3, 7] measured in semitones from its root -- the same total
+  // span as a major triad (7 semitones, root to 5th), but with the 3rd
+  // pulled down a semitone, which is what gives it its minor color.
+  const INTERVALS_FROM_ROOT = [0, 3, 7];
+  const CHORD_TONE_LABELS = ['Root', 'Minor 3rd', 'Perfect 5th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note -- this note names the chord.',
+    'Count 3 semitones up from the root.',
+    'Count 4 more semitones up from the 3rd (7 semitones from the root).',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  // The 12 keys in simple chromatic order (used by the Learn tab and by the
+  // key picker on the Chord Progression tab).
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  // The circle of fourths: starting on C, each next key is a perfect 4th
+  // (5 semitones) higher than the last. Same order as the major-chord
+  // lesson -- the circle of fourths is a property of the 12 pitch classes,
+  // not of chord quality, so it applies equally well to minor chords.
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a minor triad (root, 3rd, 5th) for `key` starting at `octave`. */
+  function buildTriad(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function triadMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  // A pleasant, all-minor four-chord progression: i - iv - v - i, built from
+  // the notes of the natural (Aeolian) minor scale rather than the major
+  // scale. Every triad stacked on the 1st, 4th, and 5th degrees of a
+  // natural minor scale happens to come out minor (unlike the major scale,
+  // where the equivalent v chord would be major and vii would be
+  // diminished) -- so this is the natural-minor mirror of the classic
+  // I-IV-V-I cadence, and it stays entirely minor in every one of the 12
+  // keys.
+  const progression = {
+    id: 'i-iv-v-i',
+    label: 'i – iv – v – i',
+    description: 'The natural-minor mirror of the classic cadential progression: the tonic (i), the subdominant (iv), the dominant (v), and home again (i) — four chords, three of them distinct, and every single one a minor triad in every one of the 12 keys. Each chord is built from the natural (Aeolian) minor scale of the chosen key, which is exactly what keeps the v chord minor instead of major.',
+    degrees: [
+      { roman: 'i', name: 'Tonic', semitoneFromKey: 0 },
+      { roman: 'iv', name: 'Subdominant', semitoneFromKey: 5 },
+      { roman: 'v', name: 'Dominant', semitoneFromKey: 7 },
+      { roman: 'i', name: 'Tonic', semitoneFromKey: 0 },
+    ],
+  };
+
+  /** Builds the i-iv-v-i progression's four triads for `key` at `octave`. */
+  function buildProgression(key, octave, preferFlats) {
+    return progression.degrees.map((degree) => {
+      const degreeKey = {
+        semitoneFromC: key.semitoneFromC + degree.semitoneFromKey,
+        midiNoteForOctave(o) { return key.midiNoteForOctave(o) + degree.semitoneFromKey; },
+      };
+      const notes = buildTriad(degreeKey, octave, preferFlats);
+      return {
+        roman: degree.roman,
+        name: degree.name,
+        chordName: `${notes[0].noteName} minor`,
+        notes,
+      };
+    });
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    progression,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildTriad,
+    triadMidiNotes,
+    buildProgression,
+  };
+})();

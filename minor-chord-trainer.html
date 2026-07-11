@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Minor Chord Triad Trainer — Piano Note Trainers</title>
+<meta name="description" content="Learn how every minor chord triad is built by counting semitones, then play all 12 minor chords around the circle of fourths and a pleasant i-iv-v-i progression in every key." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="minor-chord">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 09 · All 12 keys</div>
+    <h1>Minor Chord Triad Trainer</h1>
+    <p>Learn how a minor triad is built one semitone-count at a time, then put it to work with two MIDI exercises: playing all 12 minor chords around the circle of fourths, and a pleasant four-chord progression in every key.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="learn" role="tab" aria-selected="true">Learn</button>
+    <button type="button" data-tab="fourths" role="tab" aria-selected="false">Exercise 1: Circle of Fourths</button>
+    <button type="button" data-tab="progression" role="tab" aria-selected="false">Exercise 2: Chord Progression</button>
+  </div>
+
+  <!-- ===================== LEARN ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="learn">
+    <div class="stack">
+
+      <div class="card">
+        <h3 style="font-size:1.1rem;">How a minor triad is built</h3>
+        <p>A <strong>triad</strong> is a 3-note chord. Every <strong>minor</strong> triad — in any of the 12 keys — is built the exact same way, by counting semitones to the right from a root note:</p>
+        <ol style="margin:0.75rem 0 0.75rem 1.25rem; padding:0; line-height:1.7;">
+          <li>Start on the <strong>root</strong> — the note that names the chord.</li>
+          <li>Count <strong>3 semitones</strong> to the right to land on the <strong>minor 3rd</strong>.</li>
+          <li>From there, count <strong>4 more semitones</strong> to the right (7 semitones from the root) to land on the <strong>perfect 5th</strong>.</li>
+        </ol>
+        <div class="alert alert-info">
+          Example — <strong>C minor</strong>: start on <strong>C</strong>, count 3 semitones right to reach <strong>E♭</strong>, then count 4 more semitones right to reach <strong>G</strong>. C‑E♭‑G is the C minor triad. The pattern <strong>3 then 4</strong> (7 semitones total from root to top) is what makes a triad "minor" — every one of the 12 minor chords is this same shape, just moved to start on a different key.
+        </div>
+        <div class="alert alert-warning">
+          Compare this to a major triad, which counts <strong>4 then 3</strong> semitones instead. Both triads span the same 7 semitones from root to 5th — the only thing that moves is the 3rd, dropping one semitone lower for minor. That single semitone is the entire difference between a "happy" major chord and a "sad" or "serious" minor chord.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Try it: pick a root and build the chord step by step</h3>
+        <div class="controls-row">
+          <div class="field">
+            <label for="lc-root">Root note</label>
+            <select id="lc-root"></select>
+          </div>
+          <div class="field">
+            <label for="lc-output">Sound output</label>
+            <select id="lc-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+        <div class="actions-row">
+          <button class="btn btn-success" id="lc-step">▶ Play next step</button>
+          <button class="btn btn-ghost" id="lc-restart">↺ Restart chord</button>
+          <button class="btn btn-primary" id="lc-full">▶ Play full chord together</button>
+        </div>
+
+        <div class="card now-playing">
+          <div class="eyebrow" id="lc-step-label">Step 1 of 3</div>
+          <div class="now-playing__value" id="lc-current-note">—</div>
+          <div class="now-playing__sub" id="lc-current-explain"></div>
+        </div>
+
+        <div class="card"><div id="lc-keyboard"></div></div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Chord tone</th><th>Note</th><th>Semitones from root</th><th>MIDI #</th></tr></thead>
+            <tbody id="lc-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">All 12 minor triads at a glance</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Chord</th><th>Root</th><th>+3 semitones → 3rd</th><th>+4 semitones → 5th</th></tr></thead>
+            <tbody id="lc-all-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 1: CIRCLE OF FOURTHS ===================== -->
+  <section class="tabpanel" data-tabpanel="fourths">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">This MIDI exercise plays <strong>all 12 minor chords</strong>, one after another, moving around the <strong>circle of fourths</strong> — each chord's root sits a perfect 4th (5 semitones) above the last one: C → F → B♭ → E♭ → A♭ → D♭ → G♭/F♯ → B → E → A → D → G → back to C. Every chord is played as a full triad (root, 3rd, and 5th together).</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="cf-octave">Octave</label>
+            <input type="number" id="cf-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="cf-tempo">Tempo: <span id="cf-tempo-value">80</span> BPM</label>
+            <input type="range" id="cf-tempo" min="30" max="160" value="80" />
+          </div>
+          <div class="field">
+            <label for="cf-output">Sound output</label>
+            <select id="cf-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="cf-play">▶ Play all 12 chords</button>
+          <button class="btn btn-danger" id="cf-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="cf-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="cf-position-label">Chord 1 of 12</div>
+        <div class="now-playing__value" id="cf-current-chord">—</div>
+        <div class="now-playing__sub" id="cf-current-notes"></div>
+        <div class="progress"><div class="progress__bar" id="cf-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="cf-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">The 12 chords, in circle-of-fourths order</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Chord</th><th>Root</th><th>3rd</th><th>5th</th></tr></thead>
+            <tbody id="cf-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 2: CHORD PROGRESSION ===================== -->
+  <section class="tabpanel" data-tabpanel="progression">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;" id="cp-description">Loading…</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="cp-key">Key</label>
+            <select id="cp-key"></select>
+          </div>
+          <div class="field">
+            <label for="cp-octave">Octave</label>
+            <input type="number" id="cp-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="cp-tempo">Tempo: <span id="cp-tempo-value">76</span> BPM</label>
+            <input type="range" id="cp-tempo" min="30" max="160" value="76" />
+          </div>
+          <div class="field">
+            <label for="cp-output">Sound output</label>
+            <select id="cp-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="cp-play">▶ Play progression in this key</button>
+          <button class="btn btn-primary" id="cp-play-all">▶ Play in all 12 keys</button>
+          <button class="btn btn-danger" id="cp-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="cp-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="cp-key-label">Key of C</div>
+        <div class="now-playing__value" id="cp-current-chord">—</div>
+        <div class="now-playing__sub" id="cp-current-degree"></div>
+        <div class="progress"><div class="progress__bar" id="cp-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="cp-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;" id="cp-table-title">Progression in C</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Chord</th><th>Root</th><th>3rd</th><th>5th</th></tr></thead>
+            <tbody id="cp-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/music-services.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/minor-chord-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
