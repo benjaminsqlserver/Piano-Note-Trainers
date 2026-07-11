@@ -16,6 +16,7 @@ const LINKS = [
   { page: 'major-chord', href: 'major-chord-trainer.html', label: 'Major Chords' },
   { page: 'minor-chord', href: 'minor-chord-trainer.html', label: 'Minor Chords' },
   { page: 'augmented-chord', href: 'augmented-chord-trainer.html', label: 'Augmented Chords' },
+  { page: 'diminished-chord', href: 'diminished-chord-trainer.html', label: 'Diminished Chords' },
 ];
 
 function brandMarkSvg() {
