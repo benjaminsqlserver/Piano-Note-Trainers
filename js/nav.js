@@ -13,6 +13,7 @@ const LINKS = [
   { page: 'major-scale', href: 'major-scale-trainer.html', label: 'Major Scale' },
   { page: 'dorian-scale', href: 'dorian-scale-trainer.html', label: 'Dorian Scale' },
   { page: 'phrygian-scale', href: 'phrygian-scale-trainer.html', label: 'Phrygian Scale' },
+  { page: 'major-chord', href: 'major-chord-trainer.html', label: 'Major Chords' },
 ];
 
 function brandMarkSvg() {
