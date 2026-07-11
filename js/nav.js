@@ -3,20 +3,44 @@
 // Usage: <div id="site-nav"></div> then <script src="js/nav.js"></script>
 // The current page is marked active by matching document body's
 // data-page attribute against each link's data-page attribute.
+//
+// Structure: a couple of standalone links (Home) plus grouped dropdowns
+// (Note Names / Scales / Chords) so the bar stays short as lessons are
+// added. On desktop each group opens as a small dropdown panel below its
+// button; on mobile (inside the hamburger panel) the same group buttons
+// work as accordion toggles.
 
-const LINKS = [
-  { page: 'home', href: 'index.html', label: 'Home' },
-  { page: 'white', href: 'white-key-trainer.html', label: 'White Keys' },
-  { page: 'sharp', href: 'sharp-key-trainer.html', label: 'Sharp Keys' },
-  { page: 'flat', href: 'flat-key-trainer.html', label: 'Flat Keys' },
-  { page: 'chromatic', href: 'chromatic-trainer.html', label: 'Chromatic & Solfa' },
-  { page: 'major-scale', href: 'major-scale-trainer.html', label: 'Major Scale' },
-  { page: 'dorian-scale', href: 'dorian-scale-trainer.html', label: 'Dorian Scale' },
-  { page: 'phrygian-scale', href: 'phrygian-scale-trainer.html', label: 'Phrygian Scale' },
-  { page: 'major-chord', href: 'major-chord-trainer.html', label: 'Major Chords' },
-  { page: 'minor-chord', href: 'minor-chord-trainer.html', label: 'Minor Chords' },
-  { page: 'augmented-chord', href: 'augmented-chord-trainer.html', label: 'Augmented Chords' },
-  { page: 'diminished-chord', href: 'diminished-chord-trainer.html', label: 'Diminished Chords' },
+const NAV_GROUPS = [
+  { standalone: true, page: 'home', href: 'index.html', label: 'Home' },
+  {
+    id: 'note-names',
+    label: 'Note Names',
+    links: [
+      { page: 'white', href: 'white-key-trainer.html', label: 'White Keys' },
+      { page: 'sharp', href: 'sharp-key-trainer.html', label: 'Sharp Keys' },
+      { page: 'flat', href: 'flat-key-trainer.html', label: 'Flat Keys' },
+      { page: 'chromatic', href: 'chromatic-trainer.html', label: 'Chromatic & Solfa' },
+    ],
+  },
+  {
+    id: 'scales',
+    label: 'Scales',
+    links: [
+      { page: 'major-scale', href: 'major-scale-trainer.html', label: 'Major Scale' },
+      { page: 'dorian-scale', href: 'dorian-scale-trainer.html', label: 'Dorian Scale' },
+      { page: 'phrygian-scale', href: 'phrygian-scale-trainer.html', label: 'Phrygian Scale' },
+    ],
+  },
+  {
+    id: 'chords',
+    label: 'Chords',
+    links: [
+      { page: 'major-chord', href: 'major-chord-trainer.html', label: 'Major Chords' },
+      { page: 'minor-chord', href: 'minor-chord-trainer.html', label: 'Minor Chords' },
+      { page: 'augmented-chord', href: 'augmented-chord-trainer.html', label: 'Augmented Chords' },
+      { page: 'diminished-chord', href: 'diminished-chord-trainer.html', label: 'Diminished Chords' },
+    ],
+  },
 ];
 
 function brandMarkSvg() {
@@ -29,12 +53,37 @@ function brandMarkSvg() {
   </svg>`;
 }
 
+function chevronSvg() {
+  return `<svg class="site-nav__chevron" viewBox="0 0 12 8" width="10" height="7" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+}
+
 function renderNav(mountEl) {
   const currentPage = document.body.getAttribute('data-page') || '';
 
-  const linksHtml = LINKS.map(
-    (l) => `<li><a href="${l.href}" data-page="${l.page}"${l.page === currentPage ? ' class="is-active" aria-current="page"' : ''}>${l.label}</a></li>`
-  ).join('');
+  const itemsHtml = NAV_GROUPS.map((item) => {
+    if (item.standalone) {
+      const isActive = item.page === currentPage;
+      return `<li><a href="${item.href}" data-page="${item.page}"${isActive ? ' class="is-active" aria-current="page"' : ''}>${item.label}</a></li>`;
+    }
+
+    const groupHasActive = item.links.some((l) => l.page === currentPage);
+    const dropdownLinksHtml = item.links.map((l) => {
+      const isActive = l.page === currentPage;
+      return `<li><a href="${l.href}" data-page="${l.page}"${isActive ? ' class="is-active" aria-current="page"' : ''}>${l.label}</a></li>`;
+    }).join('');
+
+    return `
+      <li class="site-nav__group">
+        <button type="button" class="site-nav__group-toggle${groupHasActive ? ' is-active' : ''}" aria-expanded="false" aria-haspopup="true" data-group="${item.id}">
+          <span>${item.label}</span>${chevronSvg()}
+        </button>
+        <ul class="site-nav__dropdown" data-group-panel="${item.id}">
+          ${dropdownLinksHtml}
+        </ul>
+      </li>`;
+  }).join('');
 
   mountEl.innerHTML = `
     <nav class="site-nav" aria-label="Lesson navigation">
@@ -47,24 +96,70 @@ function renderNav(mountEl) {
           <span></span>
         </button>
         <ul class="site-nav__links" id="site-nav-links">
-          ${linksHtml}
+          ${itemsHtml}
         </ul>
       </div>
     </nav>`;
 
+  const nav = mountEl.querySelector('.site-nav');
   const toggle = mountEl.querySelector('.site-nav__toggle');
   const linksList = mountEl.querySelector('#site-nav-links');
+  const groupToggles = Array.from(mountEl.querySelectorAll('.site-nav__group-toggle'));
+
+  function closeAllGroups(exceptButton) {
+    groupToggles.forEach((btn) => {
+      if (btn === exceptButton) return;
+      btn.setAttribute('aria-expanded', 'false');
+      btn.parentElement.classList.remove('is-open');
+    });
+  }
+
+  function closeMobileMenu() {
+    linksList.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+
+  // Hamburger toggle for the whole menu (mobile).
   toggle.addEventListener('click', () => {
     const isOpen = linksList.classList.toggle('is-open');
     toggle.setAttribute('aria-expanded', String(isOpen));
+    if (!isOpen) closeAllGroups(null);
   });
 
-  // Close the mobile menu after choosing a link.
+  // Each group button opens/closes its own dropdown (desktop) or
+  // accordion panel (mobile). Only one group is open at a time.
+  groupToggles.forEach((btn) => {
+    btn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const groupItem = btn.parentElement;
+      const willOpen = !groupItem.classList.contains('is-open');
+      closeAllGroups(willOpen ? btn : null);
+      groupItem.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', String(willOpen));
+    });
+  });
+
+  // Close everything after choosing a link.
   linksList.querySelectorAll('a').forEach((a) => {
     a.addEventListener('click', () => {
-      linksList.classList.remove('is-open');
-      toggle.setAttribute('aria-expanded', 'false');
+      closeAllGroups(null);
+      closeMobileMenu();
     });
+  });
+
+  // Click outside the nav closes any open dropdown (desktop) and,
+  // on mobile, the whole menu panel.
+  document.addEventListener('click', (event) => {
+    if (nav.contains(event.target)) return;
+    closeAllGroups(null);
+    closeMobileMenu();
+  });
+
+  // Escape closes everything, useful for keyboard users.
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    closeAllGroups(null);
+    closeMobileMenu();
   });
 }
 
