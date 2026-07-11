@@ -24,6 +24,9 @@ function pitchClass(midi) {
  *   lowestMidi        {number}  lowest MIDI note shown (a C is recommended)
  *   octaves           {number}  how many octaves to render
  *   activeNote        {number|null} MIDI note currently sounding/expected
+ *   activeNotes       {number[]|null} multiple MIDI notes to highlight at
+ *                      once (e.g. all the tones of a chord); combined with
+ *                      activeNote if both are supplied
  *   tonicPitchClass   {number|null} pitch class (0-11) to tint as the tonic
  *   showLabels        {boolean} whether to draw note-name labels
  *   pitchClassLabels  {Object<number,string>|null} maps pitch class -> label
@@ -89,14 +92,16 @@ function createPianoKeyboard(container, options) {
       const clickable = isBlack ? state.clickableBlack : state.clickableWhite;
       if (clickable) cls += ' piano-key-clickable';
       const pc = pitchClass(midi);
-      if (state.activeNote === midi) cls += ' piano-key-active';
+      const isActive = state.activeNote === midi || (Array.isArray(state.activeNotes) && state.activeNotes.includes(midi));
+      if (isActive) cls += ' piano-key-active';
       else if (state.tonicPitchClass != null && pc === state.tonicPitchClass) cls += ' piano-key-tonic';
       return cls;
     };
 
     const labelClass = (midi, isBlack) => {
       let cls = isBlack ? 'piano-key-label piano-key-label-black' : 'piano-key-label';
-      if (state.activeNote === midi) cls += ' piano-key-label-active';
+      const isActive = state.activeNote === midi || (Array.isArray(state.activeNotes) && state.activeNotes.includes(midi));
+      if (isActive) cls += ' piano-key-label-active';
       return cls;
     };
 

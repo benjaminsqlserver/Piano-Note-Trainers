@@ -23,6 +23,7 @@ JavaScript framework.
 | 5 | **Major Scale** (`major-scale-trainer.html`) | The major (Ionian) scale in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
 | 6 | **Dorian Scale** (`dorian-scale-trainer.html`) | The Dorian mode (natural minor with a raised 6th) in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
 | 7 | **Phrygian Scale** (`phrygian-scale-trainer.html`) | The Phrygian mode (natural minor with a lowered 2nd) in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
+| 8 | **Major Chords** (`major-chord-trainer.html`) | How a major triad is built by counting semitones (root, +4 to the 3rd, +3 more to the 5th), plus two MIDI exercises: all 12 major chords around the circle of fourths, and a pleasant I‑IV‑V‑I chord progression played in every key |
 
 Each lesson page includes:
 
@@ -51,6 +52,15 @@ Each lesson page includes:
   Improvisation Demo tab built from a "1‑3‑5‑8‑5‑3‑1, 2‑4‑6‑8‑6‑4‑2" pattern
   in each key's Phrygian scale — the lowered 2nd degree is what gives the
   Phrygian mode its distinctive darker, Spanish/exotic-sounding character.
+- The Major Chords lesson has a **Learn** tab that walks through building a
+  major triad one semitone-count at a time (root → +4 semitones → major 3rd
+  → +3 more semitones → perfect 5th), plus a table of all 12 major triads.
+  Its two exercise tabs are both MIDI exercises played through the same
+  synth/MIDI-output engine every lesson uses: **Circle of Fourths**, which
+  plays all 12 major chords in sequence (C → F → B♭ → E♭ → A♭ → D♭ → G♭/F♯ →
+  B → E → A → D → G → C), and **Chord Progression**, which plays a pleasant
+  four-chord I‑IV‑V‑I progression — built entirely from major triads — in
+  a chosen key or cycled through all 12 keys.
 
 The home page (`index.html`) is a landing page with an interactive
 hero keyboard and cards linking to each lesson.
@@ -67,6 +77,7 @@ PianoNoteTrainers/
 ├─ major-scale-trainer.html     # Lesson 5
 ├─ dorian-scale-trainer.html    # Lesson 6
 ├─ phrygian-scale-trainer.html  # Lesson 7
+├─ major-chord-trainer.html     # Lesson 8
 ├─ css/
 │  └─ styles.css                # Shared, responsive design system
 ├─ js/
@@ -74,7 +85,7 @@ PianoNoteTrainers/
 │  ├─ tabs.js                   # Shared tab / segmented-control helper
 │  ├─ audio-engine.js           # Shared WebAudio synth + Web MIDI wrapper
 │  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer
-│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale)
+│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major chords)
 │  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader
 │  ├─ midi-data.js              # Base64-embedded improvisation-demo MIDI data (major + Dorian + Phrygian)
 │  ├─ home.js                   # Home page hero keyboard
@@ -83,7 +94,8 @@ PianoNoteTrainers/
 │  ├─ chromatic-trainer.js      # Lesson 4 page logic
 │  ├─ major-scale-trainer.js    # Lesson 5 page logic (guided trainer + improvisation demo)
 │  ├─ dorian-scale-trainer.js   # Lesson 6 page logic (guided trainer + improvisation demo)
-│  └─ phrygian-scale-trainer.js # Lesson 7 page logic (guided trainer + improvisation demo)
+│  ├─ phrygian-scale-trainer.js # Lesson 7 page logic (guided trainer + improvisation demo)
+│  └─ major-chord-trainer.js    # Lesson 8 page logic (learn tab + circle-of-fourths & chord-progression MIDI exercises)
 ├─ midi/                        # Sample MIDI files for Lessons 5, 6 & 7's Improvisation Demos (one per key each)
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file
