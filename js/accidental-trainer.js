@@ -87,7 +87,7 @@ function selectLearnNote(letterIndex) {
 }
 
 const learnKeyboard = createPianoKeyboard(el.learnKeyboard, {
-  lowestMidi: 60, octaves: 1, activeNote: null, tonicPitchClass: null,
+  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, tonicPitchClass: null,
   showLabels: true, clickableWhite: false, clickableBlack: false,
   pitchClassLabels: KeyService.pitchClassLabels,
 });
@@ -111,7 +111,7 @@ let practiceMode = false;
 let expectedPracticeIndex = 0;
 
 const keyboard = createPianoKeyboard(el.keyboard, {
-  lowestMidi: 60, octaves: 2, activeNote: null, tonicPitchClass: null,
+  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, tonicPitchClass: null,
   showLabels: true, clickableWhite: false, clickableBlack: false,
   pitchClassLabels: KeyService.pitchClassLabels,
 });
@@ -137,9 +137,7 @@ function rebuildSequence() {
   el.progress.style.width = '0%';
   el.tableTitle.textContent = `${SYMBOL_WORD[0].toUpperCase()}${SYMBOL_WORD.slice(1)} keys from ${note.letter}${octave} — ${directionLabelText()}`;
 
-  const lowestMidi = 12 * (octave + 1);
-  const octaves = Math.max(2, span + 1);
-  keyboard.update({ lowestMidi, octaves, activeNote: null, tonicPitchClass: note.pitchClass });
+  keyboard.update({ activeNote: null, tonicPitchClass: note.pitchClass });
 
   renderTable();
 }
@@ -168,9 +166,6 @@ async function playSequence() {
 
   const bpm = Number(el.tempo.value);
   const noteDurationMs = 60000 / bpm;
-  const octave = Number(el.octave.value);
-  const lowestMidi = 12 * (octave + 1);
-  const span = Number(el.span.value);
   const tonicPitchClass = noteOptions[Number(el.note.value)].pitchClass;
 
   for (let i = 0; i < sequence.length; i++) {
@@ -181,7 +176,7 @@ async function playSequence() {
     el.currentEnharmonic.textContent = currentStep.isWhiteKeyEnharmonic
       ? `(sounds the same as ${currentStep.whiteKeyEnharmonicName} — a white key)` : '';
     el.progress.style.width = `${((i + 1) * 100) / sequence.length}%`;
-    keyboard.update({ lowestMidi, octaves: Math.max(2, span + 1), activeNote: currentStep.midiNote, tonicPitchClass });
+    keyboard.update({ activeNote: currentStep.midiNote, tonicPitchClass });
     highlightRow(currentStep.midiNote);
 
     midi.playNote(el.output.value || null, currentStep.midiNote, Math.round(noteDurationMs * 0.9));
@@ -278,7 +273,7 @@ QUIZ_LETTERS.forEach((letter) => {
 });
 
 const quizKeyboard = createPianoKeyboard(el.quizKeyboard, {
-  lowestMidi: 48, octaves: 3, activeNote: null, tonicPitchClass: null,
+  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, tonicPitchClass: null,
   showLabels: false, clickableWhite: false, clickableBlack: false,
   pitchClassLabels: KeyService.pitchClassLabels,
   onKeyClick: (midiNote) => onQuizKeyClicked(midiNote),
@@ -313,10 +308,7 @@ function nextQuestion() {
   el.quizLetter.textContent = quizTarget.letter;
   document.querySelectorAll('#at-quiz-letters .letter-btn').forEach((b) => { b.disabled = false; });
 
-  const lowestMidi = 12 * (minOct + 1);
-  const octaves = Math.max(1, maxOct - minOct + 1);
   quizKeyboard.update({
-    lowestMidi, octaves,
     activeNote: quizMode === 'name' ? quizTarget.midiNote : null,
     showLabels: revealLabels,
     clickableWhite: quizMode === 'find', clickableBlack: quizMode === 'find',

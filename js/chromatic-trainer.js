@@ -41,7 +41,7 @@ let practiceMode = false;
 let expectedPracticeIndex = 0;
 
 const keyboard = createPianoKeyboard(el.keyboard, {
-  lowestMidi: 60, octaves: 2, activeNote: null, tonicPitchClass: 0,
+  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, tonicPitchClass: 0,
   showLabels: true, clickableWhite: false, clickableBlack: false,
 });
 
@@ -64,8 +64,7 @@ function rebuildSequence() {
   el.progress.style.width = '0%';
   el.tableTitle.textContent = `${key.displayName} chromatic scale — ${directionLabelText()}`;
 
-  const lowestMidi = 12 * (octave + 1);
-  keyboard.update({ lowestMidi, octaves: 2, activeNote: null, tonicPitchClass: Number(el.key.value) });
+  keyboard.update({ activeNote: null, tonicPitchClass: Number(el.key.value) });
 
   renderTable();
 }
@@ -92,8 +91,6 @@ async function playSequence() {
 
   const bpm = Number(el.tempo.value);
   const noteDurationMs = 60000 / bpm;
-  const octave = Number(el.octave.value);
-  const lowestMidi = 12 * (octave + 1);
   const tonicPitchClass = Number(el.key.value);
 
   for (let i = 0; i < sequence.length; i++) {
@@ -102,7 +99,7 @@ async function playSequence() {
     el.currentSolfa.textContent = currentStep.solfa;
     el.currentNote.textContent = currentStep.noteName;
     el.progress.style.width = `${((i + 1) * 100) / sequence.length}%`;
-    keyboard.update({ lowestMidi, octaves: 2, activeNote: currentStep.midiNote, tonicPitchClass });
+    keyboard.update({ activeNote: currentStep.midiNote, tonicPitchClass });
     highlightRow(currentStep.midiNote);
 
     midi.playNote(el.output.value || null, currentStep.midiNote, Math.round(noteDurationMs * 0.9));
