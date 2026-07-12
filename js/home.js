@@ -6,8 +6,8 @@ const midi = new AudioEngine();
 let lastActive = null;
 
 const keyboard = createPianoKeyboard(document.getElementById('hero-keyboard'), {
-  lowestMidi: 48,
-  octaves: 3,
+  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI,
+  octaves: FULL_KEYBOARD_OCTAVES,
   activeNote: null,
   tonicPitchClass: 0,
   showLabels: true,

@@ -564,12 +564,15 @@ button:focus-visible,
   width: 100%;
   display: flex;
   justify-content: center;
+  overflow-x: auto;
+  padding-bottom: 6px;
 }
 
 .piano-inner {
   position: relative;
   width: 100%;
-  max-width: 760px;
+  min-width: 1180px; /* keeps all 8 octaves of keys legible/tappable; scrolls on narrow screens */
+  max-width: 1600px;
 }
 
 .piano-svg {

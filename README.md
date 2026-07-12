@@ -12,6 +12,12 @@ shared styling, and a shared audio/MIDI engine. It uses **plain JavaScript
 only** — no Blazor, no Radzen components, no build step, and no external
 JavaScript framework.
 
+Every lesson displays notes on the same full **8-octave keyboard (C0–C8)**
+rather than a lesson-specific zoomed-in slice, so learners can always see
+where a note sits on a real, full-size piano. This applies to every guided
+trainer, flashcard quiz, improvisation demo, and learn-tab keyboard across
+all lessons — current and future.
+
 ## Lessons
 
 | # | Lesson | What it teaches |
@@ -96,7 +102,7 @@ PianoNoteTrainers/
 │  ├─ nav.js                    # Shared responsive navigation bar
 │  ├─ tabs.js                   # Shared tab / segmented-control helper
 │  ├─ audio-engine.js           # Shared WebAudio synth + Web MIDI wrapper
-│  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer
+│  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer (fixed 8-octave range, C0–C8, on every lesson)
 │  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major chords)
 │  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader
 │  ├─ midi-data.js              # Base64-embedded improvisation-demo MIDI data (major + Dorian + Phrygian)
@@ -142,8 +148,13 @@ tablets, and desktops:
 
 - The top navigation collapses into a hamburger menu below 760px wide.
 - Form controls wrap and resize on narrow screens.
-- The piano keyboard is an SVG that scales to its container width, so it
-  stays legible from small phones up to wide desktop monitors.
+- The piano keyboard is an SVG that always renders the **full 8-octave
+  range (C0–C8)**, on every lesson, so learners always see where a note
+  sits on a real, full-size keyboard rather than a lesson-specific zoomed-in
+  slice. On narrower screens the keyboard scrolls horizontally instead of
+  shrinking keys down to an unreadable size — the keyboard container has a
+  minimum width that keeps keys and labels legible and tappable, with
+  `overflow-x: auto` so you can scroll to any register.
 
 ## Credits
 

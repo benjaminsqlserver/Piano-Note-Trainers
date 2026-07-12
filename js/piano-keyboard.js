@@ -7,6 +7,13 @@
 // tapping keys — on white keys only, or on every key, depending on the
 // lesson.
 
+// Shared full-keyboard span used by every trainer so the on-screen piano
+// always shows a consistent 8-octave range (C0-C8) instead of a lesson-
+// specific zoomed-in slice. Individual trainers reference these instead of
+// hard-coding their own lowestMidi/octaves values.
+const FULL_KEYBOARD_LOWEST_MIDI = 12; // C0
+const FULL_KEYBOARD_OCTAVES = 8; // C0 - C8
+
 const WHITE_KEY_WIDTH = 34;
 const BLACK_KEY_WIDTH = 20;
 const IS_BLACK_KEY = [false, true, false, true, false, false, true, false, true, false, true, false];

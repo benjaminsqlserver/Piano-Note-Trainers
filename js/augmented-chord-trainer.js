@@ -41,7 +41,7 @@ let learnTriad = [];
 let learnStepIndex = 0;
 
 const learnKeyboard = createPianoKeyboard(lc.keyboard, {
-  lowestMidi: 12 * (LEARN_OCTAVE + 1), octaves: 1, activeNote: null, activeNotes: [], tonicPitchClass: 0,
+  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, activeNotes: [], tonicPitchClass: 0,
   showLabels: true, clickableWhite: false, clickableBlack: false,
 });
 
@@ -133,7 +133,7 @@ const cf = {
 };
 
 const cfKeyboard = createPianoKeyboard(cf.keyboard, {
-  lowestMidi: 48, octaves: 2, activeNote: null, activeNotes: [], tonicPitchClass: 0,
+  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, activeNotes: [], tonicPitchClass: 0,
   showLabels: true, clickableWhite: false, clickableBlack: false,
 });
 
@@ -237,7 +237,7 @@ chordKeys.forEach((k, i) => {
 });
 
 const cpKeyboard = createPianoKeyboard(cp.keyboard, {
-  lowestMidi: 48, octaves: 2, activeNote: null, activeNotes: [], tonicPitchClass: 0,
+  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, activeNotes: [], tonicPitchClass: 0,
   showLabels: true, clickableWhite: false, clickableBlack: false,
 });
 

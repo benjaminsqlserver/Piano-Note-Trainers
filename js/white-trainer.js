@@ -63,7 +63,7 @@ let practiceMode = false;
 let expectedPracticeIndex = 0;
 
 const keyboard = createPianoKeyboard(el.keyboard, {
-  lowestMidi: 60, octaves: 2, activeNote: null, tonicPitchClass: 0,
+  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, tonicPitchClass: 0,
   showLabels: true, clickableWhite: false, clickableBlack: false,
 });
 
@@ -87,9 +87,7 @@ function rebuildSequence() {
   el.progress.style.width = '0%';
   el.tableTitle.textContent = `White keys from ${note.letter}${octave} — ${directionLabelText()}`;
 
-  const lowestMidi = 12 * (octave + 1);
-  const octaves = Math.max(2, span + 1);
-  keyboard.update({ lowestMidi, octaves, activeNote: null, tonicPitchClass: note.semitoneFromC });
+  keyboard.update({ activeNote: null, tonicPitchClass: note.semitoneFromC });
 
   renderTable();
 }
@@ -116,9 +114,6 @@ async function playSequence() {
 
   const bpm = Number(el.tempo.value);
   const noteDurationMs = 60000 / bpm;
-  const octave = Number(el.octave.value);
-  const lowestMidi = 12 * (octave + 1);
-  const span = Number(el.span.value);
 
   for (let i = 0; i < sequence.length; i++) {
     if (stopRequested) break;
@@ -126,7 +121,7 @@ async function playSequence() {
     el.currentLetter.textContent = currentStep.letter;
     el.currentLabel.textContent = `${currentStep.letter}${currentStep.octave}`;
     el.progress.style.width = `${((i + 1) * 100) / sequence.length}%`;
-    keyboard.update({ lowestMidi, octaves: Math.max(2, span + 1), activeNote: currentStep.midiNote, tonicPitchClass: noteOptions[Number(el.note.value)].semitoneFromC });
+    keyboard.update({ activeNote: currentStep.midiNote, tonicPitchClass: noteOptions[Number(el.note.value)].semitoneFromC });
     highlightRow(currentStep.midiNote);
 
     midi.playNote(el.output.value || null, currentStep.midiNote, Math.round(noteDurationMs * 0.9));
@@ -223,7 +218,7 @@ QUIZ_LETTERS.forEach((letter) => {
 });
 
 const quizKeyboard = createPianoKeyboard(el.quizKeyboard, {
-  lowestMidi: 48, octaves: 3, activeNote: null, tonicPitchClass: null,
+  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, tonicPitchClass: null,
   showLabels: false, clickableWhite: false, clickableBlack: false,
   onKeyClick: (midiNote) => onQuizKeyClicked(midiNote),
 });
@@ -253,10 +248,7 @@ function nextQuestion() {
   el.quizLetter.textContent = quizTarget.letter;
   document.querySelectorAll('#wt-quiz-letters .letter-btn').forEach((b) => { b.disabled = false; b.classList.remove('is-active'); });
 
-  const lowestMidi = 12 * (minOct + 1);
-  const octaves = Math.max(1, maxOct - minOct + 1);
   quizKeyboard.update({
-    lowestMidi, octaves,
     activeNote: quizMode === 'name' ? quizTarget.midiNote : null,
     showLabels: revealLabels,
     clickableWhite: quizMode === 'find',
