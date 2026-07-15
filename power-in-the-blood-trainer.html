@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>There Is Power in the Blood — Song Trainer — Piano Note Trainers</title>
+<meta name="description" content="Learn to play the gospel hymn 'There Is Power in the Blood' with a right-hand melody and a left-hand accompaniment of major and minor triads, in all 12 keys, on the full 8-octave keyboard." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="power-in-the-blood">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 12 · All 12 keys</div>
+    <h1>There Is Power in the Blood — Song Trainer</h1>
+    <p>Put major and minor triads to work on a real song: the classic gospel hymn "There Is Power in the Blood" (Lewis E. Jones, 1899). The right hand plays the hymn's own melody; the left hand plays a brand-new accompaniment built from simple major and minor chords — practiced together, in every one of the 12 keys.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="learn" role="tab" aria-selected="true">Learn</button>
+    <button type="button" data-tab="player" role="tab" aria-selected="false">Song Player</button>
+  </div>
+
+  <!-- ===================== LEARN ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="learn">
+    <div class="stack">
+
+      <div class="card">
+        <h3 style="font-size:1.1rem;">Two hands, two jobs</h3>
+        <p>This lesson splits the keyboard between your two hands, the way most hymn and gospel piano playing works:</p>
+        <ol style="margin:0.75rem 0 0.75rem 1.25rem; padding:0; line-height:1.7;">
+          <li><strong>Right hand — the melody.</strong> This is the hymn's own tune, sung by the soprano line in the original 1899 hymnal, note for note.</li>
+          <li><strong>Left hand — the chords.</strong> A new accompaniment of simple, closed-position <strong>root-position triads</strong> (root, 3rd, 5th stacked together) — no sevenths, no inversions — so the shapes stay easy to find under your hand.</li>
+        </ol>
+        <div class="alert alert-info">
+          The original 1899 hymn (in the key of B♭ major) is harmonized almost entirely with just three <strong>major</strong> chords: I, IV, and V. This lesson keeps that harmony where it already works well, but swaps a few of the repeated tonic (I) chords for its <strong>relative minor (vi)</strong> and, once, for the <strong>supertonic minor (ii)</strong> — so you get real practice moving between major and minor triads under the same familiar melody, not just a plain I-IV-V loop.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">The chord chart</h3>
+        <p style="margin-top:0;">Every left-hand chord in the arrangement, in order, for whichever key you're practicing in. <span class="pill pill-major">Gold</span> chords are major triads, <span class="pill pill-minor">blue</span> chords are minor triads.</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="pb-learn-key">Key</label>
+            <select id="pb-learn-key"></select>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Function</th><th>Chord</th><th>Notes (root – 3rd – 5th)</th></tr></thead>
+            <tbody id="pb-learn-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">About the hymn</h3>
+        <p style="margin-top:0;">"There Is Power in the Blood" was written — words and music both — by Lewis E. Jones in 1899 at a camp meeting in Mountain Lake Park, Maryland, and first published that same year. It's long been in the public domain and remains one of the most widely sung gospel hymns, opening with the line "Would you be free from the burden of sin?"</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SONG PLAYER ===================== -->
+  <section class="tabpanel" data-tabpanel="player">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Pick a key and press Play to hear the full two-hand arrangement — right-hand melody and left-hand chords together — through the built-in synth or a connected MIDI device, highlighted on the keyboard as it plays.</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="sp-key">Key</label>
+            <select id="sp-key"></select>
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="sp-tempo">Playback speed: <span id="sp-tempo-value">100</span>%</label>
+            <input type="range" id="sp-tempo" min="50" max="150" value="100" />
+          </div>
+          <div class="field">
+            <label for="sp-output">Sound output</label>
+            <select id="sp-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="sp-play">▶ Play song</button>
+          <button class="btn btn-danger" id="sp-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="hand-legend">
+          <span class="hand-legend__item"><span class="hand-legend__swatch hand-legend__swatch--melody"></span> Right hand (melody)</span>
+          <span class="hand-legend__item"><span class="hand-legend__swatch hand-legend__swatch--chord"></span> Left hand (chords)</span>
+        </div>
+
+        <div class="alert alert-warning" id="sp-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+        <div class="alert alert-danger" id="sp-load-error" style="display:none;"></div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="sp-key-label">Key of C</div>
+        <div class="now-playing__value" id="sp-current-melody">—</div>
+        <div class="now-playing__sub" id="sp-current-chord"></div>
+        <div class="progress"><div class="progress__bar" id="sp-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="sp-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Left-hand chord chart in this key</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Chord</th><th>Notes</th><th>Starts at</th></tr></thead>
+            <tbody id="sp-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/midi-file-reader.js"></script>
+<script src="js/midi-data.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/power-in-the-blood-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

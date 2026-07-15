@@ -598,7 +598,44 @@ button:focus-visible,
   fill: var(--good);
 }
 
+/* Two-hand highlighting (Power in the Blood Song Trainer and any future
+   lesson that plays a right-hand melody and a left-hand chord together):
+   melody notes light up brass/gold, chord notes light up blue, so a
+   learner can see at a glance which hand plays which key. */
+.piano-key-melody.piano-key-white,
+.piano-key-melody.piano-key-black {
+  fill: var(--brass-bright);
+}
+
+.piano-key-chord.piano-key-white,
+.piano-key-chord.piano-key-black {
+  fill: var(--info);
+}
+
 .piano-key-clickable { cursor: pointer; }
+
+.hand-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--ivory-dim);
+  margin: 0.5rem 0 0;
+}
+
+.hand-legend__item { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+.hand-legend__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+  flex: none;
+}
+
+.hand-legend__swatch--melody { background: var(--brass-bright); }
+.hand-legend__swatch--chord { background: var(--info); }
 
 .piano-key-label {
   position: absolute;
@@ -646,6 +683,20 @@ table.data-table {
 }
 
 .data-table tr.is-current td { background: #f1e2b3; }
+
+.data-table tr.is-minor-row td { background: #eef3f9; }
+
+.pill {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.pill-major { background: #f1e2b3; color: #6b551a; }
+.pill-minor { background: #dcebf8; color: #17456b; }
 
 /* ================================= Tabs ================================= */
 
