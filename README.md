@@ -31,6 +31,9 @@ all lessons — current and future.
 | 7 | **Phrygian Scale** (`phrygian-scale-trainer.html`) | The Phrygian mode (natural minor with a lowered 2nd) in all 12 keys, plus an Improvisation Demo tab that plays a short, original scale-based melodic pattern from a real MIDI file in each key |
 | 8 | **Major Chords** (`major-chord-trainer.html`) | How a major triad is built by counting semitones (root, +4 to the 3rd, +3 more to the 5th), plus two MIDI exercises: all 12 major chords around the circle of fourths, and a pleasant I‑IV‑V‑I chord progression played in every key |
 | 9 | **Minor Chords** (`minor-chord-trainer.html`) | How a minor triad is built by counting semitones (root, +3 to the 3rd, +4 more to the 5th), plus two MIDI exercises: all 12 minor chords around the circle of fourths, and a pleasant i‑iv‑v‑i chord progression (built from the natural minor scale) played in every key |
+| 10 | **Augmented Chords** (`augmented-chord-trainer.html`) | How an augmented triad is built by counting semitones (root, +4 to the 3rd, +4 more to the raised 5th), plus MIDI exercises played in every key |
+| 11 | **Diminished Chords** (`diminished-chord-trainer.html`) | How a diminished triad is built by counting semitones (root, +3 to the 3rd, +3 more to the lowered 5th), plus two MIDI exercises: all 12 diminished chords around the circle of fourths, and a I‑IV‑♯ivdim‑V progression in every key |
+| 12 | **Power in the Blood — Song Trainer** (`power-in-the-blood-trainer.html`) | The classic gospel hymn "There Is Power in the Blood" (Lewis E. Jones, 1899) arranged for two hands: the hymn's real melody in the right hand, and a new left-hand accompaniment mixing major and minor triads (I, ii, IV, V, vi), played from a real two-channel MIDI file in every key |
 
 Each lesson page includes:
 
@@ -79,6 +82,21 @@ Each lesson page includes:
   progression built from each key's natural (Aeolian) minor scale — which
   is what keeps the v chord minor instead of major — in a chosen key or
   cycled through all 12 keys.
+- The Augmented and Diminished Chords lessons follow the same Learn +
+  Circle of Fourths + Chord Progression pattern as the Major and Minor
+  Chords lessons, for augmented (root, +4, +4) and diminished
+  (root, +3, +3) triads respectively.
+- The **Power in the Blood — Song Trainer** lesson is the first lesson
+  built around a real song rather than a scale or chord shape. Its **Learn**
+  tab explains the two-hand split (right hand = melody, left hand = chords)
+  and shows the full left-hand chord chart, color-coded major vs. minor, for
+  any of the 12 keys. Its **Song Player** tab loads a purpose-built,
+  two-channel MIDI file for the chosen key (right-hand melody on channel 0,
+  left-hand chords on channel 1) through the same dependency-free MIDI file
+  reader the scale lessons use, then plays both hands together — through
+  the built-in synth or a connected MIDI device — highlighting the melody
+  and chord notes in different colors on the keyboard as they sound, with
+  an adjustable playback-speed slider.
 
 The home page (`index.html`) is a landing page with an interactive
 hero keyboard and cards linking to each lesson.
@@ -96,6 +114,10 @@ PianoNoteTrainers/
 ├─ dorian-scale-trainer.html    # Lesson 6
 ├─ phrygian-scale-trainer.html  # Lesson 7
 ├─ major-chord-trainer.html     # Lesson 8
+├─ minor-chord-trainer.html     # Lesson 9
+├─ augmented-chord-trainer.html # Lesson 10
+├─ diminished-chord-trainer.html # Lesson 11
+├─ power-in-the-blood-trainer.html # Lesson 12
 ├─ css/
 │  └─ styles.css                # Shared, responsive design system
 ├─ js/
@@ -103,9 +125,9 @@ PianoNoteTrainers/
 │  ├─ tabs.js                   # Shared tab / segmented-control helper
 │  ├─ audio-engine.js           # Shared WebAudio synth + Web MIDI wrapper
 │  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer (fixed 8-octave range, C0–C8, on every lesson)
-│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major chords)
-│  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader
-│  ├─ midi-data.js              # Base64-embedded improvisation-demo MIDI data (major + Dorian + Phrygian)
+│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major/minor/augmented/diminished chords)
+│  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader (tags each note with its source MIDI channel)
+│  ├─ midi-data.js              # Base64-embedded improvisation-demo + song MIDI data (major + Dorian + Phrygian + Power in the Blood)
 │  ├─ home.js                   # Home page hero keyboard
 │  ├─ white-trainer.js          # Lesson 1 page logic
 │  ├─ accidental-trainer.js     # Shared logic for Lessons 2 & 3 (sharp/flat)
@@ -113,8 +135,12 @@ PianoNoteTrainers/
 │  ├─ major-scale-trainer.js    # Lesson 5 page logic (guided trainer + improvisation demo)
 │  ├─ dorian-scale-trainer.js   # Lesson 6 page logic (guided trainer + improvisation demo)
 │  ├─ phrygian-scale-trainer.js # Lesson 7 page logic (guided trainer + improvisation demo)
-│  └─ major-chord-trainer.js    # Lesson 8 page logic (learn tab + circle-of-fourths & chord-progression MIDI exercises)
-├─ midi/                        # Sample MIDI files for Lessons 5, 6 & 7's Improvisation Demos (one per key each)
+│  ├─ major-chord-trainer.js    # Lesson 8 page logic (learn tab + circle-of-fourths & chord-progression MIDI exercises)
+│  ├─ minor-chord-trainer.js    # Lesson 9 page logic
+│  ├─ augmented-chord-trainer.js # Lesson 10 page logic
+│  ├─ diminished-chord-trainer.js # Lesson 11 page logic
+│  └─ power-in-the-blood-trainer.js # Lesson 12 page logic (learn tab + two-hand Song Player)
+├─ midi/                        # Sample MIDI files for Lessons 5-7 & 12's playback (one per key each; Lesson 12's files each carry melody on channel 0 and chords on channel 1)
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file
 ```

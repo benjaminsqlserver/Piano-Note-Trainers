@@ -41,6 +41,13 @@ const NAV_GROUPS = [
       { page: 'diminished-chord', href: 'diminished-chord-trainer.html', label: 'Diminished Chords' },
     ],
   },
+  {
+    id: 'songs',
+    label: 'Songs',
+    links: [
+      { page: 'power-in-the-blood', href: 'power-in-the-blood-trainer.html', label: 'Power in the Blood' },
+    ],
+  },
 ];
 
 function brandMarkSvg() {

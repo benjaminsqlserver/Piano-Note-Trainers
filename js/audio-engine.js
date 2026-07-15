@@ -10,7 +10,7 @@ class AudioEngine {
     this.midiAccess = null;
     this.midiSupported = false;
     this.audioCtx = null;
-    this.activeOscillators = new Map(); // midiNote -> {osc, gain}
+    this.activeVoices = new Set(); // Set<{osc, gain, stopped}> — one entry per sounding note instance
     this.listeningInput = null;
     this.listeningHandler = null;
 
@@ -86,6 +86,18 @@ class AudioEngine {
     return this.audioCtx;
   }
 
+  /**
+   * Starts one synth voice and returns a handle for it. Each call gets its
+   * own oscillator/gain pair, independent of any other voice — including an
+   * earlier voice still ringing on the exact same MIDI note. This matters
+   * whenever the same pitch can be retriggered before its previous instance
+   * has finished (e.g. a tonic note repeated across a melody and a chord
+   * played close together, as in the Power in the Blood Song Trainer):
+   * without per-voice tracking, the second note-on would silently replace
+   * the first in a shared "note number -> oscillator" map, and the first
+   * oscillator's own stop timer — now pointing at the wrong voice — would
+   * never get called, leaving it stuck sounding indefinitely.
+   */
   _synthNoteOn(midiNote, velocity) {
     const ctx = this._ensureAudioContext();
     const osc = ctx.createOscillator();
@@ -97,19 +109,21 @@ class AudioEngine {
     gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.015);
     osc.connect(gain).connect(ctx.destination);
     osc.start();
-    this.activeOscillators.set(midiNote, { osc, gain });
+    const voice = { osc, gain, stopped: false };
+    this.activeVoices.add(voice);
+    return voice;
   }
 
-  _synthNoteOff(midiNote) {
-    const entry = this.activeOscillators.get(midiNote);
-    if (!entry) return;
+  _synthNoteOff(voice) {
+    if (!voice || voice.stopped) return;
+    voice.stopped = true;
     const ctx = this._ensureAudioContext();
-    const { osc, gain } = entry;
+    const { osc, gain } = voice;
     gain.gain.cancelScheduledValues(ctx.currentTime);
     gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
     gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.08);
     osc.stop(ctx.currentTime + 0.09);
-    this.activeOscillators.delete(midiNote);
+    this.activeVoices.delete(voice);
   }
 
   _getOutputById(deviceId) {
@@ -126,8 +140,8 @@ class AudioEngine {
       output.send([0x90, midiNote, velocity]);
       setTimeout(() => output.send([0x80, midiNote, 0]), durationMs);
     } else {
-      this._synthNoteOn(midiNote, velocity);
-      setTimeout(() => this._synthNoteOff(midiNote), durationMs);
+      const voice = this._synthNoteOn(midiNote, velocity);
+      setTimeout(() => this._synthNoteOff(voice), durationMs);
     }
   }
 
@@ -136,8 +150,8 @@ class AudioEngine {
     if (output) {
       for (let n = 0; n < 128; n++) output.send([0x80, n, 0]);
     }
-    for (const midiNote of Array.from(this.activeOscillators.keys())) {
-      this._synthNoteOff(midiNote);
+    for (const voice of Array.from(this.activeVoices)) {
+      this._synthNoteOff(voice);
     }
   }
 

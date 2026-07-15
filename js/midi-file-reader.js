@@ -2,8 +2,13 @@
 // A small, dependency-free Standard MIDI File (SMF) reader. Fetches a .mid
 // file and parses it into a flat, time-ordered list of notes the way the
 // rest of this app already thinks about playback (midiNote / startMs /
-// durationMs / velocity) — the same shape the guided trainers build by hand
-// in music-services.js, just sourced from a real MIDI file instead.
+// durationMs / velocity / channel) — the same shape the guided trainers
+// build by hand in music-services.js, just sourced from a real MIDI file
+// instead. The `channel` field lets a caller distinguish separate voices
+// encoded on different MIDI channels within the same file (e.g. the Power
+// in the Blood Song Trainer's right-hand melody on channel 0 vs its
+// left-hand chords on channel 1) without changing the shape existing
+// callers already rely on.
 //
 // Supports format 0 and format 1 files, running status, tempo meta events
 // (including tempo changes mid-track), and ignores sysex/other meta events.
@@ -110,6 +115,7 @@ function parseMidiFile(arrayBuffer) {
                 startMs: start.startMs,
                 durationMs: Math.max(20, msElapsed - start.startMs),
                 velocity: start.velocity,
+                channel,
               });
               activeNotes.delete(key);
             }

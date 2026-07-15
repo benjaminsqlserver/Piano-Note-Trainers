@@ -34,6 +34,12 @@ function pitchClass(midi) {
  *   activeNotes       {number[]|null} multiple MIDI notes to highlight at
  *                      once (e.g. all the tones of a chord); combined with
  *                      activeNote if both are supplied
+ *   melodyNotes       {number[]|null} MIDI notes to tint as the right-hand
+ *                      melody (a distinct color from activeNotes) — used by
+ *                      two-hand lessons like the Power in the Blood Song
+ *                      Trainer to show melody and chords differently
+ *   chordNotes        {number[]|null} MIDI notes to tint as the left-hand
+ *                      chord, paired with melodyNotes above
  *   tonicPitchClass   {number|null} pitch class (0-11) to tint as the tonic
  *   showLabels        {boolean} whether to draw note-name labels
  *   pitchClassLabels  {Object<number,string>|null} maps pitch class -> label
@@ -99,16 +105,22 @@ function createPianoKeyboard(container, options) {
       const clickable = isBlack ? state.clickableBlack : state.clickableWhite;
       if (clickable) cls += ' piano-key-clickable';
       const pc = pitchClass(midi);
+      const isMelody = Array.isArray(state.melodyNotes) && state.melodyNotes.includes(midi);
+      const isChord = Array.isArray(state.chordNotes) && state.chordNotes.includes(midi);
       const isActive = state.activeNote === midi || (Array.isArray(state.activeNotes) && state.activeNotes.includes(midi));
-      if (isActive) cls += ' piano-key-active';
+      if (isMelody) cls += ' piano-key-melody';
+      else if (isChord) cls += ' piano-key-chord';
+      else if (isActive) cls += ' piano-key-active';
       else if (state.tonicPitchClass != null && pc === state.tonicPitchClass) cls += ' piano-key-tonic';
       return cls;
     };
 
     const labelClass = (midi, isBlack) => {
       let cls = isBlack ? 'piano-key-label piano-key-label-black' : 'piano-key-label';
+      const isMelody = Array.isArray(state.melodyNotes) && state.melodyNotes.includes(midi);
+      const isChord = Array.isArray(state.chordNotes) && state.chordNotes.includes(midi);
       const isActive = state.activeNote === midi || (Array.isArray(state.activeNotes) && state.activeNotes.includes(midi));
-      if (isActive) cls += ' piano-key-label-active';
+      if (isMelody || isChord || isActive) cls += ' piano-key-label-active';
       return cls;
     };
 
