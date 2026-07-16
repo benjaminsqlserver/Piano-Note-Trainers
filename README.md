@@ -34,6 +34,12 @@ all lessons — current and future.
 | 10 | **Augmented Chords** (`augmented-chord-trainer.html`) | How an augmented triad is built by counting semitones (root, +4 to the 3rd, +4 more to the raised 5th), plus MIDI exercises played in every key |
 | 11 | **Diminished Chords** (`diminished-chord-trainer.html`) | How a diminished triad is built by counting semitones (root, +3 to the 3rd, +3 more to the lowered 5th), plus two MIDI exercises: all 12 diminished chords around the circle of fourths, and a I‑IV‑♯ivdim‑V progression in every key |
 | 12 | **Power in the Blood — Song Trainer** (`power-in-the-blood-trainer.html`) | The classic gospel hymn "There Is Power in the Blood" (Lewis E. Jones, 1899) arranged for two hands: the hymn's real melody in the right hand, and a new left-hand accompaniment mixing major and minor triads (I, ii, IV, V, vi), played from a real two-channel MIDI file in every key |
+| 13 | **Dominant 7th Chords** (`dominant-seventh-chord-trainer.html`) | How every dominant 7th chord is built by counting semitones (root, +4 to the 3rd, +3 more to the 5th, +3 more to the ♭7th), plus two MIDI exercises: all 12 dominant 7th chords around the circle of fourths, and a classic blues-style I7‑IV7‑V7‑I7 turnaround in every key |
+| 14 | **Diminished 7th Chords** (`diminished-seventh-chord-trainer.html`) | How every fully-diminished 7th chord is built from three stacked minor 3rds (root, +3, +3, +3), plus two MIDI exercises: all 12 diminished 7th chords around the circle of fourths, and a I‑V7‑vii°7‑I cadence — showing how the diminished 7th functions as a dominant substitute — in every key |
+| 15 | **Minor 7th Chords** (`minor-seventh-chord-trainer.html`) | How every minor 7th chord is built by counting semitones (root, +3 to the 3rd, +4 more to the 5th, +3 more to the ♭7th), plus two MIDI exercises: all 12 minor 7th chords around the circle of fourths, and a natural-minor i7‑iv7‑v7‑i7 progression in every key |
+| 16 | **Major 7th Chords** (`major-seventh-chord-trainer.html`) | How every major 7th chord is built by counting semitones (root, +4 to the 3rd, +3 more to the 5th, +4 more to the 7th), plus two MIDI exercises: all 12 major 7th chords around the circle of fourths, and a classic jazz/gospel Imaj7‑vi7‑ii7‑V7 turnaround in every key |
+| 17 | **Half-Diminished 7th Chords** (`half-diminished-seventh-chord-trainer.html`) | How every half-diminished 7th (m7♭5) chord is built from a diminished triad plus a minor 7th (root, +3, +3, +4), plus two MIDI exercises: all 12 half-diminished 7th chords around the circle of fourths, and a I‑V7‑vii°7‑I cadence showing its diatonic leading-tone role, in every key |
+| 18 | **His Eye Is on the Sparrow — Song Trainer** (`his-eye-on-the-sparrow-trainer.html`) | The classic gospel hymn "His Eye Is on the Sparrow" (Civilla D. Martin & Charles H. Gabriel, 1905), played from its real, unaltered source arrangement (melody + accompaniment, both hands, from the original two-channel MIDI file) in every key — the song lesson whose harmony motivated Lessons 13-17, since its arrangement uses all five 7th-chord types they teach (dominant 7th, diminished 7th, minor 7th, major 7th, and half-diminished 7th) |
 
 Each lesson page includes:
 
@@ -97,6 +103,34 @@ Each lesson page includes:
   the built-in synth or a connected MIDI device — highlighting the melody
   and chord notes in different colors on the keyboard as they sound, with
   an adjustable playback-speed slider.
+- The **Dominant 7th**, **Diminished 7th**, **Minor 7th**, **Major 7th**, and
+  **Half-Diminished 7th Chords** lessons all follow the same Learn + Circle
+  of Fourths + Chord Progression pattern as the Major, Minor, Augmented,
+  and Diminished Chords lessons, but for 4-note chords instead of 3-note
+  triads: dominant 7th (root, +4, +3, +3), fully-diminished 7th (root, +3,
+  +3, +3), minor 7th (root, +3, +4, +3), major 7th (root, +4, +3, +4), and
+  half-diminished 7th (root, +3, +3, +4). Each Chord Progression exercise
+  showcases its chord in a realistic role: Dominant 7th's is an
+  all-dominant-7th blues turnaround (I7‑IV7‑V7‑I7); Minor 7th's is the
+  natural-minor mirror (i7‑iv7‑v7‑i7); Diminished 7th's and Half-Diminished
+  7th's are deliberately parallel mixed-quality cadences
+  (I‑V7‑vii°7‑I vs. I‑V7‑vii&#248;7‑I) contrasting the chromatically-borrowed
+  fully-diminished leading-tone chord with the scale's own diatonic
+  half-diminished one; and Major 7th's is a classic jazz/gospel
+  circle-of-fifths turnaround (Imaj7‑vi7‑ii7‑V7). These five lessons exist
+  because the His Eye Is on the Sparrow Song Trainer's real hymn
+  arrangement uses all five chord types and this app hadn't taught any of
+  them yet.
+- The **His Eye Is on the Sparrow — Song Trainer** lesson follows the same
+  two-tab pattern as Power in the Blood, but keeps the source hymn
+  arrangement completely unaltered (melody *and* accompaniment both taken
+  note-for-note from the original two-channel MIDI file, only transposed
+  into each of the 12 keys) rather than re-harmonizing the accompaniment
+  from scratch. Its **Learn** tab shows a harmonic analysis of that
+  unaltered arrangement — a chord chart spanning major, minor, and all
+  five 7th-chord qualities taught in Lessons 13-17, color-coded by
+  quality — and its **Song Player** tab plays both hands together exactly
+  as Power in the Blood's does.
 
 The home page (`index.html`) is a landing page with an interactive
 hero keyboard and cards linking to each lesson.
@@ -118,6 +152,12 @@ PianoNoteTrainers/
 ├─ augmented-chord-trainer.html # Lesson 10
 ├─ diminished-chord-trainer.html # Lesson 11
 ├─ power-in-the-blood-trainer.html # Lesson 12
+├─ dominant-seventh-chord-trainer.html # Lesson 13
+├─ diminished-seventh-chord-trainer.html # Lesson 14
+├─ minor-seventh-chord-trainer.html # Lesson 15
+├─ major-seventh-chord-trainer.html # Lesson 16
+├─ half-diminished-seventh-chord-trainer.html # Lesson 17
+├─ his-eye-on-the-sparrow-trainer.html # Lesson 18
 ├─ css/
 │  └─ styles.css                # Shared, responsive design system
 ├─ js/
@@ -127,7 +167,7 @@ PianoNoteTrainers/
 │  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer (fixed 8-octave range, C0–C8, on every lesson)
 │  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major/minor/augmented/diminished chords)
 │  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader (tags each note with its source MIDI channel)
-│  ├─ midi-data.js              # Base64-embedded improvisation-demo + song MIDI data (major + Dorian + Phrygian + Power in the Blood)
+│  ├─ midi-data.js              # Base64-embedded improvisation-demo + song MIDI data (major + Dorian + Phrygian + Power in the Blood + His Eye Is on the Sparrow)
 │  ├─ home.js                   # Home page hero keyboard
 │  ├─ white-trainer.js          # Lesson 1 page logic
 │  ├─ accidental-trainer.js     # Shared logic for Lessons 2 & 3 (sharp/flat)
@@ -139,8 +179,14 @@ PianoNoteTrainers/
 │  ├─ minor-chord-trainer.js    # Lesson 9 page logic
 │  ├─ augmented-chord-trainer.js # Lesson 10 page logic
 │  ├─ diminished-chord-trainer.js # Lesson 11 page logic
-│  └─ power-in-the-blood-trainer.js # Lesson 12 page logic (learn tab + two-hand Song Player)
-├─ midi/                        # Sample MIDI files for Lessons 5-7 & 12's playback (one per key each; Lesson 12's files each carry melody on channel 0 and chords on channel 1)
+│  ├─ power-in-the-blood-trainer.js # Lesson 12 page logic (learn tab + two-hand Song Player)
+│  ├─ dominant-seventh-chord-trainer.js # Lesson 13 page logic
+│  ├─ diminished-seventh-chord-trainer.js # Lesson 14 page logic
+│  ├─ minor-seventh-chord-trainer.js # Lesson 15 page logic
+│  ├─ major-seventh-chord-trainer.js # Lesson 16 page logic
+│  ├─ half-diminished-seventh-chord-trainer.js # Lesson 17 page logic
+│  └─ his-eye-on-the-sparrow-trainer.js # Lesson 18 page logic (learn tab + two-hand Song Player)
+├─ midi/                        # Sample MIDI files for Lessons 5-7, 12 & 18's playback (one per key each; Lessons 12 & 18's files each carry melody on channel 0 and chords/accompaniment on channel 1)
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file
 ```

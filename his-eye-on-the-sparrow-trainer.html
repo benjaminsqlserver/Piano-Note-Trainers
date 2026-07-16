@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>His Eye Is on the Sparrow — Song Trainer — Piano Note Trainers</title>
+<meta name="description" content="Play the classic gospel hymn 'His Eye Is on the Sparrow' exactly as arranged, with its real melody and accompaniment (including dominant 7th and diminished 7th chords), in all 12 keys, on the full 8-octave keyboard." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="his-eye-on-the-sparrow">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 18 · All 12 keys</div>
+    <h1>His Eye Is on the Sparrow — Song Trainer</h1>
+    <p>Play the classic gospel hymn "His Eye Is on the Sparrow" (Civilla D. Martin &amp; Charles H. Gabriel, 1905) exactly as originally arranged — right-hand melody, left-hand accompaniment, unaltered — in every one of the 12 keys. This arrangement goes beyond the plain major and minor triads of earlier lessons, so it's a great place to hear five 7th-chord colors in real musical context: the dominant 7th, diminished 7th, minor 7th, major 7th, and half-diminished 7th.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="learn" role="tab" aria-selected="true">Learn</button>
+    <button type="button" data-tab="player" role="tab" aria-selected="false">Song Player</button>
+  </div>
+
+  <!-- ===================== LEARN ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="learn">
+    <div class="stack">
+
+      <div class="card">
+        <h3 style="font-size:1.1rem;">Two hands, exactly as written</h3>
+        <p>Unlike the Power in the Blood Song Trainer (which re-harmonized its left hand from scratch), this lesson changes <strong>nothing</strong> about the original hymn arrangement — only its key:</p>
+        <ol style="margin:0.75rem 0 0.75rem 1.25rem; padding:0; line-height:1.7;">
+          <li><strong>Right hand — the melody.</strong> The hymn's own tune, note for note.</li>
+          <li><strong>Left hand — the accompaniment.</strong> The hymn's own accompaniment line, note for note.</li>
+        </ol>
+        <div class="alert alert-info">
+          The source arrangement was written in the key of D major and harmonizes mostly with the familiar <strong>I, ii, iii, IV, V,</strong> and <strong>vi</strong> triads you already know from earlier lessons. But listen closely and you'll also hear five 4-note chord colors: the <span class="pill pill-dom7">dominant 7th</span> (mostly the V7 chord, adding extra pull toward the tonic), the <span class="pill pill-dim7">diminished 7th</span> (a tense, symmetrical passing chord), the <span class="pill pill-minor">minor 7th</span> (a warm, settled ii7/iii7 color), the <span class="pill pill-major">major 7th</span> (a lush, resting tonic color), and the <span class="pill pill-dim7">half-diminished 7th</span> (the scale's own diatonic leading-tone 7th chord). Each gets its own dedicated lesson: <a href="dominant-seventh-chord-trainer.html">Dominant 7th</a>, <a href="diminished-seventh-chord-trainer.html">Diminished 7th</a>, <a href="minor-seventh-chord-trainer.html">Minor 7th</a>, <a href="major-seventh-chord-trainer.html">Major 7th</a>, and <a href="half-diminished-seventh-chord-trainer.html">Half-Diminished 7th</a> — all worth a visit before or after this one.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">The chord chart</h3>
+        <p style="margin-top:0;">A harmonic analysis of every chord the two hands sound together in the unaltered arrangement, in order, for whichever key you're practicing in. <span class="pill pill-major">Gold</span> = major or major 7th, <span class="pill pill-minor">blue</span> = minor or minor 7th, <span class="pill pill-dom7">orange</span> = dominant 7th, <span class="pill pill-dim7">purple</span> = diminished 7th or half-diminished 7th.</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="hes-learn-key">Key</label>
+            <select id="hes-learn-key"></select>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Function</th><th>Chord</th><th>Notes</th></tr></thead>
+            <tbody id="hes-learn-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">About the hymn</h3>
+        <p style="margin-top:0;">"His Eye Is on the Sparrow" was written in 1905 — words by Civilla D. Martin, music by Charles H. Gabriel — and has been a beloved gospel standard ever since, famously recorded by Ethel Waters, Mahalia Jackson, and many others. It's long been in the public domain, and opens with the line "Why should I feel discouraged, why should the shadows come?"</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SONG PLAYER ===================== -->
+  <section class="tabpanel" data-tabpanel="player">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Pick a key and press Play to hear the full two-hand arrangement — right-hand melody and left-hand accompaniment together — through the built-in synth or a connected MIDI device, highlighted on the keyboard as it plays.</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="sp-key">Key</label>
+            <select id="sp-key"></select>
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="sp-tempo">Playback speed: <span id="sp-tempo-value">100</span>%</label>
+            <input type="range" id="sp-tempo" min="50" max="150" value="100" />
+          </div>
+          <div class="field">
+            <label for="sp-output">Sound output</label>
+            <select id="sp-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="sp-play">▶ Play song</button>
+          <button class="btn btn-danger" id="sp-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="hand-legend">
+          <span class="hand-legend__item"><span class="hand-legend__swatch hand-legend__swatch--melody"></span> Right hand (melody)</span>
+          <span class="hand-legend__item"><span class="hand-legend__swatch hand-legend__swatch--chord"></span> Left hand (accompaniment)</span>
+        </div>
+
+        <div class="alert alert-warning" id="sp-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+        <div class="alert alert-danger" id="sp-load-error" style="display:none;"></div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="sp-key-label">Key of C</div>
+        <div class="now-playing__value" id="sp-current-melody">—</div>
+        <div class="now-playing__sub" id="sp-current-chord"></div>
+        <div class="progress"><div class="progress__bar" id="sp-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="sp-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Chord chart in this key</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Chord</th><th>Notes</th><th>Starts at</th></tr></thead>
+            <tbody id="sp-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/midi-file-reader.js"></script>
+<script src="js/midi-data.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/his-eye-on-the-sparrow-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

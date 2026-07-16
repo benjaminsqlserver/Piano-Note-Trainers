@@ -1048,3 +1048,672 @@ const AugmentedChordService = (() => {
     buildProgression,
   };
 })();
+
+const DominantSeventhChordService = (() => {
+  // A dominant 7th chord is a major triad with one more note stacked on
+  // top — a minor 7th above the root:
+  //   root -> +4 semitones -> major 3rd
+  //   major 3rd -> +3 more semitones (root +7 total) -> perfect 5th
+  //   perfect 5th -> +3 more semitones (root +10 total) -> minor 7th
+  // So every dominant 7th chord, in any of the 12 keys, is just the
+  // pitch-class pattern [0, 4, 7, 10] measured in semitones from its root
+  // -- an ordinary major triad (0, 4, 7) plus a minor 7th on top. It gets
+  // the name "dominant" because it's the chord built on the 5th (dominant)
+  // degree of a major scale once the scale's own 7th degree is added as
+  // the chord's 7th -- V7 is the single most common way a major key
+  // creates the pull back home to its tonic.
+  const INTERVALS_FROM_ROOT = [0, 4, 7, 10];
+  const CHORD_TONE_LABELS = ['Root', 'Major 3rd', 'Perfect 5th', 'Minor 7th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 4 semitones up from the root.',
+    'Count 3 more semitones up from the 3rd (7 semitones from the root).',
+    'Count 3 more semitones up from the 5th (10 semitones from the root) — a minor 7th above the root, not a major 7th.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a dominant 7th chord (root, 3rd, 5th, minor 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  // A 12-bar-blues-style turnaround built entirely from dominant 7th
+  // chords: I7 - IV7 - V7 - I7. Unlike a classical I-IV-V-I (all major
+  // triads), every chord here keeps its bluesy 7th, which is exactly what
+  // gives this progression its bluesy pull rather than a clean classical
+  // cadence -- and it works the same way in every one of the 12 keys.
+  const progression = {
+    id: 'I7-IV7-V7-I7',
+    label: 'I7 – IV7 – V7 – I7',
+    description: 'A classic blues turnaround: the tonic 7th (I7), the subdominant 7th (IV7), the dominant 7th (V7), and home again (I7) — four chords, three of them distinct, and every single one a dominant 7th chord in every one of the 12 keys. This is the harmonic backbone of countless blues, gospel, and early rock \u2019n\u2019 roll progressions.',
+    degrees: [
+      { roman: 'I7', name: 'Tonic 7th', semitoneFromKey: 0 },
+      { roman: 'IV7', name: 'Subdominant 7th', semitoneFromKey: 5 },
+      { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7 },
+      { roman: 'I7', name: 'Tonic 7th', semitoneFromKey: 0 },
+    ],
+  };
+
+  /** Builds the I7-IV7-V7-I7 progression's four chords for `key` at `octave`. */
+  function buildProgression(key, octave, preferFlats) {
+    return progression.degrees.map((degree) => {
+      const degreeKey = {
+        semitoneFromC: key.semitoneFromC + degree.semitoneFromKey,
+        midiNoteForOctave(o) { return key.midiNoteForOctave(o) + degree.semitoneFromKey; },
+      };
+      const notes = buildChord(degreeKey, octave, preferFlats);
+      return {
+        roman: degree.roman,
+        name: degree.name,
+        chordName: `${notes[0].noteName} dominant 7th`,
+        notes,
+      };
+    });
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    progression,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+    buildProgression,
+  };
+})();
+
+const DiminishedSeventhChordService = (() => {
+  // A fully-diminished 7th chord is built by stacking THREE identical
+  // minor-3rd intervals on top of a root:
+  //   root -> +3 semitones -> minor 3rd
+  //   minor 3rd -> +3 more semitones (root +6 total) -> diminished 5th
+  //   diminished 5th -> +3 more semitones (root +9 total) -> diminished 7th
+  // So every diminished 7th chord, in any of the 12 keys, is just the
+  // pitch-class pattern [0, 3, 6, 9] measured in semitones from its root --
+  // three stacked minor 3rds that divide the octave into four exactly
+  // equal parts. That perfect symmetry means a diminished 7th chord is its
+  // own inversion: C-Eb-Gb-A (C dim7), Eb-Gb-A-C (Eb dim7), Gb-A-C-Eb
+  // (Gb/F# dim7), and A-C-Eb-Gb (A dim7) are all made of the exact same
+  // four notes -- there are really only 3 distinct diminished 7th chords
+  // in all of music, each one shared by 4 different "root" names.
+  const INTERVALS_FROM_ROOT = [0, 3, 6, 9];
+  const CHORD_TONE_LABELS = ['Root', 'Minor 3rd', 'Diminished 5th', 'Diminished 7th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 3 semitones up from the root.',
+    'Count 3 more semitones up from the 3rd (6 semitones from the root).',
+    'Count 3 more semitones up from the 5th (9 semitones from the root) — a diminished 7th, one semitone below a minor 7th.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a fully-diminished 7th chord (root, m3rd, dim5th, dim7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  // Quality tables used only by the mixed-quality progression below.
+  const QUALITY_INTERVALS = {
+    major: [0, 4, 7],
+    dominant7: [0, 4, 7, 10],
+    diminished7: [0, 3, 6, 9],
+  };
+  const QUALITY_LABELS = {
+    major: ['Root', 'Major 3rd', 'Perfect 5th'],
+    dominant7: ['Root', 'Major 3rd', 'Perfect 5th', 'Minor 7th'],
+    diminished7: ['Root', 'Minor 3rd', 'Diminished 5th', 'Diminished 7th'],
+  };
+  const QUALITY_SUFFIX = {
+    major: 'major',
+    dominant7: 'dominant 7th',
+    diminished7: 'diminished 7th',
+  };
+
+  function buildChordWithQuality(key, octave, quality, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    const intervals = QUALITY_INTERVALS[quality];
+    const labels = QUALITY_LABELS[quality];
+    return intervals.map((semitone, i) => ({
+      role: labels[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  // A classic cadential use of the diminished 7th: the tonic (I), the
+  // dominant 7th (V7) built on the 5th degree, the fully-diminished 7th
+  // built on the raised leading tone (vii°7), and home again (I). Both V7
+  // and vii°7 are dominant-function chords that want to resolve to the
+  // tonic -- in fact vii°7 shares three of its four notes with V7 (V7's
+  // 3rd, 5th, and 7th are vii°7's root, 3rd, and diminished 5th), which is
+  // exactly why it's often used as a substitute for V7 -- and it works the
+  // same way in every one of the 12 keys.
+  const progression = {
+    id: 'I-V7-viidim7-I',
+    label: 'I – V7 – vii°7 – I',
+    description: 'A classic cadential progression built around the diminished 7th chord\u2019s resolving pull: the tonic (I), the dominant 7th (V7), the fully-diminished 7th chord built on the raised leading tone (vii°7), and home again (I). Only one chord \u2014 vii°7 \u2014 is a diminished 7th; the rest are major and dominant 7th. vii°7 shares three of its four notes with V7 (they\u2019re both \u201cdominant-function\u201d chords that want to resolve to I), which is why it\u2019s often used as a substitute dominant, in every one of the 12 keys.',
+    degrees: [
+      { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+      { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      { roman: 'vii°7', name: 'Leading-tone diminished 7th', semitoneFromKey: 11, quality: 'diminished7' },
+      { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+    ],
+  };
+
+  /** Builds the I-V7-vii°7-I progression's chords for `key` at `octave`. */
+  function buildProgression(key, octave, preferFlats) {
+    return progression.degrees.map((degree) => {
+      const degreeKey = {
+        semitoneFromC: key.semitoneFromC + degree.semitoneFromKey,
+        midiNoteForOctave(o) { return key.midiNoteForOctave(o) + degree.semitoneFromKey; },
+      };
+      const notes = buildChordWithQuality(degreeKey, octave, degree.quality, preferFlats);
+      return {
+        roman: degree.roman,
+        name: degree.name,
+        quality: degree.quality,
+        chordName: `${notes[0].noteName} ${QUALITY_SUFFIX[degree.quality]}`,
+        notes,
+      };
+    });
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    progression,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+    buildProgression,
+  };
+})();
+
+const MinorSeventhChordService = (() => {
+  // A minor 7th chord is a minor triad with one more note stacked on top
+  // -- a minor 7th above the root:
+  //   root -> +3 semitones -> minor 3rd
+  //   minor 3rd -> +4 more semitones (root +7 total) -> perfect 5th
+  //   perfect 5th -> +3 more semitones (root +10 total) -> minor 7th
+  // So every minor 7th chord, in any of the 12 keys, is just the
+  // pitch-class pattern [0, 3, 7, 10] measured in semitones from its root
+  // -- an ordinary minor triad (0, 3, 7) plus a minor 7th on top. It's the
+  // chord you get by stacking a scale's 1st, 3rd, 5th, and 7th degrees on
+  // top of each other whenever that scale's 3rd and 7th are both minor
+  // (lowered a semitone from major) -- which happens naturally on several
+  // degrees of the natural minor scale, and is exactly why it has such a
+  // warm, settled, "resting" sound compared to the more restless dominant
+  // 7th.
+  const INTERVALS_FROM_ROOT = [0, 3, 7, 10];
+  const CHORD_TONE_LABELS = ['Root', 'Minor 3rd', 'Perfect 5th', 'Minor 7th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 3 semitones up from the root.',
+    'Count 4 more semitones up from the 3rd (7 semitones from the root).',
+    'Count 3 more semitones up from the 5th (10 semitones from the root) — a minor 7th above the root.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a minor 7th chord (root, m3rd, 5th, minor 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  // A pleasant, all-minor-7th four-chord progression: i7 - iv7 - v7 - i7,
+  // built from the notes of the natural (Aeolian) minor scale -- the
+  // 7th-chord mirror of MinorChordService's i-iv-v-i. Every 7th chord
+  // stacked on the 1st, 4th, and 5th degrees of a natural minor scale
+  // happens to come out minor 7th (unlike the major scale, where the
+  // equivalent V7 chord would be dominant 7th), so this stays entirely
+  // minor 7th in every one of the 12 keys.
+  const progression = {
+    id: 'i7-iv7-v7-i7',
+    label: 'i7 – iv7 – v7 – i7',
+    description: 'The 7th-chord mirror of the natural-minor i-iv-v-i cadence: the tonic 7th (i7), the subdominant 7th (iv7), the dominant 7th of the natural minor scale (v7 -- minor here, not the dominant 7th you\u2019d get in a major key), and home again (i7) -- four chords, three of them distinct, and every single one a minor 7th chord in every one of the 12 keys, built from the natural (Aeolian) minor scale.',
+    degrees: [
+      { roman: 'i7', name: 'Tonic 7th', semitoneFromKey: 0 },
+      { roman: 'iv7', name: 'Subdominant 7th', semitoneFromKey: 5 },
+      { roman: 'v7', name: 'Minor dominant 7th', semitoneFromKey: 7 },
+      { roman: 'i7', name: 'Tonic 7th', semitoneFromKey: 0 },
+    ],
+  };
+
+  /** Builds the i7-iv7-v7-i7 progression's four chords for `key` at `octave`. */
+  function buildProgression(key, octave, preferFlats) {
+    return progression.degrees.map((degree) => {
+      const degreeKey = {
+        semitoneFromC: key.semitoneFromC + degree.semitoneFromKey,
+        midiNoteForOctave(o) { return key.midiNoteForOctave(o) + degree.semitoneFromKey; },
+      };
+      const notes = buildChord(degreeKey, octave, preferFlats);
+      return {
+        roman: degree.roman,
+        name: degree.name,
+        chordName: `${notes[0].noteName} minor 7th`,
+        notes,
+      };
+    });
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    progression,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+    buildProgression,
+  };
+})();
+
+const MajorSeventhChordService = (() => {
+  // A major 7th chord is a major triad with one more note stacked on top
+  // -- a major 7th above the root:
+  //   root -> +4 semitones -> major 3rd
+  //   major 3rd -> +3 more semitones (root +7 total) -> perfect 5th
+  //   perfect 5th -> +4 more semitones (root +11 total) -> major 7th
+  // So every major 7th chord, in any of the 12 keys, is just the
+  // pitch-class pattern [0, 4, 7, 11] measured in semitones from its root
+  // -- an ordinary major triad (0, 4, 7) plus a major 7th on top, only ONE
+  // semitone below the octave. That's what makes it sound so different
+  // from a dominant 7th (which uses a minor 7th, two semitones below the
+  // octave): instead of pulling hard toward another chord, a major 7th
+  // chord sounds lush, dreamy, and content to stay put -- the signature
+  // color of jazz ballads and soft gospel tonic chords alike.
+  const INTERVALS_FROM_ROOT = [0, 4, 7, 11];
+  const CHORD_TONE_LABELS = ['Root', 'Major 3rd', 'Perfect 5th', 'Major 7th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 4 semitones up from the root.',
+    'Count 3 more semitones up from the 3rd (7 semitones from the root).',
+    'Count 4 more semitones up from the 5th (11 semitones from the root) — a major 7th, just one semitone below the octave.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a major 7th chord (root, 3rd, 5th, major 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  // Quality tables used only by the mixed-quality progression below.
+  const QUALITY_INTERVALS = {
+    major7: [0, 4, 7, 11],
+    minor7: [0, 3, 7, 10],
+    dominant7: [0, 4, 7, 10],
+  };
+  const QUALITY_LABELS = {
+    major7: ['Root', 'Major 3rd', 'Perfect 5th', 'Major 7th'],
+    minor7: ['Root', 'Minor 3rd', 'Perfect 5th', 'Minor 7th'],
+    dominant7: ['Root', 'Major 3rd', 'Perfect 5th', 'Minor 7th'],
+  };
+  const QUALITY_SUFFIX = {
+    major7: 'major 7th',
+    minor7: 'minor 7th',
+    dominant7: 'dominant 7th',
+  };
+
+  function buildChordWithQuality(key, octave, quality, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    const intervals = QUALITY_INTERVALS[quality];
+    const labels = QUALITY_LABELS[quality];
+    return intervals.map((semitone, i) => ({
+      role: labels[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  // A classic jazz "turnaround" built around the major 7th's tonic color:
+  // Imaj7 - vi7 - ii7 - V7. Only the first chord is a major 7th; the rest
+  // are the minor 7th and dominant 7th chords a major scale naturally
+  // produces on its 6th, 2nd, and 5th degrees. This is the same
+  // circle-of-fifths motion (down a 5th each time: I -> vi -> ii -> V)
+  // that powers countless jazz standards and gospel turnarounds, and it
+  // works the same way in every one of the 12 keys.
+  const progression = {
+    id: 'Imaj7-vi7-ii7-V7',
+    label: 'Imaj7 – vi7 – ii7 – V7',
+    description: 'A classic jazz/gospel turnaround built around the major 7th\u2019s lush tonic color: the tonic major 7th (Imaj7), the relative-minor 7th (vi7), the supertonic minor 7th (ii7), and the dominant 7th (V7). Only the first chord \u2014 Imaj7 \u2014 is a major 7th; the rest are the minor 7th and dominant 7th chords a major scale naturally produces on those degrees. Each root moves down a 5th from the last (I \u2192 vi \u2192 ii \u2192 V), the same circle-of-fifths motion behind countless jazz standards, in every one of the 12 keys.',
+    degrees: [
+      { roman: 'Imaj7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'major7' },
+      { roman: 'vi7', name: 'Submediant 7th', semitoneFromKey: 9, quality: 'minor7' },
+      { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+      { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+    ],
+  };
+
+  /** Builds the Imaj7-vi7-ii7-V7 progression's chords for `key` at `octave`. */
+  function buildProgression(key, octave, preferFlats) {
+    return progression.degrees.map((degree) => {
+      const degreeKey = {
+        semitoneFromC: key.semitoneFromC + degree.semitoneFromKey,
+        midiNoteForOctave(o) { return key.midiNoteForOctave(o) + degree.semitoneFromKey; },
+      };
+      const notes = buildChordWithQuality(degreeKey, octave, degree.quality, preferFlats);
+      return {
+        roman: degree.roman,
+        name: degree.name,
+        quality: degree.quality,
+        chordName: `${notes[0].noteName} ${QUALITY_SUFFIX[degree.quality]}`,
+        notes,
+      };
+    });
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    progression,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+    buildProgression,
+  };
+})();
+
+const HalfDiminishedSeventhChordService = (() => {
+  // A half-diminished 7th chord (also written m7♭5) is a diminished triad
+  // with one more note stacked on top -- a minor 7th above the root,
+  // instead of the diminished 7th that makes a FULLY diminished chord:
+  //   root -> +3 semitones -> minor 3rd
+  //   minor 3rd -> +3 more semitones (root +6 total) -> diminished 5th
+  //   diminished 5th -> +4 more semitones (root +10 total) -> minor 7th
+  // So every half-diminished 7th chord, in any of the 12 keys, is just the
+  // pitch-class pattern [0, 3, 6, 10] measured in semitones from its root
+  // -- a diminished triad (0, 3, 6) plus a minor 7th (not a diminished
+  // 7th) on top. "Half"-diminished because only the triad underneath is
+  // diminished; the 7th itself is the ordinary minor 7th, one semitone
+  // higher than the fully-diminished chord's diminished 7th. This is the
+  // chord a major scale naturally builds on its own 7th (leading-tone)
+  // degree -- unlike the fully-diminished 7th, which has to borrow a note
+  // from outside the scale.
+  const INTERVALS_FROM_ROOT = [0, 3, 6, 10];
+  const CHORD_TONE_LABELS = ['Root', 'Minor 3rd', 'Diminished 5th', 'Minor 7th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 3 semitones up from the root.',
+    'Count 3 more semitones up from the 3rd (6 semitones from the root).',
+    'Count 4 more semitones up from the 5th (10 semitones from the root) — a minor 7th, not a diminished 7th.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a half-diminished 7th chord (root, m3rd, dim5th, minor 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  // Quality tables used only by the mixed-quality progression below.
+  const QUALITY_INTERVALS = {
+    major: [0, 4, 7],
+    dominant7: [0, 4, 7, 10],
+    halfDiminished7: [0, 3, 6, 10],
+  };
+  const QUALITY_LABELS = {
+    major: ['Root', 'Major 3rd', 'Perfect 5th'],
+    dominant7: ['Root', 'Major 3rd', 'Perfect 5th', 'Minor 7th'],
+    halfDiminished7: ['Root', 'Minor 3rd', 'Diminished 5th', 'Minor 7th'],
+  };
+  const QUALITY_SUFFIX = {
+    major: 'major',
+    dominant7: 'dominant 7th',
+    halfDiminished7: 'half-diminished 7th',
+  };
+
+  function buildChordWithQuality(key, octave, quality, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    const intervals = QUALITY_INTERVALS[quality];
+    const labels = QUALITY_LABELS[quality];
+    return intervals.map((semitone, i) => ({
+      role: labels[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  // A cadential progression showing the half-diminished 7th chord's own
+  // diatonic home: the tonic (I), the dominant 7th (V7), the
+  // half-diminished 7th chord built on the scale's own leading tone
+  // (viiø7 -- the 7th chord a major scale naturally produces there,
+  // without borrowing any note from outside the scale), and home again
+  // (I). Compare this to the Diminished 7th Chord lesson's I-V7-vii\u00b07-I,
+  // which instead uses the FULLY-diminished, chromatically-borrowed
+  // version of the same leading-tone chord -- the two progressions are
+  // deliberately parallel so you can hear the difference a single
+  // semitone (minor 7th vs. diminished 7th) makes.
+  const progression = {
+    id: 'I-V7-viihalfdim7-I',
+    label: 'I – V7 – vii\u00f87 – I',
+    description: 'A cadential progression showing the half-diminished 7th chord\u2019s own diatonic home: the tonic (I), the dominant 7th (V7), the half-diminished 7th chord built on the scale\u2019s own leading tone (vii\u00f87 -- a chord the major scale produces naturally, without borrowing any note from outside the scale), and home again (I). Compare this to the Diminished 7th Chord lesson\u2019s I-V7-vii\u00b07-I, which instead uses the fully-diminished, chromatically-borrowed version of the same leading-tone chord -- the two progressions are deliberately parallel so you can hear the difference a single semitone makes, in every one of the 12 keys.',
+    degrees: [
+      { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+      { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      { roman: 'vii\u00f87', name: 'Leading-tone half-diminished 7th', semitoneFromKey: 11, quality: 'halfDiminished7' },
+      { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+    ],
+  };
+
+  /** Builds the I-V7-viiø7-I progression's chords for `key` at `octave`. */
+  function buildProgression(key, octave, preferFlats) {
+    return progression.degrees.map((degree) => {
+      const degreeKey = {
+        semitoneFromC: key.semitoneFromC + degree.semitoneFromKey,
+        midiNoteForOctave(o) { return key.midiNoteForOctave(o) + degree.semitoneFromKey; },
+      };
+      const notes = buildChordWithQuality(degreeKey, octave, degree.quality, preferFlats);
+      return {
+        roman: degree.roman,
+        name: degree.name,
+        quality: degree.quality,
+        chordName: `${notes[0].noteName} ${QUALITY_SUFFIX[degree.quality]}`,
+        notes,
+      };
+    });
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    progression,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+    buildProgression,
+  };
+})();
