@@ -39,6 +39,11 @@ const NAV_GROUPS = [
       { page: 'minor-chord', href: 'minor-chord-trainer.html', label: 'Minor Chords' },
       { page: 'augmented-chord', href: 'augmented-chord-trainer.html', label: 'Augmented Chords' },
       { page: 'diminished-chord', href: 'diminished-chord-trainer.html', label: 'Diminished Chords' },
+      { page: 'dominant-seventh-chord', href: 'dominant-seventh-chord-trainer.html', label: 'Dominant 7th Chords' },
+      { page: 'diminished-seventh-chord', href: 'diminished-seventh-chord-trainer.html', label: 'Diminished 7th Chords' },
+      { page: 'minor-seventh-chord', href: 'minor-seventh-chord-trainer.html', label: 'Minor 7th Chords' },
+      { page: 'major-seventh-chord', href: 'major-seventh-chord-trainer.html', label: 'Major 7th Chords' },
+      { page: 'half-diminished-seventh-chord', href: 'half-diminished-seventh-chord-trainer.html', label: 'Half-Diminished 7th Chords' },
     ],
   },
   {
@@ -46,6 +51,7 @@ const NAV_GROUPS = [
     label: 'Songs',
     links: [
       { page: 'power-in-the-blood', href: 'power-in-the-blood-trainer.html', label: 'Power in the Blood' },
+      { page: 'his-eye-on-the-sparrow', href: 'his-eye-on-the-sparrow-trainer.html', label: 'His Eye Is on the Sparrow' },
     ],
   },
 ];

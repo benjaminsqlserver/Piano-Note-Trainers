@@ -697,6 +697,8 @@ table.data-table {
 
 .pill-major { background: #f1e2b3; color: #6b551a; }
 .pill-minor { background: #dcebf8; color: #17456b; }
+.pill-dom7 { background: #f6d9c4; color: #7a3a12; }
+.pill-dim7 { background: #e5dcf3; color: #402a70; }
 
 /* ================================= Tabs ================================= */
 
