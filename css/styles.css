@@ -405,6 +405,14 @@ a { color: inherit; }
   margin-top: 0.35rem;
 }
 
+.progression-blurb {
+  font-weight: 700;
+  color: var(--info);
+  font-size: 1.02rem;
+  line-height: 1.6;
+  padding: 0 0.1rem;
+}
+
 /* ========================== Form controls =============================== */
 
 .controls-row {

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chord Inversions Trainer — Piano Note Trainers</title>
+<meta name="description" content="Learn what chord inversions are and how to build them for every chord type this app teaches, then play 5 jazz and 5 gospel chord progressions in any inversion, in all 12 keys." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="inversions">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 19 · All 12 keys</div>
+    <h1>Chord Inversions Trainer</h1>
+    <p>Learn what a chord inversion is and the different types of inversion, how to build an inversion for every chord type this app has taught so far, and put it all to work with two chord-progression exercises — 5 jazz progressions and 5 gospel progressions — where you choose the inversion and play it in any key or all 12 keys.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="learn" role="tab" aria-selected="true">Learn</button>
+    <button type="button" data-tab="reference" role="tab" aria-selected="false">Exercise 1: All Chord Types</button>
+    <button type="button" data-tab="jazz" role="tab" aria-selected="false">Exercise 2: Jazz Progressions</button>
+    <button type="button" data-tab="gospel" role="tab" aria-selected="false">Exercise 3: Gospel Progressions</button>
+  </div>
+
+  <!-- ===================== LEARN ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="learn">
+    <div class="stack">
+
+      <div class="card">
+        <h3 style="font-size:1.1rem;">What is an inversion?</h3>
+        <p>Every chord you've met so far in this app has been played in <strong>root position</strong> — root on the bottom, then the rest of the chord tones stacked on top in order (3rd, 5th, and for 7th chords, the 7th). An <strong>inversion</strong> keeps the exact same notes — the same pitch classes, the same chord — but reorders them so a <em>different</em> chord tone sits at the bottom, in the bass. Nothing about which notes belong to the chord changes; only which one is lowest changes.</p>
+        <p>You build an inversion by taking the note (or notes) currently at the bottom of the chord and moving them up an octave, one at a time, until the tone you want in the bass is the lowest-sounding note. Because the pitch classes are unchanged, an inverted chord is still named after — and still functions as — the very same chord. A C major triad played as E‑G‑C is still a C major chord; it's just wearing a different "shoe" on the bottom.</p>
+        <div class="alert alert-info">
+          Inversions matter for two big reasons: <strong>smoother voice leading</strong> (moving from one chord to the next with the smallest possible hand movement, instead of leaping around the keyboard for every chord change) and <strong>bass-line control</strong> (choosing exactly which note walks the bass line, rather than always jumping back to the root). Both are essential skills once you start playing real chord progressions instead of isolated chords.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">The types of inversion</h3>
+        <p>A chord has as many inversions as it has notes minus one. Every triad (3 notes: major, minor, augmented, diminished) has a root position plus <strong>2</strong> inversions. Every 7th chord (4 notes: dominant 7th, diminished 7th, minor 7th, major 7th, half-diminished 7th) has a root position plus <strong>3</strong> inversions:</p>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Inversion</th><th>What's in the bass</th><th>Triad example (C‑E‑G)</th><th>7th‑chord example (C‑E‑G‑B♭)</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Root position</strong></td><td>The root</td><td>C – E – G</td><td>C – E – G – B♭</td></tr>
+              <tr><td><strong>1st inversion</strong></td><td>The 3rd</td><td>E – G – C</td><td>E – G – B♭ – C</td></tr>
+              <tr><td><strong>2nd inversion</strong></td><td>The 5th</td><td>G – C – E</td><td>G – B♭ – C – E</td></tr>
+              <tr><td><strong>3rd inversion</strong></td><td>The 7th (7th chords only — a triad has no 7th to invert to)</td><td>—</td><td>B♭ – C – E – G</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="alert alert-warning">
+          Notice the pattern: each inversion just moves the <em>previous</em> bass note up an octave and lets the next chord tone become the new bass note. 1st inversion moves the root up; 2nd inversion moves the root <em>and</em> the 3rd up; 3rd inversion (7th chords only) moves the root, 3rd, <em>and</em> 5th up, leaving the 7th as the lowest note.
+        </div>
+        <p>In written music, an inverted chord is often shown as a <strong>slash chord</strong> — the chord name, a slash, then the bass note. <code>C/E</code> means "a C major chord with E in the bass" (1st inversion); <code>C/G</code> means "a C major chord with G in the bass" (2nd inversion); <code>Cmaj7/B</code> means "a C major 7th chord with B — its 7th — in the bass" (3rd inversion).</p>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Try it: pick a chord type, root, and inversion</h3>
+        <div class="controls-row">
+          <div class="field">
+            <label for="lc-quality">Chord type</label>
+            <select id="lc-quality"></select>
+          </div>
+          <div class="field">
+            <label for="lc-root">Root note</label>
+            <select id="lc-root"></select>
+          </div>
+          <div class="field">
+            <label>Inversion</label>
+            <div class="segmented" data-segmented="lc-inversion">
+              <button type="button" class="is-active" data-value="0">Root</button>
+              <button type="button" data-value="1">1st</button>
+              <button type="button" data-value="2">2nd</button>
+              <button type="button" data-value="3" id="lc-inversion-3">3rd</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="lc-output">Sound output</label>
+            <select id="lc-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+        <div class="actions-row">
+          <button class="btn btn-success" id="lc-play">▶ Play this inversion</button>
+        </div>
+
+        <div class="card now-playing">
+          <div class="eyebrow" id="lc-chord-label">C major</div>
+          <div class="now-playing__value" id="lc-inversion-value">Root position</div>
+          <div class="now-playing__sub" id="lc-notes-sub"></div>
+        </div>
+
+        <div class="card"><div id="lc-keyboard"></div></div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Chord tone</th><th>Note (bottom → top)</th><th>MIDI #</th></tr></thead>
+            <tbody id="lc-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Building inversions for every chord type explored so far</h3>
+        <p>Because every chord in this app is built from the same idea — a stack of intervals counted in semitones from a root — the exact same 3-step recipe builds an inversion for <em>any</em> of them: <strong>(1)</strong> start from root position, <strong>(2)</strong> move the bottom note (or notes) up an octave, <strong>(3)</strong> the note that's now lowest names the inversion. Here's how that recipe applies to every chord type taught so far:</p>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Chord type</th><th>Semitone pattern</th><th>Root position (from C)</th><th>1st inversion</th><th>2nd inversion</th><th>3rd inversion</th></tr></thead>
+            <tbody id="lc-recipe-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 1: ALL CHORD TYPES ===================== -->
+  <section class="tabpanel" data-tabpanel="reference">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">This is a quick-reference and ear-training exercise: pick any root note, then click ▶ on any row to hear and see that exact chord type and inversion, for every chord type this app teaches.</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="rf-root">Root note</label>
+            <select id="rf-root"></select>
+          </div>
+          <div class="field">
+            <label for="rf-octave">Octave</label>
+            <input type="number" id="rf-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field">
+            <label for="rf-output">Sound output</label>
+            <select id="rf-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="rf-position-label">—</div>
+        <div class="now-playing__value" id="rf-current-chord">—</div>
+        <div class="now-playing__sub" id="rf-current-notes"></div>
+      </div>
+
+      <div class="card"><div id="rf-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Every chord type, every inversion</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th></th><th>Chord type</th><th>Inversion</th><th>Notes (bottom → top)</th></tr></thead>
+            <tbody id="rf-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 2: JAZZ PROGRESSIONS ===================== -->
+  <section class="tabpanel" data-tabpanel="jazz">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Five jazz chord progressions, built from the chord types this app teaches. Pick a progression, pick which inversion to play <strong>every</strong> chord in, and play it in one key or cycle through all 12. Chords that don't have that many inversions (a triad asked for a 3rd inversion, for example) automatically use their highest available inversion instead.</p>
+        <div class="controls-row">
+          <div class="field" style="min-width:280px;">
+            <label for="jz-progression">Progression</label>
+            <select id="jz-progression"></select>
+          </div>
+          <div class="field">
+            <label for="jz-key">Key</label>
+            <select id="jz-key"></select>
+          </div>
+          <div class="field">
+            <label>Inversion (applied to every chord)</label>
+            <div class="segmented" data-segmented="jz-inversion">
+              <button type="button" class="is-active" data-value="0">Root</button>
+              <button type="button" data-value="1">1st</button>
+              <button type="button" data-value="2">2nd</button>
+              <button type="button" data-value="3">3rd</button>
+            </div>
+          </div>
+        </div>
+        <div class="controls-row">
+          <div class="field">
+            <label for="jz-octave">Octave</label>
+            <input type="number" id="jz-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="jz-tempo">Tempo: <span id="jz-tempo-value">76</span> BPM</label>
+            <input type="range" id="jz-tempo" min="30" max="160" value="76" />
+          </div>
+          <div class="field">
+            <label for="jz-output">Sound output</label>
+            <select id="jz-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <p class="progression-blurb" id="jz-description"></p>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="jz-play">▶ Play in this key</button>
+          <button class="btn btn-primary" id="jz-play-all">▶ Play in all 12 keys</button>
+          <button class="btn btn-danger" id="jz-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="jz-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="jz-key-label">Key of C</div>
+        <div class="now-playing__value" id="jz-current-chord">—</div>
+        <div class="now-playing__sub" id="jz-current-degree"></div>
+        <div class="progress"><div class="progress__bar" id="jz-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="jz-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;" id="jz-table-title">Progression in C</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Chord</th><th>Inversion</th><th>Notes</th></tr></thead>
+            <tbody id="jz-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 3: GOSPEL PROGRESSIONS ===================== -->
+  <section class="tabpanel" data-tabpanel="gospel">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Five gospel chord progressions, built the same way. Pick a progression, pick which inversion to play every chord in, and play it in one key or cycle through all 12.</p>
+        <div class="controls-row">
+          <div class="field" style="min-width:280px;">
+            <label for="gp-progression">Progression</label>
+            <select id="gp-progression"></select>
+          </div>
+          <div class="field">
+            <label for="gp-key">Key</label>
+            <select id="gp-key"></select>
+          </div>
+          <div class="field">
+            <label>Inversion (applied to every chord)</label>
+            <div class="segmented" data-segmented="gp-inversion">
+              <button type="button" class="is-active" data-value="0">Root</button>
+              <button type="button" data-value="1">1st</button>
+              <button type="button" data-value="2">2nd</button>
+              <button type="button" data-value="3">3rd</button>
+            </div>
+          </div>
+        </div>
+        <div class="controls-row">
+          <div class="field">
+            <label for="gp-octave">Octave</label>
+            <input type="number" id="gp-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="gp-tempo">Tempo: <span id="gp-tempo-value">76</span> BPM</label>
+            <input type="range" id="gp-tempo" min="30" max="160" value="76" />
+          </div>
+          <div class="field">
+            <label for="gp-output">Sound output</label>
+            <select id="gp-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <p class="progression-blurb" id="gp-description"></p>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="gp-play">▶ Play in this key</button>
+          <button class="btn btn-primary" id="gp-play-all">▶ Play in all 12 keys</button>
+          <button class="btn btn-danger" id="gp-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="gp-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="gp-key-label">Key of C</div>
+        <div class="now-playing__value" id="gp-current-chord">—</div>
+        <div class="now-playing__sub" id="gp-current-degree"></div>
+        <div class="progress"><div class="progress__bar" id="gp-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="gp-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;" id="gp-table-title">Progression in C</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Chord</th><th>Inversion</th><th>Notes</th></tr></thead>
+            <tbody id="gp-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/music-services.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/inversions-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
