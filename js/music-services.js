@@ -1718,6 +1718,159 @@ const HalfDiminishedSeventhChordService = (() => {
   };
 })();
 
+const SixthChordService = (() => {
+  // A (major) 6th chord is a major triad with one more note stacked on
+  // top -- a major 6th above the root, not a 7th at all:
+  //   root -> +4 semitones -> major 3rd
+  //   major 3rd -> +3 more semitones (root +7 total) -> perfect 5th
+  //   perfect 5th -> +2 more semitones (root +9 total) -> major 6th
+  // So every 6th chord, in any of the 12 keys, is just the pitch-class
+  // pattern [0, 4, 7, 9] measured in semitones from its root -- an
+  // ordinary major triad (0, 4, 7) plus a major 6th on top. Unlike the
+  // 7th chords taught in Lessons 13-17, a 6th chord never resolves
+  // anywhere -- it's a stable, "at rest" color, which is exactly why
+  // jazz and gospel pianists so often use it as the very last chord of a
+  // tune (I6) instead of a plain triad or a major 7th.
+  const INTERVALS_FROM_ROOT = [0, 4, 7, 9];
+  const CHORD_TONE_LABELS = ['Root', 'Major 3rd', 'Perfect 5th', 'Major 6th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 4 semitones up from the root.',
+    'Count 3 more semitones up from the 3rd (7 semitones from the root).',
+    'Count 2 more semitones up from the 5th (9 semitones from the root) — a major 6th, not a 7th of any kind.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a 6th chord (root, 3rd, 5th, 6th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+const MinorSixthChordService = (() => {
+  // A minor 6th chord is a minor triad with a *major* 6th (not a minor
+  // one) stacked on top:
+  //   root -> +3 semitones -> minor 3rd
+  //   minor 3rd -> +4 more semitones (root +7 total) -> perfect 5th
+  //   perfect 5th -> +2 more semitones (root +9 total) -> major 6th
+  // So every minor 6th chord, in any of the 12 keys, is the pitch-class
+  // pattern [0, 3, 7, 9] measured in semitones from its root -- a minor
+  // triad (0, 3, 7) plus a major 6th on top. That major 6th is what gives
+  // this chord its distinctive bittersweet color, and it's no accident:
+  // a minor 6th chord shares every pitch class with a half-diminished
+  // 7th chord (Lesson 17) built on its 6th degree -- Cm6 (C-E♭-G-A) is
+  // exactly the same four notes as Am7♭5 (A-C-E♭-G), just named and
+  // voiced from a different root.
+  const INTERVALS_FROM_ROOT = [0, 3, 7, 9];
+  const CHORD_TONE_LABELS = ['Root', 'Minor 3rd', 'Perfect 5th', 'Major 6th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 3 semitones up from the root.',
+    'Count 4 more semitones up from the 3rd (7 semitones from the root).',
+    'Count 2 more semitones up from the 5th (9 semitones from the root) — a major 6th, even though the chord is minor.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a minor 6th chord (root, ♭3rd, 5th, 6th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
 // ------------------------------------------------------------ Inversions
 
 const InversionService = (() => {
@@ -1757,6 +1910,8 @@ const InversionService = (() => {
     minor:            { suffix: 'minor',                      displayName: 'Minor triad',               intervals: [0, 3, 7],     labels: ['Root', 'Minor 3rd', 'Perfect 5th'] },
     augmented:        { suffix: 'augmented',                  displayName: 'Augmented triad',           intervals: [0, 4, 8],     labels: ['Root', 'Major 3rd', 'Augmented 5th'] },
     diminished:       { suffix: 'diminished',                 displayName: 'Diminished triad',          intervals: [0, 3, 6],     labels: ['Root', 'Minor 3rd', 'Diminished 5th'] },
+    sixth:            { suffix: '6',                          displayName: '6th chord',                 intervals: [0, 4, 7, 9],  labels: ['Root', 'Major 3rd', 'Perfect 5th', 'Major 6th'] },
+    minorSixth:       { suffix: 'minor 6th',                  displayName: 'Minor 6th chord',           intervals: [0, 3, 7, 9],  labels: ['Root', 'Minor 3rd', 'Perfect 5th', 'Major 6th'] },
     dominant7:        { suffix: 'dominant 7th',                displayName: 'Dominant 7th chord',        intervals: [0, 4, 7, 10], labels: ['Root', 'Major 3rd', 'Perfect 5th', 'Minor 7th'] },
     diminished7:      { suffix: 'diminished 7th',              displayName: 'Diminished 7th chord',      intervals: [0, 3, 6, 9],  labels: ['Root', 'Minor 3rd', 'Diminished 5th', 'Diminished 7th'] },
     minor7:           { suffix: 'minor 7th',                   displayName: 'Minor 7th chord',           intervals: [0, 3, 7, 10], labels: ['Root', 'Minor 3rd', 'Perfect 5th', 'Minor 7th'] },
@@ -1765,9 +1920,9 @@ const InversionService = (() => {
   };
 
   // Display order used by the "All chord types" reference tab -- triads
-  // first (in the order they were taught, Lessons 8-11), then the five
-  // 7th chords (Lessons 13-17).
-  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7'];
+  // first (in the order they were taught, Lessons 8-11), then the 6th
+  // chords (Lessons 20-21), then the five 7th chords (Lessons 13-17).
+  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7'];
 
   const INVERSION_NAMES = ['Root position', '1st inversion', '2nd inversion', '3rd inversion'];
 
@@ -1968,6 +2123,270 @@ const InversionService = (() => {
     },
   ];
 
+  // Five jazz chord progressions built around the (major) 6th chord --
+  // used by the Sixth Chord Trainer lesson (Lesson 20). A 6th chord never
+  // pulls anywhere the way a 7th chord does, so every one of these shows
+  // it doing what it does best: sitting as a warm, "at rest" tonic color,
+  // reached either straight away or after a turnaround.
+  const SIXTH_JAZZ_PROGRESSIONS = [
+    {
+      id: 'six-turnaround-i-vi-ii-v',
+      name: 'Tonic Six Turnaround',
+      label: 'I6 \u2013 vi7 \u2013 ii7 \u2013 V7',
+      description: 'The classic 1\u20136\u20132\u20135 turnaround, but with a 6th chord standing in for the tonic instead of a plain triad or a major 7th: I6 opens the phrase, then falls through vi7 and ii7 before V7 pulls the harmony back around to the top.',
+      degrees: [
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+        { roman: 'vi7', name: 'Submediant 7th', semitoneFromKey: 9, quality: 'minor7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'six-on-i-and-iv',
+      name: 'Six on the One and Four',
+      label: 'I6 \u2013 IV6 \u2013 ii7 \u2013 V7',
+      description: 'The 6th-chord color isn\u2019t just for the tonic \u2014 it works equally well on the subdominant. This progression puts a 6th chord on both I and IV, the same two degrees a classical I\u2013IV cadence uses, before ii7\u2013V7 brings the phrase home.',
+      degrees: [
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+        { roman: 'IV6', name: 'Subdominant 6th', semitoneFromKey: 5, quality: 'sixth' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'landing-on-the-six',
+      name: 'Landing on the Six',
+      label: 'iii7 \u2013 vi7 \u2013 ii7 \u2013 V7 \u2013 I6',
+      description: 'A five-chord \u201cwalk-back\u201d turnaround \u2014 three falling-5th minor 7ths (iii7\u2013vi7\u2013ii7) and a dominant 7th (V7) \u2014 that resolves not onto a plain tonic triad but onto the richer-colored I6, a favorite way for a jazz standard to land its very last chord.',
+      degrees: [
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'vi7', name: 'Submediant 7th', semitoneFromKey: 9, quality: 'minor7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+      ],
+    },
+    {
+      id: 'passing-dim-to-six',
+      name: 'Passing Diminished to the Six',
+      label: 'I6 \u2013 \u266fIdim7 \u2013 ii7 \u2013 V7',
+      description: 'The same chromatic passing-diminished voice-leading trick used elsewhere in this app (I \u2192 \u266fI \u2192 ii), except the phrase now starts from the warmer I6 tonic color rather than a plain triad or major 7th.',
+      degrees: [
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+        { roman: '\u266fIdim7', name: 'Raised-tonic diminished 7th', semitoneFromKey: 1, quality: 'diminished7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'blues-to-six',
+      name: 'Blues Turnaround to the Six',
+      label: 'I7 \u2013 IV7 \u2013 I6 \u2013 V7',
+      description: 'A bluesy turnaround where the restless tonic dominant 7th (I7) moves through the subdominant 7th (IV7) and then settles, if only briefly, into the tonic 6th\u2019s calmer color before V7 pushes the harmony onward.',
+      degrees: [
+        { roman: 'I7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'dominant7' },
+        { roman: 'IV7', name: 'Subdominant 7th', semitoneFromKey: 5, quality: 'dominant7' },
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the (major) 6th chord.
+  const SIXTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: 'gospel-six-turnaround',
+      name: 'Gospel Six Turnaround',
+      label: 'I6 \u2013 vi \u2013 IV \u2013 V7',
+      description: 'The quintessential gospel turnaround (I\u2013vi\u2013IV\u2013V7), voiced with a 6th chord on the tonic instead of a plain triad \u2014 a small change that gives an otherwise simple, singable loop a jazzier, more churchy color.',
+      degrees: [
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+        { roman: 'vi', name: 'Submediant', semitoneFromKey: 9, quality: 'minor' },
+        { roman: 'IV', name: 'Subdominant', semitoneFromKey: 5, quality: 'major' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'amen-six-vamp',
+      name: 'Amen Six Vamp',
+      label: 'I6 \u2013 IV \u2013 iv \u2013 I6',
+      description: 'The classic plagal \u201cAmen cadence\u201d (IV \u2192 iv \u2192 I), with its bittersweet borrowed minor iv, bookended here by the tonic 6th chord instead of a plain major triad.',
+      degrees: [
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+        { roman: 'IV', name: 'Subdominant', semitoneFromKey: 5, quality: 'major' },
+        { roman: 'iv', name: 'Borrowed minor subdominant', semitoneFromKey: 5, quality: 'minor' },
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+      ],
+    },
+    {
+      id: 'gospel-six-extended',
+      name: 'Extended Gospel Six Turnaround',
+      label: 'vi7 \u2013 ii7 \u2013 V7 \u2013 I6',
+      description: 'A gospel walk-back turnaround \u2014 two falling-5th minor 7ths (vi7\u2013ii7) followed by the dominant 7th (V7) \u2014 that resolves onto the warmer I6 tonic color, common at the end of a shout chorus.',
+      degrees: [
+        { roman: 'vi7', name: 'Submediant 7th', semitoneFromKey: 9, quality: 'minor7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+      ],
+    },
+    {
+      id: 'secondary-dominant-to-six',
+      name: 'Secondary Dominant to the Six',
+      label: 'I \u2013 III7 \u2013 vi \u2013 V7 \u2013 I6',
+      description: 'A gospel-flavored turnaround that briefly tonicizes vi with a secondary dominant (III7) before V7 pulls the harmony back home \u2014 not to a plain tonic triad, but to the richer-colored I6.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'III7', name: 'Secondary dominant of vi', semitoneFromKey: 4, quality: 'dominant7' },
+        { roman: 'vi', name: 'Submediant', semitoneFromKey: 9, quality: 'minor' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+      ],
+    },
+    {
+      id: 'gospel-blues-six',
+      name: 'Gospel Blues Six Cadence',
+      label: 'I7 \u2013 IV \u2013 I6 \u2013 V7',
+      description: 'A gospel piano vamp that mixes a bluesy dominant-7th tonic (I7) with a warmer 6th-chord tonic color (I6) either side of the subdominant, before the final dominant 7th push.',
+      degrees: [
+        { roman: 'I7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'dominant7' },
+        { roman: 'IV', name: 'Subdominant', semitoneFromKey: 5, quality: 'major' },
+        { roman: 'I6', name: 'Tonic 6th', semitoneFromKey: 0, quality: 'sixth' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the minor 6th chord --
+  // used by the Minor Sixth Chord Trainer lesson (Lesson 21). Context is
+  // the natural (Aeolian) minor scale, the same convention used by the
+  // Minor Chords and Minor 7th Chords lessons.
+  const MINOR_SIXTH_JAZZ_PROGRESSIONS = [
+    {
+      id: 'minor-six-ii-v-i',
+      name: 'Minor ii\u2013V\u2013i Landing on the Six',
+      label: 'ii\u00f87 \u2013 V7 \u2013 i6',
+      description: 'The classic minor-key ii\u2013V\u2013i, but resolving onto the moodier minor 6th tonic (i6) instead of a plain minor triad or minor(-major) 7th \u2014 a favorite way for a minor-key jazz standard to rest on its very last chord.',
+      degrees: [
+        { roman: 'ii\u00f87', name: 'Supertonic half-diminished 7th', semitoneFromKey: 2, quality: 'halfDiminished7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+      ],
+    },
+    {
+      id: 'minor-six-on-i-and-iv',
+      name: 'Minor Six on the One and Four',
+      label: 'i6 \u2013 iv6 \u2013 ii\u00f87 \u2013 V7',
+      description: 'Minor 6th chords stacked on both the tonic and subdominant \u2014 the natural-minor mirror of "Six on the One and Four" \u2014 before a ii\u00f87\u2013V7 turnaround pulls the harmony back toward home.',
+      degrees: [
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+        { roman: 'iv6', name: 'Subdominant minor 6th', semitoneFromKey: 5, quality: 'minorSixth' },
+        { roman: 'ii\u00f87', name: 'Supertonic half-diminished 7th', semitoneFromKey: 2, quality: 'halfDiminished7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'minor-six-passing-dim',
+      name: 'Passing Diminished to the Minor Six',
+      label: 'i6 \u2013 \u266fidim7 \u2013 ii\u00f87 \u2013 V7',
+      description: 'The same chromatic passing-diminished trick (i \u2192 \u266fi \u2192 ii) used elsewhere in this app, reused here in a minor key and starting the phrase from the minor 6th tonic.',
+      degrees: [
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+        { roman: '\u266fidim7', name: 'Raised-tonic diminished 7th', semitoneFromKey: 1, quality: 'diminished7' },
+        { roman: 'ii\u00f87', name: 'Supertonic half-diminished 7th', semitoneFromKey: 2, quality: 'halfDiminished7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'minor-six-secondary-dominant',
+      name: 'Secondary Dominant to the Minor Six',
+      label: 'i6 \u2013 VI7 \u2013 ii\u00f87 \u2013 V7',
+      description: 'A borrowed dominant 7th built on the submediant (VI7) briefly tonicizes the ii chord before the familiar ii\u00f87\u2013V7 turnaround resolves the phrase back toward the tonic minor 6th.',
+      degrees: [
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+        { roman: 'VI7', name: 'Secondary dominant of ii', semitoneFromKey: 8, quality: 'dominant7' },
+        { roman: 'ii\u00f87', name: 'Supertonic half-diminished 7th', semitoneFromKey: 2, quality: 'halfDiminished7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'minor-six-blues-turnaround',
+      name: 'Minor Blues Turnaround to the Six',
+      label: 'i7 \u2013 iv7 \u2013 V7 \u2013 i6',
+      description: 'A minor-blues-style turnaround (i7\u2013iv7\u2013V7) that resolves not to a plain minor 7th tonic but up to the richer-colored minor 6th (i6), a common way jazz players close out a minor blues chorus.',
+      degrees: [
+        { roman: 'i7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'minor7' },
+        { roman: 'iv7', name: 'Subdominant 7th', semitoneFromKey: 5, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the minor 6th chord.
+  const MINOR_SIXTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: 'minor-gospel-six-cadence',
+      name: 'Minor Gospel Six Cadence',
+      label: 'i6 \u2013 iv \u2013 V7 \u2013 i6',
+      description: 'The classic minor-key gospel cadence (i\u2013iv\u2013V7\u2013i), bookended here by the tonic minor 6th for a warmer, jazzier color than a plain minor triad.',
+      degrees: [
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+        { roman: 'iv', name: 'Subdominant', semitoneFromKey: 5, quality: 'minor' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+      ],
+    },
+    {
+      id: 'minor-six-relative-major-walk',
+      name: 'Minor Six to the Relative Major',
+      label: 'i6 \u2013 VI \u2013 iv6 \u2013 V7',
+      description: 'A gospel-style walk from the tonic minor 6th up to the relative-major submediant triad (VI), then back down through a subdominant minor 6th chord (iv6) into the dominant 7th.',
+      degrees: [
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+        { roman: 'VI', name: 'Relative-major submediant', semitoneFromKey: 8, quality: 'major' },
+        { roman: 'iv6', name: 'Subdominant minor 6th', semitoneFromKey: 5, quality: 'minorSixth' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'minor-six-amen-vamp',
+      name: 'Minor Amen Six Vamp',
+      label: 'i6 \u2013 iv \u2013 i6 \u2013 V7',
+      description: 'A simple plagal-flavored gospel vamp \u2014 tonic minor 6th, subdominant minor, back to the tonic 6th, then the dominant 7th push \u2014 common in slow, minor-key gospel intros and vamps.',
+      degrees: [
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+        { roman: 'iv', name: 'Subdominant', semitoneFromKey: 5, quality: 'minor' },
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'minor-six-passing-dim-gospel',
+      name: 'Gospel Passing Diminished to the Minor Six',
+      label: 'i6 \u2013 \u266fidim7 \u2013 iv6 \u2013 V7',
+      description: 'A favorite gospel piano voice-leading trick \u2014 a chromatic passing diminished chord (i \u2192 \u266fi \u2192 iv) \u2014 framed here around minor 6th chords on the tonic and subdominant.',
+      degrees: [
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+        { roman: '\u266fidim7', name: 'Raised-tonic diminished 7th', semitoneFromKey: 1, quality: 'diminished7' },
+        { roman: 'iv6', name: 'Subdominant minor 6th', semitoneFromKey: 5, quality: 'minorSixth' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'minor-six-double-plagal',
+      name: 'Double Plagal Minor Six',
+      label: 'i6 \u2013 VII \u2013 iv \u2013 i6',
+      description: 'A modal-sounding gospel vamp that borrows the subtonic major triad (\u266dVII) on the way down through the subdominant and back home to the tonic minor 6th.',
+      degrees: [
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+        { roman: 'VII', name: 'Subtonic', semitoneFromKey: 10, quality: 'major' },
+        { roman: 'iv', name: 'Subdominant', semitoneFromKey: 5, quality: 'minor' },
+        { roman: 'i6', name: 'Tonic minor 6th', semitoneFromKey: 0, quality: 'minorSixth' },
+      ],
+    },
+  ];
+
   return {
     keys,
     qualities: QUALITIES,
@@ -1980,5 +2399,9 @@ const InversionService = (() => {
     buildProgressionChords,
     jazzProgressions: JAZZ_PROGRESSIONS,
     gospelProgressions: GOSPEL_PROGRESSIONS,
+    sixthJazzProgressions: SIXTH_JAZZ_PROGRESSIONS,
+    sixthGospelProgressions: SIXTH_GOSPEL_PROGRESSIONS,
+    minorSixthJazzProgressions: MINOR_SIXTH_JAZZ_PROGRESSIONS,
+    minorSixthGospelProgressions: MINOR_SIXTH_GOSPEL_PROGRESSIONS,
   };
 })();

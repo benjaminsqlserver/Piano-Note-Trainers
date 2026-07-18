@@ -40,7 +40,9 @@ all lessons — current and future.
 | 16 | **Major 7th Chords** (`major-seventh-chord-trainer.html`) | How every major 7th chord is built by counting semitones (root, +4 to the 3rd, +3 more to the 5th, +4 more to the 7th), plus two MIDI exercises: all 12 major 7th chords around the circle of fourths, and a classic jazz/gospel Imaj7‑vi7‑ii7‑V7 turnaround in every key |
 | 17 | **Half-Diminished 7th Chords** (`half-diminished-seventh-chord-trainer.html`) | How every half-diminished 7th (m7♭5) chord is built from a diminished triad plus a minor 7th (root, +3, +3, +4), plus two MIDI exercises: all 12 half-diminished 7th chords around the circle of fourths, and a I‑V7‑vii°7‑I cadence showing its diatonic leading-tone role, in every key |
 | 18 | **His Eye Is on the Sparrow — Song Trainer** (`his-eye-on-the-sparrow-trainer.html`) | The classic gospel hymn "His Eye Is on the Sparrow" (Civilla D. Martin & Charles H. Gabriel, 1905), played from its real, unaltered source arrangement (melody + accompaniment, both hands, from the original two-channel MIDI file) in every key — the song lesson whose harmony motivated Lessons 13-17, since its arrangement uses all five 7th-chord types they teach (dominant 7th, diminished 7th, minor 7th, major 7th, and half-diminished 7th) |
-| 19 | **Chord Inversions** (`inversions-trainer.html`) | What a chord inversion is, the different types of inversion (root position, 1st, 2nd, and — for 7th chords — 3rd), and how to build one for every chord type taught in Lessons 8-11 & 13-17, plus two MIDI exercises: 5 jazz chord progressions and 5 gospel chord progressions, each playable in a chosen inversion, in a single key or cycled through all 12 |
+| 20 | **6th Chords** (`sixth-chord-trainer.html`) | How every 6th chord is built by counting semitones (root, +4 to the major 3rd, +3 more to the perfect 5th, +2 more to the major 6th) — a major triad plus a major 6th, never a 7th of any kind — plus three MIDI exercises: all 12 6th chords around the circle of fourths, and 5 jazz chord progressions plus 5 gospel chord progressions built around the 6th chord's warm, "at rest" tonic color, in every key |
+| 21 | **Minor 6th Chords** (`minor-sixth-chord-trainer.html`) | How every minor 6th chord is built by counting semitones (root, +3 to the minor 3rd, +4 more to the perfect 5th, +2 more to the major 6th) — a minor triad plus a *major* 6th, giving it a bittersweet color and the same four notes as a half-diminished 7th chord on its 6th degree — plus three MIDI exercises: all 12 minor 6th chords around the circle of fourths, and 5 jazz chord progressions plus 5 gospel chord progressions built around the minor 6th chord, in every key |
+| 22 | **Chord Inversions** (`inversions-trainer.html`) | What a chord inversion is, the different types of inversion (root position, 1st, 2nd, and — for 4-note chords — 3rd), and how to build one for every chord type taught in Lessons 8-11, 13-17 & 20-21, plus two MIDI exercises: 5 jazz chord progressions and 5 gospel chord progressions, each playable in a chosen inversion, in a single key or cycled through all 12 |
 
 Each lesson page includes:
 
@@ -133,11 +135,27 @@ Each lesson page includes:
   quality — and its **Song Player** tab plays both hands together exactly
   as Power in the Blood's does.
 
+- The **6th Chords** and **Minor 6th Chords** lessons follow the same
+  Learn + Circle of Fourths pattern as the earlier triad and 7th-chord
+  lessons, but for a 4-note chord that is neither a triad nor a 7th
+  chord: a 6th chord (root, +4, +3, +2) and a minor 6th chord
+  (root, +3, +4, +2) both stack a *major* 6th on top of their triad
+  rather than a 7th of any kind — which is exactly why 6th chords never
+  pull toward another chord the way 7th chords do, and are instead
+  prized as a warm (or, in the minor 6th's case, bittersweet) "at rest"
+  tonic color, often the very last chord of a jazz or gospel tune. Each
+  lesson replaces the earlier single-progression **Chord Progression**
+  exercise with two progression-picker exercises of its own, **Jazz
+  Progressions** and **Gospel Progressions**, each offering 5 real
+  progressions built around that lesson's chord — mostly using it as a
+  tonic substitute for a plain triad or major/minor 7th chord — playable
+  in a chosen key or cycled through all 12.
+
 - The **Chord Inversions** lesson's **Learn** tab explains what an
   inversion is (the same chord tones, reordered so a different tone sits
   in the bass), the four inversion types (root position, 1st, 2nd, and —
-  for 7th chords only — 3rd), slash-chord notation, and an interactive
-  builder covering every chord type taught in Lessons 8-11 & 13-17. Its
+  for 4-note chords only — 3rd), slash-chord notation, and an interactive
+  builder covering every chord type taught in Lessons 8-11, 13-17 & 20-21. Its
   **All Chord Types** tab is a clickable reference table of every quality's
   every inversion in a chosen key. Its two chord-progression exercises —
   **Jazz Progressions** and **Gospel Progressions** — each offer 5 real
@@ -172,7 +190,9 @@ PianoNoteTrainers/
 ├─ major-seventh-chord-trainer.html # Lesson 16
 ├─ half-diminished-seventh-chord-trainer.html # Lesson 17
 ├─ his-eye-on-the-sparrow-trainer.html # Lesson 18
-├─ inversions-trainer.html      # Lesson 19
+├─ sixth-chord-trainer.html     # Lesson 20
+├─ minor-sixth-chord-trainer.html # Lesson 21
+├─ inversions-trainer.html      # Lesson 22
 ├─ css/
 │  └─ styles.css                # Shared, responsive design system
 ├─ js/
@@ -180,7 +200,8 @@ PianoNoteTrainers/
 │  ├─ tabs.js                   # Shared tab / segmented-control helper
 │  ├─ audio-engine.js           # Shared WebAudio synth + Web MIDI wrapper
 │  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer (fixed 8-octave range, C0–C8, on every lesson)
-│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major/minor/augmented/diminished + 7th chords + inversions/progressions)
+│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major/minor/augmented/diminished + 6th + 7th chords + inversions/progressions)
+│  ├─ progression-picker.js     # Shared root-position-only progression-picker exercise (Jazz/Gospel tabs on Lessons 20-21)
 │  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader (tags each note with its source MIDI channel)
 │  ├─ midi-data.js              # Base64-embedded improvisation-demo + song MIDI data (major + Dorian + Phrygian + Power in the Blood + His Eye Is on the Sparrow)
 │  ├─ home.js                   # Home page hero keyboard
@@ -201,7 +222,9 @@ PianoNoteTrainers/
 │  ├─ major-seventh-chord-trainer.js # Lesson 16 page logic
 │  ├─ half-diminished-seventh-chord-trainer.js # Lesson 17 page logic
 │  ├─ his-eye-on-the-sparrow-trainer.js # Lesson 18 page logic (learn tab + two-hand Song Player)
-│  └─ inversions-trainer.js     # Lesson 19 page logic (learn tab + all-chord-types reference + jazz & gospel progression exercises)
+│  ├─ sixth-chord-trainer.js    # Lesson 20 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
+│  ├─ minor-sixth-chord-trainer.js # Lesson 21 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
+│  └─ inversions-trainer.js     # Lesson 22 page logic (learn tab + all-chord-types reference + jazz & gospel progression exercises)
 ├─ midi/                        # Sample MIDI files for Lessons 5-7, 12 & 18's playback (one per key each; Lessons 12 & 18's files each carry melody on channel 0 and chords/accompaniment on channel 1)
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file

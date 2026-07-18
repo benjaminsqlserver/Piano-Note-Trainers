@@ -44,6 +44,8 @@ const NAV_GROUPS = [
       { page: 'minor-seventh-chord', href: 'minor-seventh-chord-trainer.html', label: 'Minor 7th Chords' },
       { page: 'major-seventh-chord', href: 'major-seventh-chord-trainer.html', label: 'Major 7th Chords' },
       { page: 'half-diminished-seventh-chord', href: 'half-diminished-seventh-chord-trainer.html', label: 'Half-Diminished 7th Chords' },
+      { page: 'sixth-chord', href: 'sixth-chord-trainer.html', label: '6th Chords' },
+      { page: 'minor-sixth-chord', href: 'minor-sixth-chord-trainer.html', label: 'Minor 6th Chords' },
       { page: 'inversions', href: 'inversions-trainer.html', label: 'Chord Inversions' },
     ],
   },
