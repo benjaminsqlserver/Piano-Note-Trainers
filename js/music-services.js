@@ -1871,6 +1871,85 @@ const MinorSixthChordService = (() => {
   };
 })();
 
+const AugmentedSeventhChordService = (() => {
+  // An augmented 7th chord — also called a dominant 7♯5, C7♯5, C+7, C7+,
+  // augmented dominant seventh, or dominant seventh augmented — is a
+  // dominant 7th chord with its 5th raised a semitone:
+  //   root -> +4 semitones -> major 3rd
+  //   major 3rd -> +4 more semitones (root +8 total) -> augmented 5th
+  //   augmented 5th -> +2 more semitones (root +10 total) -> minor 7th
+  // So every augmented 7th chord, in any of the 12 keys, is just the
+  // pitch-class pattern [0, 4, 8, 10] measured in semitones from its root
+  // -- an augmented triad (0, 4, 8) plus a minor 7th on top, the same
+  // minor 7th a plain dominant 7th chord uses. Raising the 5th pulls it
+  // outward instead of leaving it perfect, giving this "altered dominant"
+  // extra tension and an even stronger pull to its tonic than a plain
+  // dominant 7th -- which is exactly why jazz and gospel players reach
+  // for it as a spicier substitute for V7 wherever a dominant chord
+  // resolves down a 5th (or up a 4th) to its tonic.
+  const INTERVALS_FROM_ROOT = [0, 4, 8, 10];
+  const CHORD_TONE_LABELS = ['Root', 'Major 3rd', 'Augmented 5th', 'Minor 7th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 4 semitones up from the root.',
+    'Count 4 more semitones up from the 3rd (8 semitones from the root) — a raised (augmented) 5th, a semitone higher than a perfect 5th.',
+    'Count 2 more semitones up from the 5th (10 semitones from the root) — a minor 7th, the same 7th a plain dominant 7th chord uses.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds an augmented 7th chord (root, 3rd, ♯5th, minor 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
 // ------------------------------------------------------------ Inversions
 
 const InversionService = (() => {
@@ -1917,12 +1996,14 @@ const InversionService = (() => {
     minor7:           { suffix: 'minor 7th',                   displayName: 'Minor 7th chord',           intervals: [0, 3, 7, 10], labels: ['Root', 'Minor 3rd', 'Perfect 5th', 'Minor 7th'] },
     major7:           { suffix: 'major 7th',                   displayName: 'Major 7th chord',           intervals: [0, 4, 7, 11], labels: ['Root', 'Major 3rd', 'Perfect 5th', 'Major 7th'] },
     halfDiminished7:  { suffix: 'half-diminished 7th (m7\u266d5)', displayName: 'Half-diminished 7th chord', intervals: [0, 3, 6, 10], labels: ['Root', 'Minor 3rd', 'Diminished 5th', 'Minor 7th'] },
+    augmentedSeventh: { suffix: 'augmented 7th (7\u266f5)',        displayName: 'Augmented 7th chord (7\u266f5)', intervals: [0, 4, 8, 10], labels: ['Root', 'Major 3rd', 'Augmented 5th', 'Minor 7th'] },
   };
 
   // Display order used by the "All chord types" reference tab -- triads
   // first (in the order they were taught, Lessons 8-11), then the 6th
-  // chords (Lessons 20-21), then the five 7th chords (Lessons 13-17).
-  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7'];
+  // chords (Lessons 20-21), then the five 7th chords (Lessons 13-17),
+  // then the augmented 7th chord (Lesson 23).
+  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7', 'augmentedSeventh'];
 
   const INVERSION_NAMES = ['Root position', '1st inversion', '2nd inversion', '3rd inversion'];
 
@@ -2387,6 +2468,139 @@ const InversionService = (() => {
     },
   ];
 
+  // Five jazz chord progressions built around the augmented 7th chord
+  // (7♯5) -- used by the Augmented 7th Chord Trainer lesson (Lesson 23).
+  // An augmented 7th is a dominant 7th with its 5th raised a semitone, so
+  // every one of these shows it doing what it does best: standing in for
+  // a plain V7 (or another dominant-functioning chord) wherever extra
+  // "altered dominant" pull is wanted before a resolution down a 5th.
+  const AUGMENTED_SEVENTH_JAZZ_PROGRESSIONS = [
+    {
+      id: 'aug7-ii-v-i',
+      name: 'Altered ii\u2013V\u2013I',
+      label: 'ii7 \u2013 V7\u266f5 \u2013 Imaj7',
+      description: 'The familiar major ii\u2013V\u2013I, but with the V7 raised to V7\u266f5: pulling the 5th up a semitone adds extra outward tension before the chord resolves down a 5th onto the tonic major 7th, a common jazz way to spice up an otherwise plain dominant.',
+      degrees: [
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7\u266f5', name: 'Altered dominant 7th', semitoneFromKey: 7, quality: 'augmentedSeventh' },
+        { roman: 'Imaj7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'major7' },
+      ],
+    },
+    {
+      id: 'aug7-turnaround',
+      name: 'Turnaround with Altered Dominants',
+      label: 'iii7 \u2013 VI7\u266f5 \u2013 ii7 \u2013 V7\u266f5',
+      description: 'A falling-5ths turnaround with two altered dominants: a secondary VI7\u266f5 tonicizes ii with extra bite, then the closing V7\u266f5 does the same on its way back to the top of the tune -- both raised 5ths adding color that a plain dominant 7th wouldn\u2019t.',
+      degrees: [
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'VI7\u266f5', name: 'Altered secondary dominant of ii', semitoneFromKey: 9, quality: 'augmentedSeventh' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7\u266f5', name: 'Altered dominant 7th', semitoneFromKey: 7, quality: 'augmentedSeventh' },
+      ],
+    },
+    {
+      id: 'aug7-passing-to-ii',
+      name: 'Altered Dominant Passing to ii',
+      label: 'Imaj7 \u2013 I7\u266f5 \u2013 ii7 \u2013 V7\u266f5',
+      description: 'I7\u266f5 works as a chromatic passing chord between the tonic and ii: its raised 5th sits a half-step below ii\u2019s 3rd, so it slides smoothly upward, before the closing V7\u266f5 pulls the phrase back home.',
+      degrees: [
+        { roman: 'Imaj7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'major7' },
+        { roman: 'I7\u266f5', name: 'Altered tonic passing dominant', semitoneFromKey: 0, quality: 'augmentedSeventh' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7\u266f5', name: 'Altered dominant 7th', semitoneFromKey: 7, quality: 'augmentedSeventh' },
+      ],
+    },
+    {
+      id: 'aug7-minor-ii-v-i',
+      name: 'Minor ii\u2013V\u2013i, Altered',
+      label: 'ii\u00f87 \u2013 V7\u266f5 \u2013 i7',
+      description: 'The minor-key ii\u2013V\u2013i with its dominant altered: the supertonic half-diminished 7th (ii\u00f87) falls a 5th to V7\u266f5, whose raised 5th intensifies the pull into the minor 7th tonic (i7).',
+      degrees: [
+        { roman: 'ii\u00f87', name: 'Supertonic half-diminished 7th', semitoneFromKey: 2, quality: 'halfDiminished7' },
+        { roman: 'V7\u266f5', name: 'Altered dominant 7th', semitoneFromKey: 7, quality: 'augmentedSeventh' },
+        { roman: 'i7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'minor7' },
+      ],
+    },
+    {
+      id: 'aug7-blues-turnaround',
+      name: 'Jazz Blues Turnaround, Altered',
+      label: 'I7 \u2013 IV7 \u2013 V7\u266f5 \u2013 I7',
+      description: 'A jazz-blues turnaround built from plain dominant 7ths on I and IV, but with the closing V7 raised to V7\u266f5 for an extra push back to the tonic on the last bar of the phrase.',
+      degrees: [
+        { roman: 'I7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'dominant7' },
+        { roman: 'IV7', name: 'Subdominant 7th', semitoneFromKey: 5, quality: 'dominant7' },
+        { roman: 'V7\u266f5', name: 'Altered dominant 7th', semitoneFromKey: 7, quality: 'augmentedSeventh' },
+        { roman: 'I7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'dominant7' },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the augmented 7th chord.
+  const AUGMENTED_SEVENTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: 'aug7-gospel-turnaround',
+      name: 'Gospel Turnaround with Altered Dominant',
+      label: 'I \u2013 vi \u2013 ii7 \u2013 V7\u266f5',
+      description: 'The classic gospel turnaround (I\u2013vi\u2013ii7), closed out with an altered dominant (V7\u266f5) instead of a plain V7 -- a small change that adds extra churchy tension right before the harmony resolves back to I.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'vi', name: 'Submediant', semitoneFromKey: 9, quality: 'minor' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7\u266f5', name: 'Altered dominant 7th', semitoneFromKey: 7, quality: 'augmentedSeventh' },
+      ],
+    },
+    {
+      id: 'aug7-amen-passing',
+      name: 'Amen Vamp with Altered Passing Chord',
+      label: 'I \u2013 I7\u266f5 \u2013 IV \u2013 iv \u2013 I',
+      description: 'The classic plagal "Amen" vamp (IV\u2192iv\u2192I), decorated with I7\u266f5 as a chromatic passing chord between I and IV -- its raised 5th climbs a half-step into IV\u2019s 3rd, a favorite gospel-piano voice-leading touch.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'I7\u266f5', name: 'Altered tonic passing dominant', semitoneFromKey: 0, quality: 'augmentedSeventh' },
+        { roman: 'IV', name: 'Subdominant', semitoneFromKey: 5, quality: 'major' },
+        { roman: 'iv', name: 'Borrowed minor subdominant', semitoneFromKey: 5, quality: 'minor' },
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+      ],
+    },
+    {
+      id: 'aug7-secondary-dominant',
+      name: 'Secondary Altered Dominant Turnaround',
+      label: 'I \u2013 III7\u266f5 \u2013 vi \u2013 V7',
+      description: 'A secondary dominant of vi (III7), raised to III7\u266f5 for extra color, resolves down a 5th into vi exactly the way V7 resolves into I -- before the closing V7 pulls the whole progression back to the tonic.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'III7\u266f5', name: 'Altered secondary dominant of vi', semitoneFromKey: 4, quality: 'augmentedSeventh' },
+        { roman: 'vi', name: 'Submediant', semitoneFromKey: 9, quality: 'minor' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'aug7-extended-turnaround',
+      name: 'Extended Gospel Turnaround, Altered',
+      label: 'iii7 \u2013 vi7 \u2013 ii7 \u2013 V7\u266f5 \u2013 Imaj7',
+      description: 'A five-chord gospel walk-back turnaround -- three falling-5th minor 7ths (iii7\u2013vi7\u2013ii7) -- that lands on an altered dominant (V7\u266f5) before resolving onto a lush tonic major 7th (Imaj7).',
+      degrees: [
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'vi7', name: 'Submediant 7th', semitoneFromKey: 9, quality: 'minor7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7\u266f5', name: 'Altered dominant 7th', semitoneFromKey: 7, quality: 'augmentedSeventh' },
+        { roman: 'Imaj7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'major7' },
+      ],
+    },
+    {
+      id: 'aug7-minor-gospel-cadence',
+      name: 'Minor Gospel Cadence, Altered',
+      label: 'i \u2013 iv \u2013 V7\u266f5 \u2013 i',
+      description: 'A minor-key gospel cadence built from the natural minor\u2019s tonic and subdominant triads, with the dominant further altered to V7\u266f5 for an even firmer pull back home than a plain harmonic-minor V7.',
+      degrees: [
+        { roman: 'i', name: 'Tonic', semitoneFromKey: 0, quality: 'minor' },
+        { roman: 'iv', name: 'Subdominant', semitoneFromKey: 5, quality: 'minor' },
+        { roman: 'V7\u266f5', name: 'Altered dominant 7th', semitoneFromKey: 7, quality: 'augmentedSeventh' },
+        { roman: 'i', name: 'Tonic', semitoneFromKey: 0, quality: 'minor' },
+      ],
+    },
+  ];
+
   return {
     keys,
     qualities: QUALITIES,
@@ -2403,5 +2617,7 @@ const InversionService = (() => {
     sixthGospelProgressions: SIXTH_GOSPEL_PROGRESSIONS,
     minorSixthJazzProgressions: MINOR_SIXTH_JAZZ_PROGRESSIONS,
     minorSixthGospelProgressions: MINOR_SIXTH_GOSPEL_PROGRESSIONS,
+    augmentedSeventhJazzProgressions: AUGMENTED_SEVENTH_JAZZ_PROGRESSIONS,
+    augmentedSeventhGospelProgressions: AUGMENTED_SEVENTH_GOSPEL_PROGRESSIONS,
   };
 })();
