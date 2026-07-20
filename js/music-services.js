@@ -1950,6 +1950,84 @@ const AugmentedSeventhChordService = (() => {
   };
 })();
 
+const MajorSeventhFlatFiveChordService = (() => {
+  // A major 7th flat 5 chord — written maj7♭5 (also seen as M7♭5 or
+  // Δ7♭5) — is a major 7th chord with its 5th lowered a semitone:
+  //   root -> +4 semitones -> major 3rd
+  //   major 3rd -> +2 more semitones (root +6 total) -> diminished 5th
+  //   diminished 5th -> +5 more semitones (root +11 total) -> major 7th
+  // So every maj7♭5 chord, in any of the 12 keys, is just the
+  // pitch-class pattern [0, 4, 6, 11] measured in semitones from its
+  // root -- an ordinary major 3rd and major 7th (the same two intervals
+  // a plain major 7th chord uses) wrapped around a lowered, diminished
+  // 5th instead of a perfect one. That lowered 5th is what gives the
+  // chord its unsettled, "floating" color -- it never quite sits still
+  // the way a plain major 7th does -- which is exactly why jazz and
+  // gospel pianists reach for it as a chromatic passing chord or a
+  // spicier substitute wherever a major 7th chord would otherwise sit.
+  const INTERVALS_FROM_ROOT = [0, 4, 6, 11];
+  const CHORD_TONE_LABELS = ['Root', 'Major 3rd', 'Diminished 5th', 'Major 7th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 4 semitones up from the root.',
+    'Count 2 more semitones up from the 3rd (6 semitones from the root) — a lowered (diminished) 5th, a semitone below a perfect 5th.',
+    'Count 5 more semitones up from the 5th (11 semitones from the root) — the same major 7th a plain major 7th chord uses.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a major 7th flat 5 chord (root, 3rd, ♭5th, major 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
 // ------------------------------------------------------------ Inversions
 
 const InversionService = (() => {
@@ -1997,13 +2075,15 @@ const InversionService = (() => {
     major7:           { suffix: 'major 7th',                   displayName: 'Major 7th chord',           intervals: [0, 4, 7, 11], labels: ['Root', 'Major 3rd', 'Perfect 5th', 'Major 7th'] },
     halfDiminished7:  { suffix: 'half-diminished 7th (m7\u266d5)', displayName: 'Half-diminished 7th chord', intervals: [0, 3, 6, 10], labels: ['Root', 'Minor 3rd', 'Diminished 5th', 'Minor 7th'] },
     augmentedSeventh: { suffix: 'augmented 7th (7\u266f5)',        displayName: 'Augmented 7th chord (7\u266f5)', intervals: [0, 4, 8, 10], labels: ['Root', 'Major 3rd', 'Augmented 5th', 'Minor 7th'] },
+    majorSeventhFlatFive: { suffix: 'major 7th\u266d5 (maj7\u266d5)', displayName: 'Major 7th\u266d5 chord (maj7\u266d5)', intervals: [0, 4, 6, 11], labels: ['Root', 'Major 3rd', 'Diminished 5th', 'Major 7th'] },
   };
 
   // Display order used by the "All chord types" reference tab -- triads
   // first (in the order they were taught, Lessons 8-11), then the 6th
   // chords (Lessons 20-21), then the five 7th chords (Lessons 13-17),
-  // then the augmented 7th chord (Lesson 23).
-  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7', 'augmentedSeventh'];
+  // then the augmented 7th chord (Lesson 23), then the major 7th\u266d5
+  // chord (Lesson 24).
+  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7', 'augmentedSeventh', 'majorSeventhFlatFive'];
 
   const INVERSION_NAMES = ['Root position', '1st inversion', '2nd inversion', '3rd inversion'];
 
@@ -2601,6 +2681,137 @@ const InversionService = (() => {
     },
   ];
 
+  // Five jazz chord progressions built around the major 7th\u266d5 chord --
+  // mostly using it as a floating, unresolved substitute wherever a
+  // plain major 7th chord would otherwise sit.
+  const MAJOR_SEVENTH_FLAT_FIVE_JAZZ_PROGRESSIONS = [
+    {
+      id: 'maj7b5-ii-V-I',
+      name: 'ii\u2013V\u2013I with Altered Tonic',
+      label: 'ii7 \u2013 V7 \u2013 Imaj7\u266d5',
+      description: 'The familiar ii\u2013V\u2013I, but resolving onto Imaj7\u266d5 instead of a plain Imaj7 -- the lowered 5th gives the tonic a floating, not-quite-settled color instead of full repose.',
+      degrees: [
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'Imaj7\u266d5', name: 'Altered tonic 7th', semitoneFromKey: 0, quality: 'majorSeventhFlatFive' },
+      ],
+    },
+    {
+      id: 'maj7b5-passing',
+      name: 'Passing Maj7\u266d5',
+      label: 'Imaj7 \u2013 \u266fImaj7\u266d5 \u2013 ii7 \u2013 V7',
+      description: 'A chromatic passing chord between Imaj7 and ii7, built as a maj7\u266d5 on the raised tonic -- the same chromatic bass motion (I \u2192 \u266fI \u2192 ii) as the Major 7th Chords lesson\u2019s Passing Diminished progression, but colored with a different substitute chord.',
+      degrees: [
+        { roman: 'Imaj7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'major7' },
+        { roman: '\u266fImaj7\u266d5', name: 'Raised-tonic altered 7th', semitoneFromKey: 1, quality: 'majorSeventhFlatFive' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'maj7b5-turnaround',
+      name: 'Turnaround with Maj7\u266d5 Color',
+      label: 'iii7 \u2013 VImaj7\u266d5 \u2013 ii7 \u2013 V7',
+      description: 'A falling turnaround where the vi chord is colored as a maj7\u266d5 instead of the usual minor 7th, for an unexpected major-quality substitution right in the middle of the progression.',
+      degrees: [
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'VImaj7\u266d5', name: 'Altered submediant 7th', semitoneFromKey: 9, quality: 'majorSeventhFlatFive' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'maj7b5-minor-key',
+      name: 'Minor-Key Cadence with Maj7\u266d5',
+      label: 'i7 \u2013 ivmaj7\u266d5 \u2013 V7 \u2013 i7',
+      description: 'A minor-key cadence where the borrowed subdominant becomes a maj7\u266d5 chord -- a bittersweet, unresolved color sitting between the minor tonic and the dominant that finally pulls the harmony home.',
+      degrees: [
+        { roman: 'i7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'minor7' },
+        { roman: 'ivmaj7\u266d5', name: 'Altered subdominant 7th', semitoneFromKey: 5, quality: 'majorSeventhFlatFive' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'i7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'minor7' },
+      ],
+    },
+    {
+      id: 'maj7b5-blues',
+      name: 'Jazz Blues Turnaround with Maj7\u266d5',
+      label: 'Imaj7\u266d5 \u2013 IV7 \u2013 ii7 \u2013 V7',
+      description: 'A jazz-blues turnaround that opens on Imaj7\u266d5 instead of a plain major 7th or dominant tonic, establishing the chord\u2019s unstable color right away before the familiar changes underneath.',
+      degrees: [
+        { roman: 'Imaj7\u266d5', name: 'Altered tonic 7th', semitoneFromKey: 0, quality: 'majorSeventhFlatFive' },
+        { roman: 'IV7', name: 'Subdominant 7th', semitoneFromKey: 5, quality: 'dominant7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the major 7th\u266d5 chord.
+  const MAJOR_SEVENTH_FLAT_FIVE_GOSPEL_PROGRESSIONS = [
+    {
+      id: 'maj7b5-gospel-turnaround',
+      name: 'Gospel Turnaround with Altered IV',
+      label: 'I \u2013 vi \u2013 IVmaj7\u266d5 \u2013 V7',
+      description: 'The classic gospel turnaround (I\u2013vi), swapping the usual ii7 for a IVmaj7\u266d5 passing color chord just before the closing V7 pulls the harmony back to the tonic -- a rich reharmonization gospel pianists use for extra shimmer.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'vi', name: 'Submediant', semitoneFromKey: 9, quality: 'minor' },
+        { roman: 'IVmaj7\u266d5', name: 'Altered subdominant 7th', semitoneFromKey: 5, quality: 'majorSeventhFlatFive' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'maj7b5-amen-passing',
+      name: 'Amen Vamp with Maj7\u266d5 Passing Chord',
+      label: 'I \u2013 Imaj7\u266d5 \u2013 IV \u2013 iv \u2013 I',
+      description: 'The classic plagal "Amen" vamp (IV\u2192iv\u2192I), decorated with Imaj7\u266d5 as a passing color chord right after the opening tonic -- its lowered 5th creates a brief chromatic dip before the subdominant arrives.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'Imaj7\u266d5', name: 'Altered tonic passing chord', semitoneFromKey: 0, quality: 'majorSeventhFlatFive' },
+        { roman: 'IV', name: 'Subdominant', semitoneFromKey: 5, quality: 'major' },
+        { roman: 'iv', name: 'Borrowed minor subdominant', semitoneFromKey: 5, quality: 'minor' },
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+      ],
+    },
+    {
+      id: 'maj7b5-secondary',
+      name: 'Secondary Maj7\u266d5 Turnaround',
+      label: 'I \u2013 IIImaj7\u266d5 \u2013 vi \u2013 V7',
+      description: 'A secondary chord built on the mediant, colored as a maj7\u266d5 instead of the usual minor 7th, resolves into vi the way a secondary dominant would -- before the closing V7 pulls the whole progression back home.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'IIImaj7\u266d5', name: 'Altered mediant 7th', semitoneFromKey: 4, quality: 'majorSeventhFlatFive' },
+        { roman: 'vi', name: 'Submediant', semitoneFromKey: 9, quality: 'minor' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'maj7b5-extended-turnaround',
+      name: 'Extended Gospel Turnaround with Maj7\u266d5',
+      label: 'iii7 \u2013 vi7 \u2013 ii7 \u2013 \u266dVImaj7\u266d5 \u2013 Imaj7',
+      description: 'A five-chord walk-back turnaround -- three falling-5th minor 7ths (iii7\u2013vi7\u2013ii7) -- that closes with a chromatic \u266dVImaj7\u266d5 passing chord just before landing on a lush tonic major 7th (Imaj7).',
+      degrees: [
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'vi7', name: 'Submediant 7th', semitoneFromKey: 9, quality: 'minor7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: '\u266dVImaj7\u266d5', name: 'Chromatic passing altered 7th', semitoneFromKey: 8, quality: 'majorSeventhFlatFive' },
+        { roman: 'Imaj7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'major7' },
+      ],
+    },
+    {
+      id: 'maj7b5-minor-gospel-cadence',
+      name: 'Minor Gospel Cadence with Maj7\u266d5',
+      label: 'i \u2013 ivmaj7\u266d5 \u2013 V7 \u2013 i',
+      description: 'A minor-key gospel cadence where the subdominant borrows the parallel major\u2019s IV but flats its 5th, giving an unresolved, bittersweet color before the dominant pulls the harmony back home.',
+      degrees: [
+        { roman: 'i', name: 'Tonic', semitoneFromKey: 0, quality: 'minor' },
+        { roman: 'ivmaj7\u266d5', name: 'Altered subdominant 7th', semitoneFromKey: 5, quality: 'majorSeventhFlatFive' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'i', name: 'Tonic', semitoneFromKey: 0, quality: 'minor' },
+      ],
+    },
+  ];
+
   return {
     keys,
     qualities: QUALITIES,
@@ -2619,5 +2830,7 @@ const InversionService = (() => {
     minorSixthGospelProgressions: MINOR_SIXTH_GOSPEL_PROGRESSIONS,
     augmentedSeventhJazzProgressions: AUGMENTED_SEVENTH_JAZZ_PROGRESSIONS,
     augmentedSeventhGospelProgressions: AUGMENTED_SEVENTH_GOSPEL_PROGRESSIONS,
+    majorSeventhFlatFiveJazzProgressions: MAJOR_SEVENTH_FLAT_FIVE_JAZZ_PROGRESSIONS,
+    majorSeventhFlatFiveGospelProgressions: MAJOR_SEVENTH_FLAT_FIVE_GOSPEL_PROGRESSIONS,
   };
 })();
