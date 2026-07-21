@@ -2028,6 +2028,93 @@ const MajorSeventhFlatFiveChordService = (() => {
   };
 })();
 
+const MajorSeventhSharpElevenChordService = (() => {
+  // A major 7th sharp 11 chord — written maj7\u266f11 (also seen as
+  // M7\u266f11 or \u03947\u266f11) — is a plain major 7th chord with one
+  // more note stacked on top: a raised (augmented) 11th, an octave and a
+  // tritone above the root:
+  //   root -> +4 semitones -> major 3rd
+  //   major 3rd -> +3 more semitones (root +7 total) -> perfect 5th
+  //   perfect 5th -> +4 more semitones (root +11 total) -> major 7th
+  //   major 7th -> +7 more semitones (root +18 total) -> sharp 11th
+  // So every maj7\u266f11 chord, in any of the 12 keys, is just the
+  // pitch-class pattern [0, 4, 7, 11, 18] measured in semitones from its
+  // root -- an ordinary major 7th chord (0, 4, 7, 11) plus a raised 11th
+  // stacked on top, one octave and a tritone above the root. A *plain*
+  // (unraised) 11th would sit just one semitone above the major 3rd,
+  // clashing hard against it -- which is why the 11th is almost always
+  // either left out of a major 7th chord or raised a semitone, as it is
+  // here. That raised 11th removes the clash entirely and instead adds a
+  // bright, shimmering lift, the same "Lydian" color a major scale's own
+  // 4th degree gets when it's the root of its own chord (an IVmaj7 chord
+  // extended with the notes already sitting in its parent major scale
+  // naturally produces a sharp, not a plain, 11th) -- which is exactly why
+  // jazz and gospel pianists reach for a maj7\u266f11 wherever a major 7th
+  // chord would otherwise sit, especially on the subdominant (IV) degree.
+  const INTERVALS_FROM_ROOT = [0, 4, 7, 11, 18];
+  const CHORD_TONE_LABELS = ['Root', 'Major 3rd', 'Perfect 5th', 'Major 7th', 'Sharp 11th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 4 semitones up from the root.',
+    'Count 3 more semitones up from the 3rd (7 semitones from the root).',
+    'Count 4 more semitones up from the 5th (11 semitones from the root) — the same major 7th a plain major 7th chord uses.',
+    'Count 7 more semitones up from the 7th (18 semitones from the root — an octave plus a tritone) — a raised (augmented) 11th, one semitone higher than a plain 11th would be.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a major 7th sharp 11 chord (root, 3rd, 5th, 7th, ♯11th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
 // ------------------------------------------------------------ Inversions
 
 const InversionService = (() => {
@@ -2076,16 +2163,23 @@ const InversionService = (() => {
     halfDiminished7:  { suffix: 'half-diminished 7th (m7\u266d5)', displayName: 'Half-diminished 7th chord', intervals: [0, 3, 6, 10], labels: ['Root', 'Minor 3rd', 'Diminished 5th', 'Minor 7th'] },
     augmentedSeventh: { suffix: 'augmented 7th (7\u266f5)',        displayName: 'Augmented 7th chord (7\u266f5)', intervals: [0, 4, 8, 10], labels: ['Root', 'Major 3rd', 'Augmented 5th', 'Minor 7th'] },
     majorSeventhFlatFive: { suffix: 'major 7th\u266d5 (maj7\u266d5)', displayName: 'Major 7th\u266d5 chord (maj7\u266d5)', intervals: [0, 4, 6, 11], labels: ['Root', 'Major 3rd', 'Diminished 5th', 'Major 7th'] },
+    majorSeventhSharpEleven: { suffix: 'major 7th\u266f11 (maj7\u266f11)', displayName: 'Major 7th\u266f11 chord (maj7\u266f11)', intervals: [0, 4, 7, 11, 18], labels: ['Root', 'Major 3rd', 'Perfect 5th', 'Major 7th', 'Sharp 11th'] },
   };
 
   // Display order used by the "All chord types" reference tab -- triads
   // first (in the order they were taught, Lessons 8-11), then the 6th
   // chords (Lessons 20-21), then the five 7th chords (Lessons 13-17),
   // then the augmented 7th chord (Lesson 23), then the major 7th\u266d5
-  // chord (Lesson 24).
-  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7', 'augmentedSeventh', 'majorSeventhFlatFive'];
+  // chord (Lesson 24), then the major 7th\u266f11 chord (Lesson 25).
+  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7', 'augmentedSeventh', 'majorSeventhFlatFive', 'majorSeventhSharpEleven'];
 
-  const INVERSION_NAMES = ['Root position', '1st inversion', '2nd inversion', '3rd inversion'];
+  // Most chord types this app teaches have 3 or 4 notes (root position
+  // plus 2 or 3 inversions). The major 7th\u266f11 chord (Lesson 25) is
+  // the first 5-note chord -- it has a 4th inversion too (\u266f11th in
+  // the bass), which the "All Chord Types" reference tab (Exercise 1)
+  // enumerates automatically since it loops over each quality's own
+  // interval count rather than a fixed number.
+  const INVERSION_NAMES = ['Root position', '1st inversion', '2nd inversion', '3rd inversion', '4th inversion'];
 
   /** Builds a chord (root position) for `key` at `octave` in the given quality. */
   function buildChordTones(key, octave, qualityKey, preferFlats) {
@@ -2812,6 +2906,139 @@ const InversionService = (() => {
     },
   ];
 
+  // Five jazz chord progressions built around the major 7th\u266f11 chord --
+  // mostly using it as a bright, "Lydian" substitute wherever a plain
+  // major 7th chord would otherwise sit, especially on the subdominant
+  // (IV) degree, whose own major scale naturally supplies a raised (not
+  // plain) 11th.
+  const MAJOR_SEVENTH_SHARP_ELEVEN_JAZZ_PROGRESSIONS = [
+    {
+      id: 'maj7sharp11-iv-lydian',
+      name: 'IVmaj7\u266f11 Color Change',
+      label: 'Imaj7 \u2013 IVmaj7\u266f11 \u2013 iii7 \u2013 vi7',
+      description: 'The classic jazz-ballad move of coloring the subdominant with its natural Lydian 4th: IVmaj7\u266f11 uses only notes diatonic to the tonic major scale, giving a lush, brighter alternative to a plain IVmaj7, before falling back through iii7 to vi7.',
+      degrees: [
+        { roman: 'Imaj7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'major7' },
+        { roman: 'IVmaj7\u266f11', name: 'Lydian subdominant 7th', semitoneFromKey: 5, quality: 'majorSeventhSharpEleven' },
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'vi7', name: 'Submediant 7th', semitoneFromKey: 9, quality: 'minor7' },
+      ],
+    },
+    {
+      id: 'maj7sharp11-ii-V-I',
+      name: 'ii\u2013V\u2013I with Lydian Tonic',
+      label: 'ii7 \u2013 V7 \u2013 Imaj7\u266f11',
+      description: 'The familiar ii\u2013V\u2013I, but resolving onto Imaj7\u266f11 instead of a plain Imaj7 -- a shimmering, modern substitution that raises the tonic\u2019s 11th for extra brightness rather than dissonance.',
+      degrees: [
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'Imaj7\u266f11', name: 'Lydian tonic 7th', semitoneFromKey: 0, quality: 'majorSeventhSharpEleven' },
+      ],
+    },
+    {
+      id: 'maj7sharp11-turnaround',
+      name: 'Turnaround with Lydian Color',
+      label: 'iii7 \u2013 VImaj7\u266f11 \u2013 ii7 \u2013 V7',
+      description: 'A falling turnaround where the vi chord is colored as a maj7\u266f11 instead of the usual minor 7th, for a brighter major-quality substitution right in the middle of the progression.',
+      degrees: [
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'VImaj7\u266f11', name: 'Lydian submediant 7th', semitoneFromKey: 9, quality: 'majorSeventhSharpEleven' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'maj7sharp11-minor-key',
+      name: 'Minor-Key Cadence with Lydian IV',
+      label: 'i7 \u2013 IVmaj7\u266f11 \u2013 V7 \u2013 i7',
+      description: 'A minor-key cadence borrowing the parallel major\u2019s IV, colored as a maj7\u266f11 for a bright, modal lift between the minor tonic and the dominant that finally pulls the harmony home.',
+      degrees: [
+        { roman: 'i7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'minor7' },
+        { roman: 'IVmaj7\u266f11', name: 'Borrowed Lydian subdominant 7th', semitoneFromKey: 5, quality: 'majorSeventhSharpEleven' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'i7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'minor7' },
+      ],
+    },
+    {
+      id: 'maj7sharp11-blues',
+      name: 'Jazz Blues Turnaround with Lydian Tonic',
+      label: 'Imaj7\u266f11 \u2013 IV7 \u2013 ii7 \u2013 V7',
+      description: 'A jazz-blues turnaround that opens on Imaj7\u266f11 instead of a plain major 7th or dominant tonic, establishing a bright, modern color right away before the familiar changes underneath.',
+      degrees: [
+        { roman: 'Imaj7\u266f11', name: 'Lydian tonic 7th', semitoneFromKey: 0, quality: 'majorSeventhSharpEleven' },
+        { roman: 'IV7', name: 'Subdominant 7th', semitoneFromKey: 5, quality: 'dominant7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the major 7th\u266f11 chord.
+  const MAJOR_SEVENTH_SHARP_ELEVEN_GOSPEL_PROGRESSIONS = [
+    {
+      id: 'maj7sharp11-gospel-turnaround',
+      name: 'Gospel Turnaround with Lydian IV',
+      label: 'I \u2013 vi \u2013 IVmaj7\u266f11 \u2013 V7',
+      description: 'The classic gospel turnaround (I\u2013vi), swapping the usual IV or ii7 for a IVmaj7\u266f11 color chord just before the closing V7 pulls the harmony back to the tonic -- a shimmering reharmonization gospel pianists use for extra lift.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'vi', name: 'Submediant', semitoneFromKey: 9, quality: 'minor' },
+        { roman: 'IVmaj7\u266f11', name: 'Lydian subdominant 7th', semitoneFromKey: 5, quality: 'majorSeventhSharpEleven' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'maj7sharp11-amen-passing',
+      name: 'Amen Vamp with Lydian Passing Chord',
+      label: 'I \u2013 IVmaj7\u266f11 \u2013 IV \u2013 iv \u2013 I',
+      description: 'The classic plagal "Amen" vamp (IV\u2192iv\u2192I), decorated with IVmaj7\u266f11 as a bright passing color chord right before the plain subdominant arrives -- its raised 11th glows against the melody without any dissonant clash.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'IVmaj7\u266f11', name: 'Lydian passing subdominant 7th', semitoneFromKey: 5, quality: 'majorSeventhSharpEleven' },
+        { roman: 'IV', name: 'Subdominant', semitoneFromKey: 5, quality: 'major' },
+        { roman: 'iv', name: 'Borrowed minor subdominant', semitoneFromKey: 5, quality: 'minor' },
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+      ],
+    },
+    {
+      id: 'maj7sharp11-secondary',
+      name: 'Secondary Lydian Turnaround',
+      label: 'I \u2013 IIImaj7\u266f11 \u2013 vi \u2013 V7',
+      description: 'A secondary chord built on the mediant, colored as a maj7\u266f11 instead of the usual minor 7th, resolves into vi the way a secondary dominant would -- before the closing V7 pulls the whole progression back home.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'IIImaj7\u266f11', name: 'Lydian mediant 7th', semitoneFromKey: 4, quality: 'majorSeventhSharpEleven' },
+        { roman: 'vi', name: 'Submediant', semitoneFromKey: 9, quality: 'minor' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'maj7sharp11-extended-turnaround',
+      name: 'Extended Gospel Turnaround with Lydian Color',
+      label: 'iii7 \u2013 vi7 \u2013 ii7 \u2013 \u266dVImaj7\u266f11 \u2013 Imaj7',
+      description: 'A five-chord walk-back turnaround -- three falling-5th minor 7ths (iii7\u2013vi7\u2013ii7) -- that closes with a chromatic \u266dVImaj7\u266f11 passing chord just before landing on a lush tonic major 7th (Imaj7).',
+      degrees: [
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'vi7', name: 'Submediant 7th', semitoneFromKey: 9, quality: 'minor7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: '\u266dVImaj7\u266f11', name: 'Chromatic passing Lydian 7th', semitoneFromKey: 8, quality: 'majorSeventhSharpEleven' },
+        { roman: 'Imaj7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'major7' },
+      ],
+    },
+    {
+      id: 'maj7sharp11-minor-gospel-cadence',
+      name: 'Minor Gospel Cadence with Lydian IV',
+      label: 'i \u2013 IVmaj7\u266f11 \u2013 V7 \u2013 i',
+      description: 'A minor-key gospel cadence where the subdominant borrows the parallel major\u2019s IV and raises its 11th, giving a bright, floating lift before the dominant pulls the harmony back home.',
+      degrees: [
+        { roman: 'i', name: 'Tonic', semitoneFromKey: 0, quality: 'minor' },
+        { roman: 'IVmaj7\u266f11', name: 'Borrowed Lydian subdominant 7th', semitoneFromKey: 5, quality: 'majorSeventhSharpEleven' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'i', name: 'Tonic', semitoneFromKey: 0, quality: 'minor' },
+      ],
+    },
+  ];
+
   return {
     keys,
     qualities: QUALITIES,
@@ -2832,5 +3059,7 @@ const InversionService = (() => {
     augmentedSeventhGospelProgressions: AUGMENTED_SEVENTH_GOSPEL_PROGRESSIONS,
     majorSeventhFlatFiveJazzProgressions: MAJOR_SEVENTH_FLAT_FIVE_JAZZ_PROGRESSIONS,
     majorSeventhFlatFiveGospelProgressions: MAJOR_SEVENTH_FLAT_FIVE_GOSPEL_PROGRESSIONS,
+    majorSeventhSharpElevenJazzProgressions: MAJOR_SEVENTH_SHARP_ELEVEN_JAZZ_PROGRESSIONS,
+    majorSeventhSharpElevenGospelProgressions: MAJOR_SEVENTH_SHARP_ELEVEN_GOSPEL_PROGRESSIONS,
   };
 })();

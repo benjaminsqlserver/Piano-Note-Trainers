@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Major 7th ♯11 Chord Trainer — Piano Note Trainers</title>
+<meta name="description" content="Learn how every major 7th sharp 11 (maj7♯11) chord is built by counting semitones, then play all 12 maj7♯11 chords around the circle of fourths plus 5 jazz and 5 gospel chord progressions featuring this chord, in every key." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="major-seventh-sharp-eleven-chord">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 25 · All 12 keys</div>
+    <h1>Major 7th ♯11 Chord Trainer</h1>
+    <p>Learn how a major 7th sharp 11 (maj7♯11) chord is built one semitone-count at a time — a major 7th chord with a raised 11th stacked on top — then put it to work with three MIDI exercises: playing all 12 maj7♯11 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions that show off its bright, "Lydian" color, in every key.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="learn" role="tab" aria-selected="true">Learn</button>
+    <button type="button" data-tab="fourths" role="tab" aria-selected="false">Exercise 1: Circle of Fourths</button>
+    <button type="button" data-tab="jazz" role="tab" aria-selected="false">Exercise 2: Jazz Progressions</button>
+    <button type="button" data-tab="gospel" role="tab" aria-selected="false">Exercise 3: Gospel Progressions</button>
+  </div>
+
+  <!-- ===================== LEARN ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="learn">
+    <div class="stack">
+
+      <div class="card">
+        <h3 style="font-size:1.1rem;">How a major 7th ♯11 chord is built</h3>
+        <p>A major 7th sharp 11 chord — written <strong>maj7♯11</strong> (also seen as M7♯11 or Δ7♯11) — is a 5-note chord: a complete major 7th chord with one more note stacked on top, a raised 11th. Every <strong>maj7♯11</strong> chord — in any of the 12 keys — is built the exact same way, by counting semitones to the right from a root note:</p>
+        <ol style="margin:0.75rem 0 0.75rem 1.25rem; padding:0; line-height:1.7;">
+          <li>Start on the <strong>root</strong> — the note that names the chord.</li>
+          <li>Count <strong>4 semitones</strong> to the right to land on the <strong>major 3rd</strong>.</li>
+          <li>From there, count <strong>3 more semitones</strong> to the right (7 semitones from the root) to land on the <strong>perfect 5th</strong>.</li>
+          <li>From there, count <strong>4 more semitones</strong> to the right (11 semitones from the root) to land on the <strong>major 7th</strong>.</li>
+          <li>From there, count <strong>7 more semitones</strong> to the right (18 semitones from the root — an octave plus a tritone) to land on the <strong>sharp 11th</strong>.</li>
+        </ol>
+        <div class="alert alert-info">
+          Example — <strong>D major 7th ♯11 (Dmaj7♯11)</strong>: start on <strong>D</strong>, count 4 semitones right to reach <strong>F♯</strong>, 3 more to reach <strong>A</strong>, 4 more to reach <strong>C♯</strong>, then 7 more to reach <strong>G♯</strong>. D‑F♯‑A‑C♯‑G♯ is the Dmaj7♯11 chord. The pattern <strong>4, 3, 4, 7</strong> (18 semitones total from root to top) is what makes a chord a "maj7♯11" — every one of the 12 maj7♯11 chords is this same shape, just moved to start on a different key.
+        </div>
+        <div class="alert alert-warning">
+          Notice this chord keeps the exact same 4 notes as a plain major 7th chord (root, 3rd, 5th, major 7th) and simply adds a 5th note on top. A <em>plain</em> (unraised) 11th would land just one semitone above the major 3rd, clashing hard against it — which is why an unaltered 11th is almost never added to a major 7th chord. Raising it a semitone removes that clash entirely and instead adds a bright, shimmering lift: the same "Lydian" color a major scale's own 4th degree naturally gets when it becomes the root of its own chord. That's exactly why jazz and gospel pianists reach for a maj7♯11 wherever a major 7th chord would otherwise sit — especially on the subdominant (IV) degree, where the raised 11th is already diatonic to the key and needs no borrowed notes at all.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Try it: pick a root and build the chord step by step</h3>
+        <div class="controls-row">
+          <div class="field">
+            <label for="lc-root">Root note</label>
+            <select id="lc-root"></select>
+          </div>
+          <div class="field">
+            <label for="lc-output">Sound output</label>
+            <select id="lc-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+        <div class="actions-row">
+          <button class="btn btn-success" id="lc-step">▶ Play next step</button>
+          <button class="btn btn-ghost" id="lc-restart">↺ Restart chord</button>
+          <button class="btn btn-primary" id="lc-full">▶ Play full chord together</button>
+        </div>
+
+        <div class="card now-playing">
+          <div class="eyebrow" id="lc-step-label">Step 1 of 5</div>
+          <div class="now-playing__value" id="lc-current-note">—</div>
+          <div class="now-playing__sub" id="lc-current-explain"></div>
+        </div>
+
+        <div class="card"><div id="lc-keyboard"></div></div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Chord tone</th><th>Note</th><th>Semitones from root</th><th>MIDI #</th></tr></thead>
+            <tbody id="lc-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">All 12 maj7♯11 chords at a glance</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Chord</th><th>Root</th><th>+4 semitones → 3rd</th><th>+3 semitones → 5th</th><th>+4 semitones → 7th</th><th>+7 semitones → ♯11th</th></tr></thead>
+            <tbody id="lc-all-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 1: CIRCLE OF FOURTHS ===================== -->
+  <section class="tabpanel" data-tabpanel="fourths">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">This MIDI exercise plays <strong>all 12 maj7♯11 chords</strong>, one after another, moving around the <strong>circle of fourths</strong> — each chord's root sits a perfect 4th (5 semitones) above the last one: C → F → B♭ → E♭ → A♭ → D♭ → G♭/F♯ → B → E → A → D → G → back to C. Every chord is played as a full 5-note maj7♯11 chord (root, 3rd, 5th, 7th, and ♯11th together).</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="cf-octave">Octave</label>
+            <input type="number" id="cf-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="cf-tempo">Tempo: <span id="cf-tempo-value">80</span> BPM</label>
+            <input type="range" id="cf-tempo" min="30" max="160" value="80" />
+          </div>
+          <div class="field">
+            <label for="cf-output">Sound output</label>
+            <select id="cf-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="cf-play">▶ Play all 12 chords</button>
+          <button class="btn btn-danger" id="cf-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="cf-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="cf-position-label">Chord 1 of 12</div>
+        <div class="now-playing__value" id="cf-current-chord">—</div>
+        <div class="now-playing__sub" id="cf-current-notes"></div>
+        <div class="progress"><div class="progress__bar" id="cf-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="cf-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">The 12 chords, in circle-of-fourths order</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Chord</th><th>Root</th><th>3rd</th><th>5th</th><th>7th</th><th>♯11th</th></tr></thead>
+            <tbody id="cf-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 2: JAZZ PROGRESSIONS ===================== -->
+  <section class="tabpanel" data-tabpanel="jazz">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Five jazz chord progressions that put the maj7♯11 chord to work — mostly as a bright, "Lydian" substitute wherever a plain major 7th chord would otherwise sit. Pick a progression and play it in one key or cycle through all 12.</p>
+        <div class="controls-row">
+          <div class="field" style="min-width:280px;">
+            <label for="jz-progression">Progression</label>
+            <select id="jz-progression"></select>
+          </div>
+          <div class="field">
+            <label for="jz-key">Key</label>
+            <select id="jz-key"></select>
+          </div>
+          <div class="field">
+            <label for="jz-octave">Octave</label>
+            <input type="number" id="jz-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="jz-tempo">Tempo: <span id="jz-tempo-value">76</span> BPM</label>
+            <input type="range" id="jz-tempo" min="30" max="160" value="76" />
+          </div>
+          <div class="field">
+            <label for="jz-output">Sound output</label>
+            <select id="jz-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <p class="progression-blurb" id="jz-description"></p>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="jz-play">▶ Play in this key</button>
+          <button class="btn btn-primary" id="jz-play-all">▶ Play in all 12 keys</button>
+          <button class="btn btn-danger" id="jz-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="jz-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="jz-key-label">Key of C</div>
+        <div class="now-playing__value" id="jz-current-chord">—</div>
+        <div class="now-playing__sub" id="jz-current-degree"></div>
+        <div class="progress"><div class="progress__bar" id="jz-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="jz-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;" id="jz-table-title">Progression in C</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Chord</th><th>Notes</th></tr></thead>
+            <tbody id="jz-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 3: GOSPEL PROGRESSIONS ===================== -->
+  <section class="tabpanel" data-tabpanel="gospel">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Five gospel chord progressions built the same way. Pick a progression and play it in one key or cycle through all 12.</p>
+        <div class="controls-row">
+          <div class="field" style="min-width:280px;">
+            <label for="gp-progression">Progression</label>
+            <select id="gp-progression"></select>
+          </div>
+          <div class="field">
+            <label for="gp-key">Key</label>
+            <select id="gp-key"></select>
+          </div>
+          <div class="field">
+            <label for="gp-octave">Octave</label>
+            <input type="number" id="gp-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="gp-tempo">Tempo: <span id="gp-tempo-value">76</span> BPM</label>
+            <input type="range" id="gp-tempo" min="30" max="160" value="76" />
+          </div>
+          <div class="field">
+            <label for="gp-output">Sound output</label>
+            <select id="gp-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <p class="progression-blurb" id="gp-description"></p>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="gp-play">▶ Play in this key</button>
+          <button class="btn btn-primary" id="gp-play-all">▶ Play in all 12 keys</button>
+          <button class="btn btn-danger" id="gp-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="gp-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="gp-key-label">Key of C</div>
+        <div class="now-playing__value" id="gp-current-chord">—</div>
+        <div class="now-playing__sub" id="gp-current-degree"></div>
+        <div class="progress"><div class="progress__bar" id="gp-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="gp-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;" id="gp-table-title">Progression in C</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Chord</th><th>Notes</th></tr></thead>
+            <tbody id="gp-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/music-services.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/progression-picker.js"></script>
+<script src="js/major-seventh-sharp-eleven-chord-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

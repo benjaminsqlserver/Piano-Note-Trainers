@@ -42,9 +42,10 @@ all lessons — current and future.
 | 18 | **His Eye Is on the Sparrow — Song Trainer** (`his-eye-on-the-sparrow-trainer.html`) | The classic gospel hymn "His Eye Is on the Sparrow" (Civilla D. Martin & Charles H. Gabriel, 1905), played from its real, unaltered source arrangement (melody + accompaniment, both hands, from the original two-channel MIDI file) in every key — the song lesson whose harmony motivated Lessons 13-17, since its arrangement uses all five 7th-chord types they teach (dominant 7th, diminished 7th, minor 7th, major 7th, and half-diminished 7th) |
 | 20 | **6th Chords** (`sixth-chord-trainer.html`) | How every 6th chord is built by counting semitones (root, +4 to the major 3rd, +3 more to the perfect 5th, +2 more to the major 6th) — a major triad plus a major 6th, never a 7th of any kind — plus three MIDI exercises: all 12 6th chords around the circle of fourths, and 5 jazz chord progressions plus 5 gospel chord progressions built around the 6th chord's warm, "at rest" tonic color, in every key |
 | 21 | **Minor 6th Chords** (`minor-sixth-chord-trainer.html`) | How every minor 6th chord is built by counting semitones (root, +3 to the minor 3rd, +4 more to the perfect 5th, +2 more to the major 6th) — a minor triad plus a *major* 6th, giving it a bittersweet color and the same four notes as a half-diminished 7th chord on its 6th degree — plus three MIDI exercises: all 12 minor 6th chords around the circle of fourths, and 5 jazz chord progressions plus 5 gospel chord progressions built around the minor 6th chord, in every key |
-| 22 | **Chord Inversions** (`inversions-trainer.html`) | What a chord inversion is, the different types of inversion (root position, 1st, 2nd, and — for 4-note chords — 3rd), and how to build one for every chord type taught in Lessons 8-11, 13-17, 20-21 & 23, plus two MIDI exercises: 5 jazz chord progressions and 5 gospel chord progressions, each playable in a chosen inversion, in a single key or cycled through all 12 |
+| 22 | **Chord Inversions** (`inversions-trainer.html`) | What a chord inversion is, the different types of inversion (root position, 1st, 2nd, 3rd for 4-note chords, and 4th for the 5-note major 7th♯11 chord), and how to build one for every chord type taught in Lessons 8-11, 13-17, 20-21, 23, 24 & 25, plus two MIDI exercises: 5 jazz chord progressions and 5 gospel chord progressions, each playable in a chosen inversion, in a single key or cycled through all 12 |
 | 23 | **Augmented 7th Chords** (`augmented-seventh-chord-trainer.html`) | How every augmented 7th chord — also known as 7♯5, +7, dominant 7♯5, C7♯5, C+7, C7+, augmented dominant seventh, or dominant seventh augmented — is built by counting semitones (a dominant 7th chord with its 5th raised a semitone), plus three MIDI exercises: all 12 augmented 7th chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this altered dominant, in every key |
 | 24 | **Major 7th♭5 Chords** (`major-seventh-flat-five-chord-trainer.html`) | How every major 7th flat 5 chord — also known as maj7♭5, M7♭5, or Δ7♭5 — is built by counting semitones (a major 7th chord with its 5th lowered a semitone), plus three MIDI exercises: all 12 maj7♭5 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this unsettled, floating color, in every key |
+| 25 | **Major 7th♯11 Chords** (`major-seventh-sharp-eleven-chord-trainer.html`) | How every major 7th sharp 11 chord — also known as maj7♯11, M7♯11, or Δ7♯11 — is built by counting semitones (a major 7th chord plus a raised 11th stacked on top — the first 5-note chord in this app), plus three MIDI exercises: all 12 maj7♯11 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this bright, "Lydian" color, in every key |
 
 Each lesson page includes:
 
@@ -155,16 +156,19 @@ Each lesson page includes:
 
 - The **Chord Inversions** lesson's **Learn** tab explains what an
   inversion is (the same chord tones, reordered so a different tone sits
-  in the bass), the four inversion types (root position, 1st, 2nd, and —
-  for 4-note chords only — 3rd), slash-chord notation, and an interactive
-  builder covering every chord type taught in Lessons 8-11, 13-17, 20-21,
-  23 & 24. Its **All Chord Types** tab is a clickable reference table of every
-  quality's every inversion in a chosen key. Its two chord-progression
-  exercises — **Jazz Progressions** and **Gospel Progressions** — each
-  offer 5 real progressions built from those same chord qualities; pick a
-  progression and an inversion (applied to every chord in it, capped
-  per-chord where a triad can't reach a 3rd inversion) and play it in one
-  key or cycle through all 12.
+  in the bass), the inversion types (root position, 1st, 2nd, 3rd for
+  4-note chords, and — for the 5-note major 7th♯11 chord only — a 4th),
+  slash-chord notation, and an interactive builder covering every chord
+  type taught in Lessons 8-11, 13-17, 20-21, 23, 24 & 25. Its **All Chord
+  Types** tab is a clickable reference table of every quality's every
+  inversion in a chosen key — including the maj7♯11 chord's 4th inversion,
+  since that tab loops over each quality's own note count rather than a
+  fixed number. Its two chord-progression exercises — **Jazz
+  Progressions** and **Gospel Progressions** — each offer 5 real
+  progressions built from those same chord qualities; pick a progression
+  and an inversion (applied to every chord in it, capped per-chord where a
+  triad can't reach a 3rd inversion) and play it in one key or cycle
+  through all 12.
 
 - The **Augmented 7th Chords** lesson follows the same Learn + Circle of
   Fourths + Jazz/Gospel Progressions pattern as the 6th Chord lessons, for
@@ -191,9 +195,30 @@ Each lesson page includes:
   wherever a major 7th chord would otherwise sit. Its **Jazz
   Progressions** and **Gospel Progressions** tabs each offer 5 real
   progressions showcasing it in that role, playable in a chosen key or
-  cycled through all 12. The **Chord Inversions** lesson (Lesson 22) has
-  also been updated to include this chord type in its Learn tab, All
-  Chord Types reference table, and per-chord max-inversion logic.
+  cycled through all 12.
+
+- The **Major 7th♯11 Chords** lesson follows the same Learn + Circle of
+  Fourths + Jazz/Gospel Progressions pattern, for a chord also known as
+  **maj7♯11**, **M7♯11**, or **Δ7♯11** (root, +4, +3, +4, +7) — the first
+  **5-note** chord in this app: a complete major 7th chord (root, 3rd,
+  5th, major 7th) with a raised 11th stacked on top, an octave and a
+  tritone above the root. A plain (unraised) 11th would clash hard
+  against the major 3rd a semitone below it, so the 11th is raised
+  instead, removing the clash and adding a bright, shimmering "Lydian"
+  lift — the same color a major scale's own 4th degree naturally
+  produces when it becomes the root of its own chord, which is why jazz
+  and gospel pianists reach for a maj7♯11 wherever a major 7th chord
+  would otherwise sit, especially on the subdominant (IV) degree. Its
+  **Jazz Progressions** and **Gospel Progressions** tabs each offer 5
+  real progressions showcasing it in that role, playable in a chosen key
+  or cycled through all 12. The **Chord Inversions** lesson (Lesson 22)
+  has also been updated to include both this chord type and the major
+  7th♭5 chord in its Learn tab, All Chord Types reference table, and
+  per-chord max-inversion logic — since the maj7♯11 chord has 5 notes
+  (not 4), it's the first chord type with a genuine 4th inversion, which
+  the All Chord Types reference tab lists in full even though the
+  Learn tab's quick picker and recipe table (like every other control in
+  this lesson) top out at the 3rd.
 
 The home page (`index.html`) is a landing page with an interactive
 hero keyboard and cards linking to each lesson.
@@ -226,6 +251,7 @@ PianoNoteTrainers/
 ├─ inversions-trainer.html      # Lesson 22
 ├─ augmented-seventh-chord-trainer.html # Lesson 23
 ├─ major-seventh-flat-five-chord-trainer.html # Lesson 24
+├─ major-seventh-sharp-eleven-chord-trainer.html # Lesson 25
 ├─ css/
 │  └─ styles.css                # Shared, responsive design system
 ├─ js/
@@ -233,8 +259,8 @@ PianoNoteTrainers/
 │  ├─ tabs.js                   # Shared tab / segmented-control helper
 │  ├─ audio-engine.js           # Shared WebAudio synth + Web MIDI wrapper
 │  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer (fixed 8-octave range, C0–C8, on every lesson)
-│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major/minor/augmented/diminished + 6th + 7th chords + augmented 7th + major 7th♭5 + inversions/progressions)
-│  ├─ progression-picker.js     # Shared root-position-only progression-picker exercise (Jazz/Gospel tabs on Lessons 20-21, 23 & 24)
+│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major/minor/augmented/diminished + 6th + 7th chords + augmented 7th + major 7th♭5 + major 7th♯11 + inversions/progressions)
+│  ├─ progression-picker.js     # Shared root-position-only progression-picker exercise (Jazz/Gospel tabs on Lessons 20-21, 23, 24 & 25)
 │  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader (tags each note with its source MIDI channel)
 │  ├─ midi-data.js              # Base64-embedded improvisation-demo + song MIDI data (major + Dorian + Phrygian + Power in the Blood + His Eye Is on the Sparrow)
 │  ├─ home.js                   # Home page hero keyboard
@@ -259,7 +285,8 @@ PianoNoteTrainers/
 │  ├─ minor-sixth-chord-trainer.js # Lesson 21 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
 │  ├─ inversions-trainer.js     # Lesson 22 page logic (learn tab + all-chord-types reference + jazz & gospel progression exercises)
 │  ├─ augmented-seventh-chord-trainer.js # Lesson 23 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  └─ major-seventh-flat-five-chord-trainer.js # Lesson 24 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
+│  ├─ major-seventh-flat-five-chord-trainer.js # Lesson 24 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
+│  └─ major-seventh-sharp-eleven-chord-trainer.js # Lesson 25 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
 ├─ midi/                        # Sample MIDI files for Lessons 5-7, 12 & 18's playback (one per key each; Lessons 12 & 18's files each carry melody on channel 0 and chords/accompaniment on channel 1)
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file
