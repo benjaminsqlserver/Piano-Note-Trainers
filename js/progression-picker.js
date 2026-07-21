@@ -37,6 +37,7 @@ function setupProgressionPicker(prefix, progressions, midi) {
     description: document.getElementById(`${prefix}-description`),
     play: document.getElementById(`${prefix}-play`),
     playAll: document.getElementById(`${prefix}-play-all`),
+    step: document.getElementById(`${prefix}-step`),
     stop: document.getElementById(`${prefix}-stop`),
     midiWarning: document.getElementById(`${prefix}-midi-warning`),
     keyLabel: document.getElementById(`${prefix}-key-label`),
@@ -69,6 +70,7 @@ function setupProgressionPicker(prefix, progressions, midi) {
 
   let isPlaying = false;
   let stopRequested = false;
+  let stepIndex = 0;
 
   function currentProgression() {
     return progressions[Number(el.progression.value)];
@@ -92,6 +94,7 @@ function setupProgressionPicker(prefix, progressions, midi) {
   }
 
   function refresh() {
+    stepIndex = 0;
     const key = keys[Number(el.key.value)];
     const octave = Number(el.octave.value);
     const progressionDef = currentProgression();
@@ -127,6 +130,7 @@ function setupProgressionPicker(prefix, progressions, midi) {
     stopRequested = false;
     el.play.disabled = true;
     el.playAll.disabled = true;
+    el.step.disabled = true;
     el.stop.disabled = false;
 
     const key = keys[Number(el.key.value)];
@@ -140,6 +144,7 @@ function setupProgressionPicker(prefix, progressions, midi) {
     isPlaying = false;
     el.play.disabled = false;
     el.playAll.disabled = false;
+    el.step.disabled = false;
     el.stop.disabled = true;
     keyboard.update({ activeNotes: [] });
   }
@@ -150,6 +155,7 @@ function setupProgressionPicker(prefix, progressions, midi) {
     stopRequested = false;
     el.play.disabled = true;
     el.playAll.disabled = true;
+    el.step.disabled = true;
     el.stop.disabled = false;
 
     const octave = Number(el.octave.value);
@@ -169,6 +175,7 @@ function setupProgressionPicker(prefix, progressions, midi) {
     isPlaying = false;
     el.play.disabled = false;
     el.playAll.disabled = false;
+    el.step.disabled = false;
     el.stop.disabled = true;
     keyboard.update({ activeNotes: [] });
   }
@@ -179,7 +186,27 @@ function setupProgressionPicker(prefix, progressions, midi) {
     isPlaying = false;
     el.play.disabled = false;
     el.playAll.disabled = false;
+    el.step.disabled = false;
     el.stop.disabled = true;
+  }
+
+  /** Silently advances to the next chord in the current key's progression -- highlights the keyboard, table row, and labels, but plays no sound. */
+  function stepForward() {
+    if (isPlaying) return;
+    const key = keys[Number(el.key.value)];
+    const octave = Number(el.octave.value);
+    const chords = renderTable(key, octave);
+    if (stepIndex >= chords.length) stepIndex = 0;
+    const c = chords[stepIndex];
+    const notes = c.tones.map((t) => t.midiNote);
+    el.keyLabel.textContent = `Key of ${key.name}`;
+    el.currentChord.textContent = c.chordName;
+    el.currentDegree.textContent = `Degree ${c.roman} (${c.name})`;
+    el.progress.style.width = `${((stepIndex + 1) * 100) / chords.length}%`;
+    keyboard.update({ activeNote: null, activeNotes: notes, tonicPitchClass: key.semitoneFromC });
+    highlightRow(stepIndex);
+
+    stepIndex += 1;
   }
 
   el.progression.addEventListener('change', refresh);
@@ -188,6 +215,7 @@ function setupProgressionPicker(prefix, progressions, midi) {
   el.tempo.addEventListener('input', () => { el.tempoValue.textContent = el.tempo.value; });
   el.play.addEventListener('click', playInCurrentKey);
   el.playAll.addEventListener('click', playInAllKeys);
+  el.step.addEventListener('click', stepForward);
   el.stop.addEventListener('click', stopPlayback);
 
   refresh();

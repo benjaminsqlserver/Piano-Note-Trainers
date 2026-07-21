@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Chord Inversions Trainer — Piano Note Trainers</title>
-<meta name="description" content="Learn what chord inversions are and how to build them for every chord type this app teaches, then play 5 jazz and 5 gospel chord progressions in any inversion, in all 12 keys." />
+<meta name="description" content="Learn what chord inversions are and how to build them for every chord type this app teaches — including the 5-note major 7th♯11 chord — then play 5 jazz and 5 gospel chord progressions in any inversion, in all 12 keys." />
 <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body data-page="inversions">
@@ -16,7 +16,7 @@
   <header class="page-header">
     <div class="eyebrow">Lesson 22 · All 12 keys</div>
     <h1>Chord Inversions Trainer</h1>
-    <p>Learn what a chord inversion is and the different types of inversion, how to build an inversion for every chord type this app has taught so far — including the augmented 7th (7♯5) chord and the major 7th♭5 (maj7♭5) chord — and put it all to work with two chord-progression exercises — 5 jazz progressions and 5 gospel progressions — where you choose the inversion and play it in any key or all 12 keys.</p>
+    <p>Learn what a chord inversion is and the different types of inversion, how to build an inversion for every chord type this app has taught so far — including the augmented 7th (7♯5) chord, the major 7th♭5 (maj7♭5) chord, and the 5-note major 7th♯11 (maj7♯11) chord — and put it all to work with two chord-progression exercises — 5 jazz progressions and 5 gospel progressions — where you choose the inversion and play it in any key or all 12 keys.</p>
   </header>
 
   <div class="tabbar" role="tablist">
@@ -41,7 +41,7 @@
 
       <div class="card">
         <h3 style="font-size:1rem;">The types of inversion</h3>
-        <p>A chord has as many inversions as it has notes minus one. Every triad (3 notes: major, minor, augmented, diminished) has a root position plus <strong>2</strong> inversions. Every 4-note chord (6th, minor 6th, dominant 7th, diminished 7th, minor 7th, major 7th, half-diminished 7th, augmented 7th, major 7th♭5) has a root position plus <strong>3</strong> inversions:</p>
+        <p>A chord has as many inversions as it has notes minus one. Every triad (3 notes: major, minor, augmented, diminished) has a root position plus <strong>2</strong> inversions. Every 4-note chord (6th, minor 6th, dominant 7th, diminished 7th, minor 7th, major 7th, half-diminished 7th, augmented 7th, major 7th♭5) has a root position plus <strong>3</strong> inversions. The major 7th♯11 chord is the one chord type in this app with <strong>5</strong> notes — root, 3rd, 5th, 7th, and ♯11th — so it has a root position plus <strong>4</strong> inversions; the "All Chord Types" reference tab below lists every one of them, including the 4th:</p>
         <div class="data-table-wrap">
           <table class="data-table">
             <thead><tr><th>Inversion</th><th>What's in the bass</th><th>Triad example (C‑E‑G)</th><th>7th‑chord example (C‑E‑G‑B♭)</th></tr></thead>
@@ -86,6 +86,7 @@
         </div>
         <div class="actions-row">
           <button class="btn btn-success" id="lc-play">▶ Play this inversion</button>
+          <button class="btn btn-ghost" id="lc-step">⏭ Step through notes (no sound)</button>
         </div>
 
         <div class="card now-playing">
@@ -102,6 +103,8 @@
             <tbody id="lc-table-body"></tbody>
           </table>
         </div>
+
+        <p style="margin:0.75rem 0 0; font-size:0.85rem; color:#5b594f;">This quick picker tops out at the 3rd inversion. The major 7th♯11 chord has one more (a 4th) — see every inversion of every chord type, including that one, in Exercise 1 below.</p>
       </div>
 
       <div class="card">
@@ -206,6 +209,7 @@
         <div class="actions-row">
           <button class="btn btn-success" id="jz-play">▶ Play in this key</button>
           <button class="btn btn-primary" id="jz-play-all">▶ Play in all 12 keys</button>
+          <button class="btn btn-ghost" id="jz-step">⏭ Step (no sound)</button>
           <button class="btn btn-danger" id="jz-stop" disabled>■ Stop</button>
         </div>
 
@@ -281,6 +285,7 @@
         <div class="actions-row">
           <button class="btn btn-success" id="gp-play">▶ Play in this key</button>
           <button class="btn btn-primary" id="gp-play-all">▶ Play in all 12 keys</button>
+          <button class="btn btn-ghost" id="gp-step">⏭ Step (no sound)</button>
           <button class="btn btn-danger" id="gp-stop" disabled>■ Stop</button>
         </div>
 

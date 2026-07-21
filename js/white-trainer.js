@@ -19,6 +19,7 @@ const el = {
   tempoValue: document.getElementById('wt-tempo-value'),
   output: document.getElementById('wt-output'),
   play: document.getElementById('wt-play'),
+  step: document.getElementById('wt-step'),
   stop: document.getElementById('wt-stop'),
   practice: document.getElementById('wt-practice'),
   input: document.getElementById('wt-input'),
@@ -138,6 +139,22 @@ function stopPlayback() {
   midi.stopAll(el.output.value || null);
 }
 
+let stepIndex = 0;
+
+/** Silently advances one note at a time through the current sequence -- highlights the keyboard and table row, but plays no sound. */
+function stepSequence() {
+  if (isPlaying || sequence.length === 0) return;
+  if (stepIndex >= sequence.length) stepIndex = 0;
+  currentStep = sequence[stepIndex];
+    el.currentLetter.textContent = currentStep.letter;
+    el.currentLabel.textContent = `${currentStep.letter}${currentStep.octave}`;
+    el.progress.style.width = `${((stepIndex + 1) * 100) / sequence.length}%`;
+  keyboard.update({ activeNote: currentStep.midiNote, tonicPitchClass: noteOptions[Number(el.note.value)].semitoneFromC });
+  highlightRow(currentStep.midiNote);
+
+  stepIndex += 1;
+}
+
 async function togglePracticeMode() {
   practiceMode = !practiceMode;
   el.practice.textContent = practiceMode ? 'Practice mode: ON' : 'Practice mode: OFF';
@@ -191,6 +208,7 @@ el.octave.addEventListener('change', rebuildSequence);
 el.span.addEventListener('change', rebuildSequence);
 el.tempo.addEventListener('input', () => { el.tempoValue.textContent = el.tempo.value; });
 el.play.addEventListener('click', playSequence);
+el.step.addEventListener('click', stepSequence);
 el.stop.addEventListener('click', stopPlayback);
 el.practice.addEventListener('click', togglePracticeMode);
 

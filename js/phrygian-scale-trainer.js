@@ -16,6 +16,7 @@ const el = {
   tempoValue: document.getElementById('ps-tempo-value'),
   output: document.getElementById('ps-output'),
   play: document.getElementById('ps-play'),
+  step: document.getElementById('ps-step'),
   stop: document.getElementById('ps-stop'),
   practice: document.getElementById('ps-practice'),
   input: document.getElementById('ps-input'),
@@ -120,6 +121,22 @@ function stopPlayback() {
   midi.stopAll(el.output.value || null);
 }
 
+let stepIndex = 0;
+
+/** Silently advances one note at a time through the current sequence -- highlights the keyboard and table row, but plays no sound. */
+function stepSequence() {
+  if (isPlaying || sequence.length === 0) return;
+  if (stepIndex >= sequence.length) stepIndex = 0;
+  currentStep = sequence[stepIndex];
+    el.currentNote.textContent = `${currentStep.noteName} · ${currentStep.solfa}`;
+    el.currentDegree.textContent = `Degree ${currentStep.degreeName}`;
+    el.progress.style.width = `${((stepIndex + 1) * 100) / sequence.length}%`;
+  keyboard.update({ activeNote: currentStep.midiNote, tonicPitchClass });
+  highlightRow(currentStep.midiNote);
+
+  stepIndex += 1;
+}
+
 async function togglePracticeMode() {
   practiceMode = !practiceMode;
   el.practice.textContent = practiceMode ? 'Practice mode: ON' : 'Practice mode: OFF';
@@ -159,6 +176,7 @@ el.key.addEventListener('change', rebuildSequence);
 el.octave.addEventListener('change', rebuildSequence);
 el.tempo.addEventListener('input', () => { el.tempoValue.textContent = el.tempo.value; });
 el.play.addEventListener('click', playSequence);
+el.step.addEventListener('click', stepSequence);
 el.stop.addEventListener('click', stopPlayback);
 el.practice.addEventListener('click', togglePracticeMode);
 
@@ -180,6 +198,7 @@ const pi = {
   tempoValue: document.getElementById('pi-tempo-value'),
   output: document.getElementById('pi-output'),
   play: document.getElementById('pi-play'),
+  step: document.getElementById('pi-step'),
   stop: document.getElementById('pi-stop'),
   midiWarning: document.getElementById('pi-midi-warning'),
   loadError: document.getElementById('pi-load-error'),
@@ -322,9 +341,31 @@ function stopImprovDemo() {
   pi.stop.disabled = true;
 }
 
-pi.key.addEventListener('change', loadCurrentKeyMidi);
+let improvStepIndex = 0;
+
+/** Silently advances one note at a time through the improvisation demo -- highlights the keyboard and table row, but plays no sound. */
+async function stepImprovDemo() {
+  if (improvIsPlaying) return;
+  const parsed = await loadCurrentKeyMidi();
+  if (!parsed || parsed.notes.length === 0) return;
+  const key = keyOptions[Number(pi.key.value)];
+  const notes = parsed.notes;
+  if (improvStepIndex >= notes.length) improvStepIndex = 0;
+  const note = notes[improvStepIndex];
+
+  pi.currentNote.textContent = `${midiNoteName(note.midiNote)} · ${solfaFor(note.midiNote, key)}`;
+  pi.currentStep.textContent = `Note ${improvStepIndex + 1} of ${notes.length}`;
+  pi.progress.style.width = `${((improvStepIndex + 1) * 100) / notes.length}%`;
+  improvKeyboard.update({ activeNote: note.midiNote, tonicPitchClass: key.semitoneFromC });
+  highlightImprovRow(improvStepIndex);
+
+  improvStepIndex += 1;
+}
+
+pi.key.addEventListener('change', () => { improvStepIndex = 0; loadCurrentKeyMidi(); });
 pi.tempo.addEventListener('input', () => { pi.tempoValue.textContent = pi.tempo.value; });
 pi.play.addEventListener('click', playImprovDemo);
+pi.step.addEventListener('click', stepImprovDemo);
 pi.stop.addEventListener('click', stopImprovDemo);
 
 // -------------------------------------------------------------------- init

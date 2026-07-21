@@ -49,6 +49,7 @@ const NAV_GROUPS = [
       { page: 'inversions', href: 'inversions-trainer.html', label: 'Chord Inversions' },
       { page: 'augmented-seventh-chord', href: 'augmented-seventh-chord-trainer.html', label: 'Augmented 7th Chords' },
       { page: 'major-seventh-flat-five-chord', href: 'major-seventh-flat-five-chord-trainer.html', label: 'Major 7th ♭5 Chords' },
+      { page: 'major-seventh-sharp-eleven-chord', href: 'major-seventh-sharp-eleven-chord-trainer.html', label: 'Major 7th ♯11 Chords' },
     ],
   },
   {

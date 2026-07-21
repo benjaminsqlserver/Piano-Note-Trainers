@@ -1,10 +1,12 @@
-// dominant-seventh-chord-trainer.js — page logic for dominant-seventh-chord-trainer.html
-// Expects audio-engine.js, piano-keyboard.js, music-services.js, and
-// tabs.js to already be loaded as plain scripts before this one.
+// major-seventh-sharp-eleven-chord-trainer.js — page logic for
+// major-seventh-sharp-eleven-chord-trainer.html
+// Expects audio-engine.js, piano-keyboard.js, music-services.js,
+// tabs.js, and progression-picker.js to already be loaded as plain
+// scripts before this one.
 initTabs();
 
 const midi = new AudioEngine();
-const chordKeys = DiminishedSeventhChordService.keys; // 12 keys, chromatic order, sharp spellings
+const chordKeys = MajorSeventhSharpElevenChordService.keys; // 12 keys, chromatic order, sharp spellings
 
 /** Plays every note of a chord at (roughly) the same instant, as a chord. */
 function playChord(deviceId, midiNotes, durationMs, velocity = 100) {
@@ -47,10 +49,10 @@ const learnKeyboard = createPianoKeyboard(lc.keyboard, {
 
 function rebuildLearnChord() {
   const key = chordKeys[Number(lc.root.value)];
-  learnChord = DiminishedSeventhChordService.buildChord(key, LEARN_OCTAVE);
+  learnChord = MajorSeventhSharpElevenChordService.buildChord(key, LEARN_OCTAVE);
   learnStepIndex = 0;
   learnKeyboard.update({ activeNote: null, activeNotes: [], tonicPitchClass: key.semitoneFromC });
-  lc.stepLabel.textContent = 'Step 1 of 4';
+  lc.stepLabel.textContent = 'Step 1 of 5';
   lc.currentNote.textContent = '—';
   lc.currentExplain.textContent = '';
   renderLearnTable();
@@ -84,7 +86,7 @@ function playLearnStep() {
 
 function restartLearn() {
   learnStepIndex = 0;
-  lc.stepLabel.textContent = 'Step 1 of 4';
+  lc.stepLabel.textContent = 'Step 1 of 5';
   lc.currentNote.textContent = '—';
   lc.currentExplain.textContent = '';
   learnKeyboard.update({ activeNote: null, activeNotes: [] });
@@ -96,7 +98,7 @@ function playLearnFullChord() {
   learnKeyboard.update({ activeNote: null, activeNotes: notes });
   lc.stepLabel.textContent = 'Full chord';
   const key = chordKeys[Number(lc.root.value)];
-  lc.currentNote.textContent = `${key.name} diminished 7th`;
+  lc.currentNote.textContent = `${key.name} major 7th ♯11`;
   lc.currentExplain.textContent = learnChord.map((t) => t.noteName).join(' – ');
   notes.forEach((n) => highlightLearnRow(n));
   playChord(lc.output.value || null, notes, 1200);
@@ -104,8 +106,8 @@ function playLearnFullChord() {
 
 function renderAllChordsTable() {
   lc.allTableBody.innerHTML = chordKeys.map((key) => {
-    const chord = DiminishedSeventhChordService.buildChord(key, LEARN_OCTAVE);
-    return `<tr><td>${key.name}dim7</td><td>${chord[0].noteName}</td><td>${chord[1].noteName}</td><td>${chord[2].noteName}</td><td>${chord[3].noteName}</td></tr>`;
+    const chord = MajorSeventhSharpElevenChordService.buildChord(key, LEARN_OCTAVE);
+    return `<tr><td>${key.name}maj7♯11</td><td>${chord[0].noteName}</td><td>${chord[1].noteName}</td><td>${chord[2].noteName}</td><td>${chord[3].noteName}</td><td>${chord[4].noteName}</td></tr>`;
   }).join('');
 }
 
@@ -143,10 +145,10 @@ let cfStopRequested = false;
 
 function renderCircleOfFourthsTable() {
   const octave = Number(cf.octave.value);
-  cf.tableBody.innerHTML = DiminishedSeventhChordService.circleOfFourths.map((entry, i) => {
-    const chord = DiminishedSeventhChordService.buildChord(entry.key, octave, true);
+  cf.tableBody.innerHTML = MajorSeventhSharpElevenChordService.circleOfFourths.map((entry, i) => {
+    const chord = MajorSeventhSharpElevenChordService.buildChord(entry.key, octave, true);
     return `<tr data-position="${i}">
-      <td>${entry.position}</td><td>${entry.name}dim7</td><td>${chord[0].noteName}</td><td>${chord[1].noteName}</td><td>${chord[2].noteName}</td><td>${chord[3].noteName}</td>
+      <td>${entry.position}</td><td>${entry.name}maj7♯11</td><td>${chord[0].noteName}</td><td>${chord[1].noteName}</td><td>${chord[2].noteName}</td><td>${chord[3].noteName}</td><td>${chord[4].noteName}</td>
     </tr>`;
   }).join('');
 }
@@ -167,16 +169,16 @@ async function playCircleOfFourths() {
   const octave = Number(cf.octave.value);
   const bpm = Number(cf.tempo.value);
   const chordDurationMs = (60000 / bpm) * 2; // each chord rings for two beats
-  const sequence = DiminishedSeventhChordService.circleOfFourths;
+  const sequence = MajorSeventhSharpElevenChordService.circleOfFourths;
 
   for (let i = 0; i < sequence.length; i++) {
     if (cfStopRequested) break;
     const entry = sequence[i];
-    const chord = DiminishedSeventhChordService.buildChord(entry.key, octave, true);
+    const chord = MajorSeventhSharpElevenChordService.buildChord(entry.key, octave, true);
     const notes = chord.map((t) => t.midiNote);
 
     cf.positionLabel.textContent = `Chord ${entry.position} of 12`;
-    cf.currentChord.textContent = `${entry.name}dim7`;
+    cf.currentChord.textContent = `${entry.name}maj7♯11`;
     cf.currentNotes.textContent = chord.map((t) => t.noteName).join(' – ');
     cf.progress.style.width = `${((i + 1) * 100) / sequence.length}%`;
     cfKeyboard.update({ activeNote: null, activeNotes: notes, tonicPitchClass: entry.semitoneFromC });
@@ -207,14 +209,14 @@ let cfStepIndex = 0;
 function stepCircleOfFourths() {
   if (cfIsPlaying) return;
   const octave = Number(cf.octave.value);
-  const sequence = DiminishedSeventhChordService.circleOfFourths;
+  const sequence = MajorSeventhSharpElevenChordService.circleOfFourths;
   if (cfStepIndex >= sequence.length) cfStepIndex = 0;
   const entry = sequence[cfStepIndex];
-  const chord = DiminishedSeventhChordService.buildChord(entry.key, octave, true);
+  const chord = MajorSeventhSharpElevenChordService.buildChord(entry.key, octave, true);
   const notes = chord.map((t) => t.midiNote);
 
   cf.positionLabel.textContent = `Chord ${entry.position} of 12`;
-  cf.currentChord.textContent = `${entry.name}dim7`;
+  cf.currentChord.textContent = `${entry.name}maj7♯11`;
   cf.currentNotes.textContent = chord.map((t) => t.noteName).join(' – ');
   cf.progress.style.width = `${((cfStepIndex + 1) * 100) / sequence.length}%`;
   cfKeyboard.update({ activeNote: null, activeNotes: notes, tonicPitchClass: entry.semitoneFromC });
@@ -229,197 +231,29 @@ cf.play.addEventListener('click', playCircleOfFourths);
 cf.step.addEventListener('click', stepCircleOfFourths);
 cf.stop.addEventListener('click', stopCircleOfFourths);
 
-// ========================================== EXERCISE 2: CHORD PROGRESSION
+// ================================ EXERCISES 2 & 3: JAZZ / GOSPEL PROGRESSIONS
 
-const cp = {
-  description: document.getElementById('cp-description'),
-  key: document.getElementById('cp-key'),
-  octave: document.getElementById('cp-octave'),
-  tempo: document.getElementById('cp-tempo'),
-  tempoValue: document.getElementById('cp-tempo-value'),
-  output: document.getElementById('cp-output'),
-  play: document.getElementById('cp-play'),
-  step: document.getElementById('cp-step'),
-  playAll: document.getElementById('cp-play-all'),
-  stop: document.getElementById('cp-stop'),
-  midiWarning: document.getElementById('cp-midi-warning'),
-  keyLabel: document.getElementById('cp-key-label'),
-  currentChord: document.getElementById('cp-current-chord'),
-  currentDegree: document.getElementById('cp-current-degree'),
-  progress: document.getElementById('cp-progress'),
-  keyboard: document.getElementById('cp-keyboard'),
-  tableTitle: document.getElementById('cp-table-title'),
-  tableBody: document.getElementById('cp-table-body'),
-};
-
-cp.description.textContent = DiminishedSeventhChordService.progression.description;
-
-chordKeys.forEach((k, i) => {
-  const opt = document.createElement('option');
-  opt.value = String(i);
-  opt.textContent = k.name;
-  cp.key.appendChild(opt);
-});
-
-const cpKeyboard = createPianoKeyboard(cp.keyboard, {
-  lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, activeNotes: [], tonicPitchClass: 0,
-  showLabels: true, clickableWhite: false, clickableBlack: false,
-});
-
-let cpIsPlaying = false;
-let cpStopRequested = false;
-
-function renderProgressionTable(key, octave) {
-  const chords = DiminishedSeventhChordService.buildProgression(key, octave);
-  cp.tableTitle.textContent = `Progression in ${key.name}`;
-  cp.tableBody.innerHTML = chords.map((c, i) => `
-    <tr data-index="${i}">
-      <td>${c.roman} (${c.name})</td><td>${c.chordName}</td><td>${c.notes.map((n) => n.noteName).join(' – ')}</td>
-    </tr>`).join('');
-  return chords;
-}
-
-function highlightProgressionRow(index) {
-  cp.tableBody.querySelectorAll('tr').forEach((tr) => {
-    tr.classList.toggle('is-current', Number(tr.getAttribute('data-index')) === index);
-  });
-}
-
-function refreshProgressionForCurrentKey() {
-  cpStepIndex = 0;
-  const key = chordKeys[Number(cp.key.value)];
-  const octave = Number(cp.octave.value);
-  cp.keyLabel.textContent = `Key of ${key.name}`;
-  cpKeyboard.update({ activeNote: null, activeNotes: [], tonicPitchClass: key.semitoneFromC });
-  cp.currentChord.textContent = '—';
-  cp.currentDegree.textContent = '';
-  cp.progress.style.width = '0%';
-  renderProgressionTable(key, octave);
-}
-
-async function playChordsSequence(chords, tonicPitchClass, bpm) {
-  const chordDurationMs = (60000 / bpm) * 2;
-  for (let i = 0; i < chords.length; i++) {
-    if (cpStopRequested) break;
-    const c = chords[i];
-    const notes = c.notes.map((t) => t.midiNote);
-    cp.currentChord.textContent = c.chordName;
-    cp.currentDegree.textContent = `Degree ${c.roman} (${c.name})`;
-    cp.progress.style.width = `${((i + 1) * 100) / chords.length}%`;
-    cpKeyboard.update({ activeNote: null, activeNotes: notes, tonicPitchClass });
-    highlightProgressionRow(i);
-    playChord(cp.output.value || null, notes, Math.round(chordDurationMs * 0.9));
-    await wait(chordDurationMs);
-    if (cpStopRequested) break;
-  }
-}
-
-async function playProgressionInCurrentKey() {
-  if (cpIsPlaying) return;
-  cpIsPlaying = true;
-  cpStopRequested = false;
-  cp.play.disabled = true;
-  cp.playAll.disabled = true;
-  cp.stop.disabled = false;
-
-  const key = chordKeys[Number(cp.key.value)];
-  const octave = Number(cp.octave.value);
-  const bpm = Number(cp.tempo.value);
-  const chords = renderProgressionTable(key, octave);
-  cp.keyLabel.textContent = `Key of ${key.name}`;
-
-  await playChordsSequence(chords, key.semitoneFromC, bpm);
-
-  cpIsPlaying = false;
-  cp.play.disabled = false;
-  cp.playAll.disabled = false;
-  cp.stop.disabled = true;
-  cpKeyboard.update({ activeNotes: [] });
-}
-
-async function playProgressionInAllKeys() {
-  if (cpIsPlaying) return;
-  cpIsPlaying = true;
-  cpStopRequested = false;
-  cp.play.disabled = true;
-  cp.playAll.disabled = true;
-  cp.stop.disabled = false;
-
-  const octave = Number(cp.octave.value);
-  const bpm = Number(cp.tempo.value);
-
-  for (let k = 0; k < chordKeys.length; k++) {
-    if (cpStopRequested) break;
-    const key = chordKeys[k];
-    cp.key.value = String(k);
-    cp.keyLabel.textContent = `Key of ${key.name}`;
-    const chords = renderProgressionTable(key, octave);
-    await playChordsSequence(chords, key.semitoneFromC, bpm);
-    if (cpStopRequested) break;
-    await wait(150);
-  }
-
-  cpIsPlaying = false;
-  cp.play.disabled = false;
-  cp.playAll.disabled = false;
-  cp.stop.disabled = true;
-  cpKeyboard.update({ activeNotes: [] });
-}
-
-function stopProgression() {
-  cpStopRequested = true;
-  midi.stopAll(cp.output.value || null);
-  cpIsPlaying = false;
-  cp.play.disabled = false;
-  cp.playAll.disabled = false;
-  cp.stop.disabled = true;
-}
-
-let cpStepIndex = 0;
-
-/** Silently advances to the next chord in the current key's progression -- highlights the keyboard, table row, and labels, but plays no sound. */
-function stepProgression() {
-  if (cpIsPlaying) return;
-  const key = chordKeys[Number(cp.key.value)];
-  const octave = Number(cp.octave.value);
-  const chords = renderProgressionTable(key, octave);
-  if (cpStepIndex >= chords.length) cpStepIndex = 0;
-  const c = chords[cpStepIndex];
-  const notes = c.notes.map((t) => t.midiNote);
-  cp.keyLabel.textContent = `Key of ${key.name}`;
-  cp.currentChord.textContent = c.chordName;
-  cp.currentDegree.textContent = `Degree ${c.roman} (${c.name})`;
-  cp.progress.style.width = `${((cpStepIndex + 1) * 100) / chords.length}%`;
-  cpKeyboard.update({ activeNote: null, activeNotes: notes, tonicPitchClass: key.semitoneFromC });
-  highlightProgressionRow(cpStepIndex);
-
-  cpStepIndex += 1;
-}
-
-cp.key.addEventListener('change', refreshProgressionForCurrentKey);
-cp.octave.addEventListener('change', refreshProgressionForCurrentKey);
-cp.tempo.addEventListener('input', () => { cp.tempoValue.textContent = cp.tempo.value; });
-cp.play.addEventListener('click', playProgressionInCurrentKey);
-cp.playAll.addEventListener('click', playProgressionInAllKeys);
-cp.step.addEventListener('click', stepProgression);
-cp.stop.addEventListener('click', stopProgression);
+const jazzExercise = setupProgressionPicker('jz', InversionService.majorSeventhSharpElevenJazzProgressions, midi);
+const gospelExercise = setupProgressionPicker('gp', InversionService.majorSeventhSharpElevenGospelProgressions, midi);
 
 // -------------------------------------------------------------------- init
 
 (async function init() {
   const supported = await midi.init();
   cf.midiWarning.style.display = supported ? 'none' : '';
-  cp.midiWarning.style.display = supported ? 'none' : '';
+  jazzExercise.midiWarning.style.display = supported ? 'none' : '';
+  gospelExercise.midiWarning.style.display = supported ? 'none' : '';
+
+  const allOutputSelects = [lc.output, cf.output, jazzExercise.outputSelect, gospelExercise.outputSelect];
+
   if (supported) {
     const outputs = midi.getOutputDevices();
     const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
-    lc.output.innerHTML = optionsHtml;
-    cf.output.innerHTML = optionsHtml;
-    cp.output.innerHTML = optionsHtml;
+    allOutputSelects.forEach((sel) => { sel.innerHTML = optionsHtml; });
   }
   midi.onDevicesChanged((outputs) => {
     const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
-    [lc.output, cf.output, cp.output].forEach((sel) => {
+    allOutputSelects.forEach((sel) => {
       const current = sel.value;
       sel.innerHTML = optionsHtml;
       sel.value = current;
@@ -429,5 +263,4 @@ cp.stop.addEventListener('click', stopProgression);
   rebuildLearnChord();
   renderAllChordsTable();
   renderCircleOfFourthsTable();
-  refreshProgressionForCurrentKey();
 })();
