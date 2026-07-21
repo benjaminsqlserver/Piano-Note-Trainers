@@ -124,6 +124,7 @@ const cf = {
   tempoValue: document.getElementById('cf-tempo-value'),
   output: document.getElementById('cf-output'),
   play: document.getElementById('cf-play'),
+  step: document.getElementById('cf-step'),
   stop: document.getElementById('cf-stop'),
   midiWarning: document.getElementById('cf-midi-warning'),
   positionLabel: document.getElementById('cf-position-label'),
@@ -202,9 +203,32 @@ function stopCircleOfFourths() {
   cf.stop.disabled = true;
 }
 
+let cfStepIndex = 0;
+
+/** Silently advances to the next chord in the circle-of-fourths sequence -- highlights the keyboard, table row, and labels, but plays no sound. */
+function stepCircleOfFourths() {
+  if (cfIsPlaying) return;
+  const octave = Number(cf.octave.value);
+  const sequence = MajorSeventhFlatFiveChordService.circleOfFourths;
+  if (cfStepIndex >= sequence.length) cfStepIndex = 0;
+  const entry = sequence[cfStepIndex];
+  const chord = MajorSeventhFlatFiveChordService.buildChord(entry.key, octave, true);
+  const notes = chord.map((t) => t.midiNote);
+
+  cf.positionLabel.textContent = `Chord ${entry.position} of 12`;
+  cf.currentChord.textContent = `${entry.name}maj7♭5`;
+  cf.currentNotes.textContent = chord.map((t) => t.noteName).join(' – ');
+  cf.progress.style.width = `${((cfStepIndex + 1) * 100) / sequence.length}%`;
+  cfKeyboard.update({ activeNote: null, activeNotes: notes, tonicPitchClass: entry.semitoneFromC });
+  highlightCircleRow(cfStepIndex);
+
+  cfStepIndex += 1;
+}
+
 cf.octave.addEventListener('change', renderCircleOfFourthsTable);
 cf.tempo.addEventListener('input', () => { cf.tempoValue.textContent = cf.tempo.value; });
 cf.play.addEventListener('click', playCircleOfFourths);
+cf.step.addEventListener('click', stepCircleOfFourths);
 cf.stop.addEventListener('click', stopCircleOfFourths);
 
 // ================================ EXERCISES 2 & 3: JAZZ / GOSPEL PROGRESSIONS

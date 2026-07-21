@@ -122,6 +122,7 @@ const cf = {
   tempoValue: document.getElementById('cf-tempo-value'),
   output: document.getElementById('cf-output'),
   play: document.getElementById('cf-play'),
+  step: document.getElementById('cf-step'),
   stop: document.getElementById('cf-stop'),
   midiWarning: document.getElementById('cf-midi-warning'),
   positionLabel: document.getElementById('cf-position-label'),
@@ -200,9 +201,32 @@ function stopCircleOfFourths() {
   cf.stop.disabled = true;
 }
 
+let cfStepIndex = 0;
+
+/** Silently advances to the next chord in the circle-of-fourths sequence -- highlights the keyboard, table row, and labels, but plays no sound. */
+function stepCircleOfFourths() {
+  if (cfIsPlaying) return;
+  const octave = Number(cf.octave.value);
+  const sequence = HalfDiminishedSeventhChordService.circleOfFourths;
+  if (cfStepIndex >= sequence.length) cfStepIndex = 0;
+  const entry = sequence[cfStepIndex];
+  const chord = HalfDiminishedSeventhChordService.buildChord(entry.key, octave, true);
+  const notes = chord.map((t) => t.midiNote);
+
+  cf.positionLabel.textContent = `Chord ${entry.position} of 12`;
+  cf.currentChord.textContent = `${entry.name}m7♭5`;
+  cf.currentNotes.textContent = chord.map((t) => t.noteName).join(' – ');
+  cf.progress.style.width = `${((cfStepIndex + 1) * 100) / sequence.length}%`;
+  cfKeyboard.update({ activeNote: null, activeNotes: notes, tonicPitchClass: entry.semitoneFromC });
+  highlightCircleRow(cfStepIndex);
+
+  cfStepIndex += 1;
+}
+
 cf.octave.addEventListener('change', renderCircleOfFourthsTable);
 cf.tempo.addEventListener('input', () => { cf.tempoValue.textContent = cf.tempo.value; });
 cf.play.addEventListener('click', playCircleOfFourths);
+cf.step.addEventListener('click', stepCircleOfFourths);
 cf.stop.addEventListener('click', stopCircleOfFourths);
 
 // ========================================== EXERCISE 2: CHORD PROGRESSION
@@ -215,6 +239,7 @@ const cp = {
   tempoValue: document.getElementById('cp-tempo-value'),
   output: document.getElementById('cp-output'),
   play: document.getElementById('cp-play'),
+  step: document.getElementById('cp-step'),
   playAll: document.getElementById('cp-play-all'),
   stop: document.getElementById('cp-stop'),
   midiWarning: document.getElementById('cp-midi-warning'),
@@ -261,6 +286,7 @@ function highlightProgressionRow(index) {
 }
 
 function refreshProgressionForCurrentKey() {
+  cpStepIndex = 0;
   const key = chordKeys[Number(cp.key.value)];
   const octave = Number(cp.octave.value);
   cp.keyLabel.textContent = `Key of ${key.name}`;
@@ -349,11 +375,33 @@ function stopProgression() {
   cp.stop.disabled = true;
 }
 
+let cpStepIndex = 0;
+
+/** Silently advances to the next chord in the current key's progression -- highlights the keyboard, table row, and labels, but plays no sound. */
+function stepProgression() {
+  if (cpIsPlaying) return;
+  const key = chordKeys[Number(cp.key.value)];
+  const octave = Number(cp.octave.value);
+  const chords = renderProgressionTable(key, octave);
+  if (cpStepIndex >= chords.length) cpStepIndex = 0;
+  const c = chords[cpStepIndex];
+  const notes = c.notes.map((t) => t.midiNote);
+  cp.keyLabel.textContent = `Key of ${key.name}`;
+  cp.currentChord.textContent = c.chordName;
+  cp.currentDegree.textContent = `Degree ${c.roman} (${c.name})`;
+  cp.progress.style.width = `${((cpStepIndex + 1) * 100) / chords.length}%`;
+  cpKeyboard.update({ activeNote: null, activeNotes: notes, tonicPitchClass: key.semitoneFromC });
+  highlightProgressionRow(cpStepIndex);
+
+  cpStepIndex += 1;
+}
+
 cp.key.addEventListener('change', refreshProgressionForCurrentKey);
 cp.octave.addEventListener('change', refreshProgressionForCurrentKey);
 cp.tempo.addEventListener('input', () => { cp.tempoValue.textContent = cp.tempo.value; });
 cp.play.addEventListener('click', playProgressionInCurrentKey);
 cp.playAll.addEventListener('click', playProgressionInAllKeys);
+cp.step.addEventListener('click', stepProgression);
 cp.stop.addEventListener('click', stopProgression);
 
 // -------------------------------------------------------------------- init

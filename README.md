@@ -18,6 +18,30 @@ where a note sits on a real, full-size piano. This applies to every guided
 trainer, flashcard quiz, improvisation demo, and learn-tab keyboard across
 all lessons — current and future.
 
+## Step through playback, silently
+
+Every "▶ Play ..." button in this app (Circle of Fourths, Chord
+Progression, Jazz/Gospel Progression, guided note/scale sequences,
+improvisation demos, and hymn song players) has a matching
+**"⏭ Step (no sound)"** button right beside it. Instead of auto-playing
+the whole sequence with audio, Step advances exactly one note or chord at
+a time — updating the keyboard highlight, the "now playing" labels, and
+the current table row — without making any sound at all. It's for
+studying the shape of a chord or the notes of a progression at your own
+pace, one click per note, with no MIDI device or speakers required. Step
+is disabled (a no-op) while a sequence is auto-playing, and wraps back to
+the start once it reaches the end.
+
+The one place this differs is each lesson's **Learn** tab for scales,
+plain chords, and the Chord Inversions lesson: those already have a
+built-in step-by-step "▶ Play next step" (or equivalent) button as part
+of the tutorial itself, which deliberately *does* play each note aloud —
+that's the point of a Learn tab. The Chord Inversions lesson's Learn tab
+additionally now has its own **silent** "⏭ Step through notes (no
+sound)" button beside its single "Play this inversion" button, since that
+tab (unlike the individual chord lessons) only ever played the whole
+chord together and had no note-by-note option at all before.
+
 ## Lessons
 
 | # | Lesson | What it teaches |

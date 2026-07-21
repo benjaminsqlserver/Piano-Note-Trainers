@@ -12,6 +12,7 @@ const el = {
   tempoValue: document.getElementById('ct-tempo-value'),
   output: document.getElementById('ct-output'),
   play: document.getElementById('ct-play'),
+  step: document.getElementById('ct-step'),
   stop: document.getElementById('ct-stop'),
   practice: document.getElementById('ct-practice'),
   input: document.getElementById('ct-input'),
@@ -116,6 +117,22 @@ function stopPlayback() {
   midi.stopAll(el.output.value || null);
 }
 
+let stepIndex = 0;
+
+/** Silently advances one note at a time through the current sequence -- highlights the keyboard and table row, but plays no sound. */
+function stepSequence() {
+  if (isPlaying || sequence.length === 0) return;
+  if (stepIndex >= sequence.length) stepIndex = 0;
+  currentStep = sequence[stepIndex];
+    el.currentSolfa.textContent = currentStep.solfa;
+    el.currentNote.textContent = currentStep.noteName;
+    el.progress.style.width = `${((stepIndex + 1) * 100) / sequence.length}%`;
+  keyboard.update({ activeNote: currentStep.midiNote, tonicPitchClass });
+  highlightRow(currentStep.midiNote);
+
+  stepIndex += 1;
+}
+
 async function togglePracticeMode() {
   practiceMode = !practiceMode;
   el.practice.textContent = practiceMode ? 'Practice mode: ON' : 'Practice mode: OFF';
@@ -155,6 +172,7 @@ el.key.addEventListener('change', rebuildSequence);
 el.octave.addEventListener('change', rebuildSequence);
 el.tempo.addEventListener('input', () => { el.tempoValue.textContent = el.tempo.value; });
 el.play.addEventListener('click', playSequence);
+el.step.addEventListener('click', stepSequence);
 el.stop.addEventListener('click', stopPlayback);
 el.practice.addEventListener('click', togglePracticeMode);
 

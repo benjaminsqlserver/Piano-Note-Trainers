@@ -118,6 +118,7 @@ const sp = {
   tempoValue: document.getElementById('sp-tempo-value'),
   output: document.getElementById('sp-output'),
   play: document.getElementById('sp-play'),
+  step: document.getElementById('sp-step'),
   stop: document.getElementById('sp-stop'),
   midiWarning: document.getElementById('sp-midi-warning'),
   loadError: document.getElementById('sp-load-error'),
@@ -200,6 +201,22 @@ async function loadCurrentKeySong() {
   }
 }
 
+/** Groups notes that start at (roughly) the same instant, using the same threshold playSong() uses -- so simultaneous chord tones step together instead of one at a time. */
+function groupNotesByStart(notes) {
+  const groups = [];
+  let i = 0;
+  while (i < notes.length) {
+    const groupStartMs = notes[i].startMs;
+    const group = [];
+    while (i < notes.length && Math.abs(notes[i].startMs - groupStartMs) < 5) {
+      group.push(notes[i]);
+      i += 1;
+    }
+    groups.push({ startMs: groupStartMs, notes: group });
+  }
+  return groups;
+}
+
 async function playSong() {
   if (songIsPlaying) return;
   const parsed = await loadCurrentKeySong();
@@ -276,6 +293,40 @@ function stopSong() {
   sp.stop.disabled = true;
 }
 
+let songStepIndex = 0;
+let songStepGroups = [];
+
+/** Silently advances one note-group at a time through the song -- highlights the keyboard and table row, but plays no sound. */
+async function stepSong() {
+  if (songIsPlaying) return;
+  const parsed = await loadCurrentKeySong();
+  if (!parsed || parsed.notes.length === 0) return;
+  const key = SONG_KEYS[Number(sp.key.value)];
+
+  if (songStepGroups.length === 0) songStepGroups = groupNotesByStart(parsed.notes);
+  if (songStepIndex >= songStepGroups.length) songStepIndex = 0;
+  const group = songStepGroups[songStepIndex];
+  const groupStartMs = group.startMs;
+
+  const melodyNotes = group.notes.filter((n) => n.channel === 0).map((n) => n.midiNote);
+  const chordNotes = group.notes.filter((n) => n.channel === 1).map((n) => n.midiNote);
+
+  if (melodyNotes.length) sp.currentMelody.textContent = melodyNotes.map((m) => midiNoteName(m)).join(', ');
+  if (chordNotes.length) {
+    const tick = groupStartMs / BASE_MS_PER_TICK;
+    const idx = chordIndexAtTick(tick);
+    const entry = SONG_CHORDS[idx];
+    const names = chordNoteNames(entry, key);
+    sp.currentChord.textContent = `${entry.roman} — ${names[0]} ${entry.quality}`;
+    highlightChordRow(idx);
+  }
+
+  sp.progress.style.width = `${Math.min(100, (groupStartMs / parsed.totalDurationMs) * 100)}%`;
+  songKeyboard.update({ melodyNotes, chordNotes, tonicPitchClass: key.semitoneFromC });
+
+  songStepIndex += 1;
+}
+
 const NOTE_NAMES_SHARP = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 function midiNoteName(midiNote) {
   const pc = ((midiNote % 12) + 12) % 12;
@@ -283,9 +334,10 @@ function midiNoteName(midiNote) {
   return `${NOTE_NAMES_SHARP[pc]}${octave}`;
 }
 
-sp.key.addEventListener('change', loadCurrentKeySong);
+sp.key.addEventListener('change', () => { songStepIndex = 0; songStepGroups = []; loadCurrentKeySong(); });
 sp.tempo.addEventListener('input', () => { sp.tempoValue.textContent = sp.tempo.value; });
 sp.play.addEventListener('click', playSong);
+sp.step.addEventListener('click', stepSong);
 sp.stop.addEventListener('click', stopSong);
 
 // -------------------------------------------------------------------- init

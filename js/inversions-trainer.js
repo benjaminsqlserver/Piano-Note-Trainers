@@ -60,6 +60,7 @@ const lc = {
   root: document.getElementById('lc-root'),
   output: document.getElementById('lc-output'),
   play: document.getElementById('lc-play'),
+  step: document.getElementById('lc-step'),
   chordLabel: document.getElementById('lc-chord-label'),
   inversionValue: document.getElementById('lc-inversion-value'),
   notesSub: document.getElementById('lc-notes-sub'),
@@ -85,7 +86,7 @@ invKeys.forEach((k, i) => {
 
 const LEARN_OCTAVE = 4;
 
-const lcInversion = setupSegmented(document.querySelector('[data-segmented="lc-inversion"]'), 0, () => renderLearnChord());
+const lcInversion = setupSegmented(document.querySelector('[data-segmented="lc-inversion"]'), 0, () => { renderLearnChord(); lcStepIndex = 0; });
 
 const learnKeyboard = createPianoKeyboard(lc.keyboard, {
   lowestMidi: FULL_KEYBOARD_LOWEST_MIDI, octaves: FULL_KEYBOARD_OCTAVES, activeNote: null, activeNotes: [], tonicPitchClass: 0,
@@ -131,6 +132,29 @@ function playLearnChord() {
   playChord(lc.output.value || null, notes, 1400);
 }
 
+let lcStepIndex = 0;
+let lcStepTones = [];
+
+/** Silently advances one chord tone at a time (bottom to top) -- highlights the keyboard and table row, but plays no sound. */
+function stepLearnChord() {
+  const key = invKeys[Number(lc.root.value)];
+  const qualityKey = lc.quality.value;
+  const rootTones = inv.buildChordTones(key, LEARN_OCTAVE, qualityKey, false);
+  const requested = lcInversion.value;
+  const { tones } = inv.invert(rootTones, requested);
+  lcStepTones = tones;
+
+  if (lcStepIndex >= lcStepTones.length) lcStepIndex = 0;
+  const soundingNotes = lcStepTones.slice(0, lcStepIndex + 1).map((t) => t.midiNote);
+  const current = lcStepTones[lcStepIndex];
+  learnKeyboard.update({ activeNote: current.midiNote, activeNotes: soundingNotes, tonicPitchClass: key.semitoneFromC });
+  lc.tableBody.querySelectorAll('tr').forEach((tr, i) => {
+    tr.classList.toggle('is-current', i === lcStepIndex);
+  });
+
+  lcStepIndex += 1;
+}
+
 function renderRecipeTable() {
   const rootKey = invKeys[0]; // C, so the reference recipe table is always "from C"
   lc.recipeTableBody.innerHTML = inv.qualityOrder.map((qualityKey) => {
@@ -145,9 +169,10 @@ function renderRecipeTable() {
   }).join('');
 }
 
-lc.quality.addEventListener('change', () => { refreshInversion3Availability(); renderLearnChord(); });
-lc.root.addEventListener('change', renderLearnChord);
+lc.quality.addEventListener('change', () => { refreshInversion3Availability(); renderLearnChord(); lcStepIndex = 0; });
+lc.root.addEventListener('change', () => { renderLearnChord(); lcStepIndex = 0; });
 lc.play.addEventListener('click', playLearnChord);
+lc.step.addEventListener('click', stepLearnChord);
 
 // ============================================== EXERCISE 1: ALL CHORD TYPES
 
@@ -248,6 +273,7 @@ function setupProgressionExercise(prefix, progressions) {
     description: document.getElementById(`${prefix}-description`),
     play: document.getElementById(`${prefix}-play`),
     playAll: document.getElementById(`${prefix}-play-all`),
+    step: document.getElementById(`${prefix}-step`),
     stop: document.getElementById(`${prefix}-stop`),
     midiWarning: document.getElementById(`${prefix}-midi-warning`),
     keyLabel: document.getElementById(`${prefix}-key-label`),
@@ -282,6 +308,7 @@ function setupProgressionExercise(prefix, progressions) {
 
   let isPlaying = false;
   let stopRequested = false;
+  let stepIndex = 0;
 
   function currentProgression() {
     return progressions[Number(el.progression.value)];
@@ -305,6 +332,7 @@ function setupProgressionExercise(prefix, progressions) {
   }
 
   function refresh() {
+    stepIndex = 0;
     const key = invKeys[Number(el.key.value)];
     const octave = Number(el.octave.value);
     const progressionDef = currentProgression();
@@ -340,6 +368,7 @@ function setupProgressionExercise(prefix, progressions) {
     stopRequested = false;
     el.play.disabled = true;
     el.playAll.disabled = true;
+    el.step.disabled = true;
     el.stop.disabled = false;
 
     const key = invKeys[Number(el.key.value)];
@@ -353,6 +382,7 @@ function setupProgressionExercise(prefix, progressions) {
     isPlaying = false;
     el.play.disabled = false;
     el.playAll.disabled = false;
+    el.step.disabled = false;
     el.stop.disabled = true;
     keyboard.update({ activeNotes: [] });
   }
@@ -363,6 +393,7 @@ function setupProgressionExercise(prefix, progressions) {
     stopRequested = false;
     el.play.disabled = true;
     el.playAll.disabled = true;
+    el.step.disabled = true;
     el.stop.disabled = false;
 
     const octave = Number(el.octave.value);
@@ -382,6 +413,7 @@ function setupProgressionExercise(prefix, progressions) {
     isPlaying = false;
     el.play.disabled = false;
     el.playAll.disabled = false;
+    el.step.disabled = false;
     el.stop.disabled = true;
     keyboard.update({ activeNotes: [] });
   }
@@ -392,7 +424,27 @@ function setupProgressionExercise(prefix, progressions) {
     isPlaying = false;
     el.play.disabled = false;
     el.playAll.disabled = false;
+    el.step.disabled = false;
     el.stop.disabled = true;
+  }
+
+  /** Silently advances to the next chord in the current key's progression -- highlights the keyboard, table row, and labels, but plays no sound. */
+  function stepForward() {
+    if (isPlaying) return;
+    const key = invKeys[Number(el.key.value)];
+    const octave = Number(el.octave.value);
+    const chords = renderTable(key, octave);
+    if (stepIndex >= chords.length) stepIndex = 0;
+    const c = chords[stepIndex];
+    const notes = c.tones.map((t) => t.midiNote);
+    el.keyLabel.textContent = `Key of ${key.name}`;
+    el.currentChord.textContent = c.chordName;
+    el.currentDegree.textContent = `Degree ${c.roman} (${c.name}) — ${c.inversionLabel}`;
+    el.progress.style.width = `${((stepIndex + 1) * 100) / chords.length}%`;
+    keyboard.update({ activeNote: null, activeNotes: notes, tonicPitchClass: key.semitoneFromC });
+    highlightRow(stepIndex);
+
+    stepIndex += 1;
   }
 
   el.progression.addEventListener('change', refresh);
@@ -401,6 +453,7 @@ function setupProgressionExercise(prefix, progressions) {
   el.tempo.addEventListener('input', () => { el.tempoValue.textContent = el.tempo.value; });
   el.play.addEventListener('click', playInCurrentKey);
   el.playAll.addEventListener('click', playInAllKeys);
+  el.step.addEventListener('click', stepForward);
   el.stop.addEventListener('click', stopPlayback);
 
   refresh();
