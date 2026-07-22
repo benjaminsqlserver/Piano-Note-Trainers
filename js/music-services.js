@@ -2115,6 +2115,92 @@ const MajorSeventhSharpElevenChordService = (() => {
   };
 })();
 
+const Add9ChordService = (() => {
+  // An add9 chord — written add9 (e.g. Cadd9) — is a plain major triad
+  // with one more note stacked on top: a 9th, an octave and a major 2nd
+  // above the root, and crucially *no 7th of any kind* in between:
+  //   root -> +4 semitones -> major 3rd
+  //   major 3rd -> +3 more semitones (root +7 total) -> perfect 5th
+  //   perfect 5th -> +7 more semitones (root +14 total) -> 9th
+  // So every add9 chord, in any of the 12 keys, is just the pitch-class
+  // pattern [0, 4, 7, 14] measured in semitones from its root -- an
+  // ordinary major triad (0, 4, 7) plus a 9th stacked an octave and a
+  // major 2nd above the root. That 9th is the very same pitch class as
+  // the major 2nd degree, just moved up an octave so it sits above the
+  // 5th instead of clashing right next to the root -- which is exactly
+  // why it can be "added" to a plain triad without any of the tension a
+  // 7th would bring. Because there's no 7th at all, an add9 chord never
+  // pulls toward another chord the way a dominant 7th or major 7th does;
+  // it's a bright, wide-open, "at rest" color, which is exactly why jazz,
+  // pop, and gospel pianists reach for it as a shimmering substitute for
+  // a plain triad wherever a tonic or subdominant chord would otherwise
+  // sit. Watch out for one mix-up: an add9 chord is not the same thing as
+  // a 9th chord (which stacks a 9th on top of a full dominant or major
+  // 7th chord) or a sus2 chord (which replaces the 3rd with a 2nd instead
+  // of adding a 9th above an intact triad).
+  const INTERVALS_FROM_ROOT = [0, 4, 7, 14];
+  const CHORD_TONE_LABELS = ['Root', 'Major 3rd', 'Perfect 5th', '9th'];
+  const CHORD_TONE_EXPLANATIONS = [
+    'The starting note — this note names the chord.',
+    'Count 4 semitones up from the root.',
+    'Count 3 more semitones up from the 3rd (7 semitones from the root).',
+    'Count 7 more semitones up from the 5th (14 semitones from the root — an octave plus a major 2nd) — the 9th, added on top of the intact triad with no 7th of any kind in between.',
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds an add9 chord (root, 3rd, 5th, 9th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
 // ------------------------------------------------------------ Inversions
 
 const InversionService = (() => {
@@ -2164,14 +2250,16 @@ const InversionService = (() => {
     augmentedSeventh: { suffix: 'augmented 7th (7\u266f5)',        displayName: 'Augmented 7th chord (7\u266f5)', intervals: [0, 4, 8, 10], labels: ['Root', 'Major 3rd', 'Augmented 5th', 'Minor 7th'] },
     majorSeventhFlatFive: { suffix: 'major 7th\u266d5 (maj7\u266d5)', displayName: 'Major 7th\u266d5 chord (maj7\u266d5)', intervals: [0, 4, 6, 11], labels: ['Root', 'Major 3rd', 'Diminished 5th', 'Major 7th'] },
     majorSeventhSharpEleven: { suffix: 'major 7th\u266f11 (maj7\u266f11)', displayName: 'Major 7th\u266f11 chord (maj7\u266f11)', intervals: [0, 4, 7, 11, 18], labels: ['Root', 'Major 3rd', 'Perfect 5th', 'Major 7th', 'Sharp 11th'] },
+    add9:             { suffix: 'add9',                        displayName: 'Add9 chord',                 intervals: [0, 4, 7, 14], labels: ['Root', 'Major 3rd', 'Perfect 5th', '9th'] },
   };
 
   // Display order used by the "All chord types" reference tab -- triads
   // first (in the order they were taught, Lessons 8-11), then the 6th
   // chords (Lessons 20-21), then the five 7th chords (Lessons 13-17),
   // then the augmented 7th chord (Lesson 23), then the major 7th\u266d5
-  // chord (Lesson 24), then the major 7th\u266f11 chord (Lesson 25).
-  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7', 'augmentedSeventh', 'majorSeventhFlatFive', 'majorSeventhSharpEleven'];
+  // chord (Lesson 24), then the major 7th\u266f11 chord (Lesson 25), then
+  // the add9 chord (Lesson 26).
+  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7', 'augmentedSeventh', 'majorSeventhFlatFive', 'majorSeventhSharpEleven', 'add9'];
 
   // Most chord types this app teaches have 3 or 4 notes (root position
   // plus 2 or 3 inversions). The major 7th\u266f11 chord (Lesson 25) is
@@ -2194,18 +2282,35 @@ const InversionService = (() => {
   }
 
   /**
-   * Inverts a root-position chord (as returned by buildChordTones) by
-   * moving `requestedInversion` of its lowest notes up an octave, then
-   * re-sorting bottom-to-top. `requestedInversion` is capped at
-   * tones.length - 1 (a triad only has a 1st and 2nd inversion; it has no
-   * 3rd inversion, since it has no 7th to put in the bass).
+   * Inverts a root-position chord (as returned by buildChordTones) so that
+   * the chord tone at `requestedInversion` (0 = root, 1 = the next tone up,
+   * and so on) ends up lowest, in the bass. `requestedInversion` is capped
+   * at tones.length - 1 (a triad only has a 1st and 2nd inversion; it has
+   * no 3rd inversion, since it has no 7th to put in the bass).
+   *
+   * Rotates the chord tones so the requested tone comes first, then walks
+   * the rest of the list bumping each one up by whole octaves until it
+   * sits above the tone before it. A simple "shift the bottom N tones up
+   * one octave" only works when every chord tone is within an octave of
+   * its neighbor -- it silently breaks for extended chords whose top tone
+   * sits *more* than an octave above the root (the 9th in an add9 chord,
+   * 14 semitones up, or the \u266f11th in a maj7\u266f11 chord, 18 semitones
+   * up): shifting the lower tones by a single octave isn't always enough
+   * to lift them above a tone that was already voiced more than an octave
+   * away, so the "wrong" tone would end up in the bass. Rotating first and
+   * then normalizing each tone upward (by as many octaves as it actually
+   * needs) guarantees the requested tone is always the one that lands in
+   * the bass, for every chord quality this app teaches.
    */
   function invert(tones, requestedInversion) {
     const n = tones.length;
     const applied = Math.max(0, Math.min(requestedInversion, n - 1));
-    const shifted = tones.map((t, i) => (i < applied ? { ...t, midiNote: t.midiNote + 12 } : { ...t }));
-    shifted.sort((a, b) => a.midiNote - b.midiNote);
-    return { tones: shifted, appliedInversion: applied, bassRole: shifted[0].role, bassNoteName: shifted[0].noteName };
+    const rotated = [];
+    for (let i = 0; i < n; i++) rotated.push({ ...tones[(applied + i) % n] });
+    for (let i = 1; i < rotated.length; i++) {
+      while (rotated[i].midiNote <= rotated[i - 1].midiNote) rotated[i].midiNote += 12;
+    }
+    return { tones: rotated, appliedInversion: applied, bassRole: rotated[0].role, bassNoteName: rotated[0].noteName };
   }
 
   /** A short human label, e.g. "2nd inversion (G in the bass)". */
@@ -3039,6 +3144,139 @@ const InversionService = (() => {
     },
   ];
 
+  // Five jazz chord progressions built around the add9 chord -- mostly
+  // using it as a bright, open substitute for a plain triad or a 6th
+  // chord wherever a tonic or subdominant chord would otherwise sit,
+  // since (unlike a 7th chord) it never creates any tension that needs
+  // to resolve.
+  const ADD9_JAZZ_PROGRESSIONS = [
+    {
+      id: 'add9-ii-V-I',
+      name: 'ii\u2013V\u2013I with Add9 Tonic',
+      label: 'ii7 \u2013 V7 \u2013 Iadd9',
+      description: 'The familiar ii\u2013V\u2013I, but resolving onto Iadd9 instead of a plain Imaj7 -- an open, ambiguous color that settles the progression without any of the closed, "complete" feeling a 7th brings.',
+      degrees: [
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'Iadd9', name: 'Tonic add9', semitoneFromKey: 0, quality: 'add9' },
+      ],
+    },
+    {
+      id: 'add9-iv-color',
+      name: 'IVadd9 Color Change',
+      label: 'Imaj7 \u2013 IVadd9 \u2013 iii7 \u2013 vi7',
+      description: 'A jazz-ballad move that colors the subdominant with an add9 instead of a plain triad or major 7th -- a wide, airy alternative with no 7th at all -- before falling back through iii7 to vi7.',
+      degrees: [
+        { roman: 'Imaj7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'major7' },
+        { roman: 'IVadd9', name: 'Subdominant add9', semitoneFromKey: 5, quality: 'add9' },
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'vi7', name: 'Submediant 7th', semitoneFromKey: 9, quality: 'minor7' },
+      ],
+    },
+    {
+      id: 'add9-turnaround',
+      name: 'Turnaround with Add9 Submediant',
+      label: 'iii7 \u2013 VIadd9 \u2013 ii7 \u2013 V7',
+      description: 'A falling turnaround where the vi chord is colored as an add9 instead of the usual minor 7th, for an open, major-quality substitution right in the middle of the progression.',
+      degrees: [
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'VIadd9', name: 'Submediant add9', semitoneFromKey: 9, quality: 'add9' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'add9-minor-key',
+      name: 'Minor-Key Cadence with Add9 IV',
+      label: 'i7 \u2013 IVadd9 \u2013 V7 \u2013 i7',
+      description: 'A minor-key cadence borrowing the parallel major\u2019s IV, colored as an add9 for an open, unresolved lift between the minor tonic and the dominant that finally pulls the harmony home.',
+      degrees: [
+        { roman: 'i7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'minor7' },
+        { roman: 'IVadd9', name: 'Borrowed subdominant add9', semitoneFromKey: 5, quality: 'add9' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'i7', name: 'Tonic 7th', semitoneFromKey: 0, quality: 'minor7' },
+      ],
+    },
+    {
+      id: 'add9-blues',
+      name: 'Jazz Blues Turnaround with Add9 Tonic',
+      label: 'Iadd9 \u2013 IV7 \u2013 ii7 \u2013 V7',
+      description: 'A jazz-blues turnaround that opens on Iadd9 instead of a plain major or dominant tonic, establishing a bright, open color right away before the familiar changes underneath.',
+      degrees: [
+        { roman: 'Iadd9', name: 'Tonic add9', semitoneFromKey: 0, quality: 'add9' },
+        { roman: 'IV7', name: 'Subdominant 7th', semitoneFromKey: 5, quality: 'dominant7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the add9 chord.
+  const ADD9_GOSPEL_PROGRESSIONS = [
+    {
+      id: 'add9-gospel-turnaround',
+      name: 'Gospel Turnaround with Add9 IV',
+      label: 'I \u2013 vi \u2013 IVadd9 \u2013 V7',
+      description: 'The classic gospel turnaround (I\u2013vi), swapping the usual IV or ii7 for an IVadd9 color chord just before the closing V7 pulls the harmony back to the tonic -- an open, shimmering reharmonization gospel pianists use for extra lift.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'vi', name: 'Submediant', semitoneFromKey: 9, quality: 'minor' },
+        { roman: 'IVadd9', name: 'Subdominant add9', semitoneFromKey: 5, quality: 'add9' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'add9-amen-passing',
+      name: 'Amen Vamp with Add9 Passing Chord',
+      label: 'I \u2013 IVadd9 \u2013 IV \u2013 iv \u2013 I',
+      description: 'The classic plagal "Amen" vamp (IV\u2192iv\u2192I), decorated with IVadd9 as a bright passing color chord right before the plain subdominant arrives -- its added 9th glows against the melody without any dissonant clash.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'IVadd9', name: 'Subdominant passing add9', semitoneFromKey: 5, quality: 'add9' },
+        { roman: 'IV', name: 'Subdominant', semitoneFromKey: 5, quality: 'major' },
+        { roman: 'iv', name: 'Borrowed minor subdominant', semitoneFromKey: 5, quality: 'minor' },
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+      ],
+    },
+    {
+      id: 'add9-secondary',
+      name: 'Secondary Add9 Turnaround',
+      label: 'I \u2013 IIIadd9 \u2013 vi \u2013 V7',
+      description: 'A secondary chord built on the mediant, colored as an add9 instead of the usual minor triad, resolves into vi the way a secondary dominant would -- before the closing V7 pulls the whole progression back home.',
+      degrees: [
+        { roman: 'I', name: 'Tonic', semitoneFromKey: 0, quality: 'major' },
+        { roman: 'IIIadd9', name: 'Mediant add9', semitoneFromKey: 4, quality: 'add9' },
+        { roman: 'vi', name: 'Submediant', semitoneFromKey: 9, quality: 'minor' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+      ],
+    },
+    {
+      id: 'add9-extended-turnaround',
+      name: 'Extended Gospel Turnaround with Add9 Color',
+      label: 'iii7 \u2013 vi7 \u2013 ii7 \u2013 \u266dVIadd9 \u2013 Iadd9',
+      description: 'A five-chord walk-back turnaround -- three falling-5th minor 7ths (iii7\u2013vi7\u2013ii7) -- that closes with a chromatic \u266dVIadd9 passing chord just before landing on an open, wide tonic add9 (Iadd9).',
+      degrees: [
+        { roman: 'iii7', name: 'Mediant 7th', semitoneFromKey: 4, quality: 'minor7' },
+        { roman: 'vi7', name: 'Submediant 7th', semitoneFromKey: 9, quality: 'minor7' },
+        { roman: 'ii7', name: 'Supertonic 7th', semitoneFromKey: 2, quality: 'minor7' },
+        { roman: '\u266dVIadd9', name: 'Chromatic passing add9', semitoneFromKey: 8, quality: 'add9' },
+        { roman: 'Iadd9', name: 'Tonic add9', semitoneFromKey: 0, quality: 'add9' },
+      ],
+    },
+    {
+      id: 'add9-minor-gospel-cadence',
+      name: 'Minor Gospel Cadence with Add9 IV',
+      label: 'i \u2013 IVadd9 \u2013 V7 \u2013 i',
+      description: 'A minor-key gospel cadence where the subdominant borrows the parallel major\u2019s IV and adds a 9th, giving an open, floating lift before the dominant pulls the harmony back home.',
+      degrees: [
+        { roman: 'i', name: 'Tonic', semitoneFromKey: 0, quality: 'minor' },
+        { roman: 'IVadd9', name: 'Borrowed subdominant add9', semitoneFromKey: 5, quality: 'add9' },
+        { roman: 'V7', name: 'Dominant 7th', semitoneFromKey: 7, quality: 'dominant7' },
+        { roman: 'i', name: 'Tonic', semitoneFromKey: 0, quality: 'minor' },
+      ],
+    },
+  ];
+
   return {
     keys,
     qualities: QUALITIES,
@@ -3061,5 +3299,7 @@ const InversionService = (() => {
     majorSeventhFlatFiveGospelProgressions: MAJOR_SEVENTH_FLAT_FIVE_GOSPEL_PROGRESSIONS,
     majorSeventhSharpElevenJazzProgressions: MAJOR_SEVENTH_SHARP_ELEVEN_JAZZ_PROGRESSIONS,
     majorSeventhSharpElevenGospelProgressions: MAJOR_SEVENTH_SHARP_ELEVEN_GOSPEL_PROGRESSIONS,
+    add9JazzProgressions: ADD9_JAZZ_PROGRESSIONS,
+    add9GospelProgressions: ADD9_GOSPEL_PROGRESSIONS,
   };
 })();
