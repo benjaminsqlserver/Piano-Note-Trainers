@@ -50,6 +50,7 @@ const NAV_GROUPS = [
       { page: 'augmented-seventh-chord', href: 'augmented-seventh-chord-trainer.html', label: 'Augmented 7th Chords' },
       { page: 'major-seventh-flat-five-chord', href: 'major-seventh-flat-five-chord-trainer.html', label: 'Major 7th ♭5 Chords' },
       { page: 'major-seventh-sharp-eleven-chord', href: 'major-seventh-sharp-eleven-chord-trainer.html', label: 'Major 7th ♯11 Chords' },
+      { page: 'add9-chord', href: 'add9-chord-trainer.html', label: 'Add9 Chords' },
     ],
   },
   {
