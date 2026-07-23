@@ -51,6 +51,10 @@ const NAV_GROUPS = [
       { page: 'major-seventh-flat-five-chord', href: 'major-seventh-flat-five-chord-trainer.html', label: 'Major 7th ♭5 Chords' },
       { page: 'major-seventh-sharp-eleven-chord', href: 'major-seventh-sharp-eleven-chord-trainer.html', label: 'Major 7th ♯11 Chords' },
       { page: 'add9-chord', href: 'add9-chord-trainer.html', label: 'Add9 Chords' },
+      { page: 'sus2-chord', href: 'sus2-chord-trainer.html', label: 'Sus2 Chords' },
+      { page: 'sus4-chord', href: 'sus4-chord-trainer.html', label: 'Sus4 Chords' },
+      { page: 'dominant-seventh-sus4-chord', href: 'dominant-seventh-sus4-chord-trainer.html', label: 'Dominant 7sus4 Chords' },
+      { page: 'six-nine-chord', href: 'six-nine-chord-trainer.html', label: '6/9 Chords' },
     ],
   },
   {
@@ -59,6 +63,7 @@ const NAV_GROUPS = [
     links: [
       { page: 'power-in-the-blood', href: 'power-in-the-blood-trainer.html', label: 'Power in the Blood' },
       { page: 'his-eye-on-the-sparrow', href: 'his-eye-on-the-sparrow-trainer.html', label: 'His Eye Is on the Sparrow' },
+      { page: 'now-behold-the-lamb', href: 'now-behold-the-lamb-trainer.html', label: 'Now Behold the Lamb' },
     ],
   },
 ];

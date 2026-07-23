@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dominant 7sus4 Chord Trainer — Piano Note Trainers</title>
+<meta name="description" content="Learn how a dominant 7sus4 chord is built one semitone-count at a time — a sus4 chord (Lesson 28) with a minor 7th stacked on top, the suspended cousin of the plain dominant 7th chord (Lesson 13) — then put it to work with three MIDI exercises: playing all 12 7sus4 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions that show off its softened, lingering pull, in every key." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="dominant-seventh-sus4-chord">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 29 · All 12 keys</div>
+    <h1>Dominant 7sus4 Chord Trainer</h1>
+    <p>Learn how a dominant 7sus4 chord is built one semitone-count at a time — a sus4 chord (Lesson 28) with a minor 7th stacked on top, the suspended cousin of the plain dominant 7th chord (Lesson 13) — then put it to work with three MIDI exercises: playing all 12 7sus4 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions that show off its softened, lingering pull, in every key.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="learn" role="tab" aria-selected="true">Learn</button>
+    <button type="button" data-tab="fourths" role="tab" aria-selected="false">Exercise 1: Circle of Fourths</button>
+    <button type="button" data-tab="jazz" role="tab" aria-selected="false">Exercise 2: Jazz Progressions</button>
+    <button type="button" data-tab="gospel" role="tab" aria-selected="false">Exercise 3: Gospel Progressions</button>
+  </div>
+
+  <!-- ===================== LEARN ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="learn">
+    <div class="stack">
+
+      <div class="card">
+        <h3 style="font-size:1.1rem;">How a 7sus4 chord is built</h3>
+        <p>A dominant 7sus4 chord is a 4-note chord — a sus4 chord (root, 4th, 5th) with a <strong>minor 7th</strong> stacked on top, the very same 7th a plain dominant 7th chord uses. Every <strong>7sus4</strong> chord — in any of the 12 keys — is built the exact same way, by counting semitones to the right from a root note:</p>
+        <ol style="margin:0.75rem 0 0.75rem 1.25rem; padding:0; line-height:1.7;">
+          <li>Start on the <strong>root</strong> — the note that names the chord.</li>
+          <li>Count <strong>5 semitones</strong> to the right to land on the <strong>perfect 4th</strong> (this replaces the 3rd entirely).</li>
+          <li>From there, count <strong>2 more semitones</strong> to the right (7 semitones from the root) to land on the <strong>perfect 5th</strong>.</li>
+          <li>From there, count <strong>3 more semitones</strong> to the right (10 semitones from the root) to land on the <strong>minor 7th</strong>.</li>
+        </ol>
+        <div class="alert alert-info">
+          Example — <strong>D 7sus4 (D7sus4)</strong>: start on <strong>D</strong>, count 5 semitones right to reach <strong>G</strong>, 2 more to reach <strong>A</strong>, then 3 more to reach <strong>C</strong>. D‑G‑A‑C is the D7sus4 chord. The pattern <strong>5, 2, 3</strong> (10 semitones total from root to top) is what makes a chord a "dominant 7sus4 chord" — every one of the 12 7sus4 chords is this same shape, just moved to start on a different key.
+        </div>
+        <div class="alert alert-warning">
+          A 7sus4 chord still carries a dominant 7th's pull toward its tonic, but the suspended 4th softens the sharp major-3rd edge that a plain dominant 7th has — which is exactly why gospel and jazz pianists reach for it as a gentler stand-in for V7, often letting it linger for a full bar before finally resolving down into a plain V7 right before the tonic arrives. Watch out for one mix-up: a 7sus4 chord is <em>not</em> the same as a plain sus4 triad (Lesson 28) — the added minor 7th is what gives it dominant-chord function and pull, which the triad alone doesn't have.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Try it: pick a root and build the chord step by step</h3>
+        <div class="controls-row">
+          <div class="field">
+            <label for="lc-root">Root note</label>
+            <select id="lc-root"></select>
+          </div>
+          <div class="field">
+            <label for="lc-output">Sound output</label>
+            <select id="lc-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+        <div class="actions-row">
+          <button class="btn btn-success" id="lc-step">▶ Play next step</button>
+          <button class="btn btn-ghost" id="lc-restart">↺ Restart chord</button>
+          <button class="btn btn-primary" id="lc-full">▶ Play full chord together</button>
+        </div>
+
+        <div class="card now-playing">
+          <div class="eyebrow" id="lc-step-label">Step 1 of 4</div>
+          <div class="now-playing__value" id="lc-current-note">—</div>
+          <div class="now-playing__sub" id="lc-current-explain"></div>
+        </div>
+
+        <div class="card"><div id="lc-keyboard"></div></div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Chord tone</th><th>Note</th><th>Semitones from root</th><th>MIDI #</th></tr></thead>
+            <tbody id="lc-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">All 12 7sus4 chords at a glance</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Chord</th><th>Root</th><th>+5 semitones → 4th</th><th>+2 semitones → 5th</th><th>+3 semitones → ♭7th</th></tr></thead>
+            <tbody id="lc-all-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 1: CIRCLE OF FOURTHS ===================== -->
+  <section class="tabpanel" data-tabpanel="fourths">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">This MIDI exercise plays <strong>all 12 7sus4 chords</strong>, one after another, moving around the <strong>circle of fourths</strong> — each chord's root sits a perfect 4th (5 semitones) above the last one: C → F → B♭ → E♭ → A♭ → D♭ → G♭/F♯ → B → E → A → D → G → back to C. Every chord is played as a full 4-note 7sus4 chord (root, 4th, 5th, and minor 7th together).</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="cf-octave">Octave</label>
+            <input type="number" id="cf-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="cf-tempo">Tempo: <span id="cf-tempo-value">80</span> BPM</label>
+            <input type="range" id="cf-tempo" min="30" max="160" value="80" />
+          </div>
+          <div class="field">
+            <label for="cf-output">Sound output</label>
+            <select id="cf-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="cf-play">▶ Play all 12 chords</button>
+          <button class="btn btn-ghost" id="cf-step">⏭ Step (no sound)</button>
+          <button class="btn btn-danger" id="cf-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="cf-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="cf-position-label">Chord 1 of 12</div>
+        <div class="now-playing__value" id="cf-current-chord">—</div>
+        <div class="now-playing__sub" id="cf-current-notes"></div>
+        <div class="progress"><div class="progress__bar" id="cf-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="cf-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">The 12 chords, in circle-of-fourths order</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Chord</th><th>Root</th><th>4th</th><th>5th</th><th>♭7th</th></tr></thead>
+            <tbody id="cf-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 2: JAZZ PROGRESSIONS ===================== -->
+  <section class="tabpanel" data-tabpanel="jazz">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Five jazz chord progressions built around the dominant 7sus4 chord — mostly using it as a softer, lingering stand-in for V7 that resolves down into a plain dominant chord. Pick a progression and play it in one key or cycle through all 12.</p>
+        <div class="controls-row">
+          <div class="field" style="min-width:280px;">
+            <label for="jz-progression">Progression</label>
+            <select id="jz-progression"></select>
+          </div>
+          <div class="field">
+            <label for="jz-key">Key</label>
+            <select id="jz-key"></select>
+          </div>
+          <div class="field">
+            <label for="jz-octave">Octave</label>
+            <input type="number" id="jz-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="jz-tempo">Tempo: <span id="jz-tempo-value">76</span> BPM</label>
+            <input type="range" id="jz-tempo" min="30" max="160" value="76" />
+          </div>
+          <div class="field">
+            <label for="jz-output">Sound output</label>
+            <select id="jz-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <p class="progression-blurb" id="jz-description"></p>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="jz-play">▶ Play in this key</button>
+          <button class="btn btn-primary" id="jz-play-all">▶ Play in all 12 keys</button>
+          <button class="btn btn-ghost" id="jz-step">⏭ Step (no sound)</button>
+          <button class="btn btn-danger" id="jz-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="jz-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="jz-key-label">Key of C</div>
+        <div class="now-playing__value" id="jz-current-chord">—</div>
+        <div class="now-playing__sub" id="jz-current-degree"></div>
+        <div class="progress"><div class="progress__bar" id="jz-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="jz-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;" id="jz-table-title">Progression in C</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Chord</th><th>Notes</th></tr></thead>
+            <tbody id="jz-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE 3: GOSPEL PROGRESSIONS ===================== -->
+  <section class="tabpanel" data-tabpanel="gospel">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Five gospel chord progressions built around the dominant 7sus4 chord — mostly using it as a softer, lingering stand-in for V7 that resolves down into a plain dominant chord. Pick a progression and play it in one key or cycle through all 12.</p>
+        <div class="controls-row">
+          <div class="field" style="min-width:280px;">
+            <label for="gp-progression">Progression</label>
+            <select id="gp-progression"></select>
+          </div>
+          <div class="field">
+            <label for="gp-key">Key</label>
+            <select id="gp-key"></select>
+          </div>
+          <div class="field">
+            <label for="gp-octave">Octave</label>
+            <input type="number" id="gp-octave" min="2" max="6" value="4" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="gp-tempo">Tempo: <span id="gp-tempo-value">76</span> BPM</label>
+            <input type="range" id="gp-tempo" min="30" max="160" value="76" />
+          </div>
+          <div class="field">
+            <label for="gp-output">Sound output</label>
+            <select id="gp-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <p class="progression-blurb" id="gp-description"></p>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="gp-play">▶ Play in this key</button>
+          <button class="btn btn-primary" id="gp-play-all">▶ Play in all 12 keys</button>
+          <button class="btn btn-ghost" id="gp-step">⏭ Step (no sound)</button>
+          <button class="btn btn-danger" id="gp-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="alert alert-warning" id="gp-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="gp-key-label">Key of C</div>
+        <div class="now-playing__value" id="gp-current-chord">—</div>
+        <div class="now-playing__sub" id="gp-current-degree"></div>
+        <div class="progress"><div class="progress__bar" id="gp-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="gp-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;" id="gp-table-title">Progression in C</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Chord</th><th>Notes</th></tr></thead>
+            <tbody id="gp-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/music-services.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/progression-picker.js"></script>
+<script src="js/dominant-seventh-sus4-chord-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

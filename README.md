@@ -66,11 +66,16 @@ chord together and had no note-by-note option at all before.
 | 18 | **His Eye Is on the Sparrow — Song Trainer** (`his-eye-on-the-sparrow-trainer.html`) | The classic gospel hymn "His Eye Is on the Sparrow" (Civilla D. Martin & Charles H. Gabriel, 1905), played from its real, unaltered source arrangement (melody + accompaniment, both hands, from the original two-channel MIDI file) in every key — the song lesson whose harmony motivated Lessons 13-17, since its arrangement uses all five 7th-chord types they teach (dominant 7th, diminished 7th, minor 7th, major 7th, and half-diminished 7th) |
 | 20 | **6th Chords** (`sixth-chord-trainer.html`) | How every 6th chord is built by counting semitones (root, +4 to the major 3rd, +3 more to the perfect 5th, +2 more to the major 6th) — a major triad plus a major 6th, never a 7th of any kind — plus three MIDI exercises: all 12 6th chords around the circle of fourths, and 5 jazz chord progressions plus 5 gospel chord progressions built around the 6th chord's warm, "at rest" tonic color, in every key |
 | 21 | **Minor 6th Chords** (`minor-sixth-chord-trainer.html`) | How every minor 6th chord is built by counting semitones (root, +3 to the minor 3rd, +4 more to the perfect 5th, +2 more to the major 6th) — a minor triad plus a *major* 6th, giving it a bittersweet color and the same four notes as a half-diminished 7th chord on its 6th degree — plus three MIDI exercises: all 12 minor 6th chords around the circle of fourths, and 5 jazz chord progressions plus 5 gospel chord progressions built around the minor 6th chord, in every key |
-| 22 | **Chord Inversions** (`inversions-trainer.html`) | What a chord inversion is, the different types of inversion (root position, 1st, 2nd, 3rd for 4-note chords, and 4th for the 5-note major 7th♯11 chord), and how to build one for every chord type taught in Lessons 8-11, 13-17, 20-21, 23, 24, 25 & 26, plus two MIDI exercises: 5 jazz chord progressions and 5 gospel chord progressions, each playable in a chosen inversion, in a single key or cycled through all 12 |
+| 22 | **Chord Inversions** (`inversions-trainer.html`) | What a chord inversion is, the different types of inversion (root position, 1st, 2nd, 3rd for 4-note chords, and 4th for 5-note chords), and how to build one for every chord type taught in Lessons 8-11, 13-17, 20-21, 23, 24, 25, 26 & 27-30, plus two MIDI exercises: 5 jazz chord progressions and 5 gospel chord progressions, each playable in a chosen inversion, in a single key or cycled through all 12 |
 | 23 | **Augmented 7th Chords** (`augmented-seventh-chord-trainer.html`) | How every augmented 7th chord — also known as 7♯5, +7, dominant 7♯5, C7♯5, C+7, C7+, augmented dominant seventh, or dominant seventh augmented — is built by counting semitones (a dominant 7th chord with its 5th raised a semitone), plus three MIDI exercises: all 12 augmented 7th chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this altered dominant, in every key |
 | 24 | **Major 7th♭5 Chords** (`major-seventh-flat-five-chord-trainer.html`) | How every major 7th flat 5 chord — also known as maj7♭5, M7♭5, or Δ7♭5 — is built by counting semitones (a major 7th chord with its 5th lowered a semitone), plus three MIDI exercises: all 12 maj7♭5 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this unsettled, floating color, in every key |
 | 25 | **Major 7th♯11 Chords** (`major-seventh-sharp-eleven-chord-trainer.html`) | How every major 7th sharp 11 chord — also known as maj7♯11, M7♯11, or Δ7♯11 — is built by counting semitones (a major 7th chord plus a raised 11th stacked on top — the first 5-note chord in this app), plus three MIDI exercises: all 12 maj7♯11 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this bright, "Lydian" color, in every key |
 | 26 | **Add9 Chords** (`add9-chord-trainer.html`) | How every add9 chord is built by counting semitones (a major triad plus a 9th stacked on top, with no 7th of any kind), plus three MIDI exercises: all 12 add9 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this bright, wide-open, "at rest" color, in every key |
+| 27 | **Sus2 Chords** (`sus2-chord-trainer.html`) | How every sus2 chord is built by counting semitones (a plain fifth with the 3rd replaced by a major 2nd, so the chord is neither major nor minor), plus three MIDI exercises: all 12 sus2 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this open, unresolved color, in every key |
+| 28 | **Sus4 Chords** (`sus4-chord-trainer.html`) | How every sus4 chord is built by counting semitones (a plain fifth with the 3rd replaced by a perfect 4th, the mirror image of the sus2 chord), plus three MIDI exercises: all 12 sus4 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around its taut, leaning color, in every key |
+| 29 | **Dominant 7sus4 Chords** (`dominant-seventh-sus4-chord-trainer.html`) | How every dominant 7sus4 chord is built by counting semitones (a sus4 chord with a minor 7th stacked on top, the suspended cousin of a plain dominant 7th chord), plus three MIDI exercises: all 12 7sus4 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around its softened, lingering pull, in every key |
+| 30 | **6/9 Chords** (`six-nine-chord-trainer.html`) | How every 6/9 chord is built by counting semitones (a plain 6th chord with a 9th stacked on top, and no 7th of any kind), plus three MIDI exercises: all 12 6/9 chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this rich, fully "at rest" color, in every key |
+| 31 | **Now Behold the Lamb — Song Trainer** (`now-behold-the-lamb-trainer.html`) | Kirk Franklin's gospel classic "Now Behold the Lamb," played from its real piano accompaniment (right-hand chord comping + left-hand bass, both taken from the original arrangement) in every key — the song lesson whose harmony motivated Lessons 27-30, since its accompaniment uses the sus2, sus4, dominant 7sus4, and 6/9 chords they teach, alongside the major, minor, dominant 7th, minor 7th, add9, 6th, and major 7th♯11 chords taught earlier |
 
 Each lesson page includes:
 
@@ -261,6 +266,46 @@ Each lesson page includes:
   has also been updated to include this chord type in its Learn tab,
   All Chord Types reference table, and jazz/gospel progression pickers.
 
+- The **Sus2 Chords**, **Sus4 Chords**, **Dominant 7sus4 Chords**, and
+  **6/9 Chords** lessons (Lessons 27-30) were added directly in response
+  to transcribing "Now Behold the Lamb" (Lesson 31): its real gospel-piano
+  accompaniment leans on four chord colors this app didn't have lessons
+  for yet. Each follows the same Learn + Circle of Fourths + Jazz/Gospel
+  Progressions pattern as the other post-Inversions lessons. A **sus2**
+  chord (root, +2, +7) and a **sus4** chord (root, +5, +7) both replace a
+  triad's 3rd -- with a major 2nd or a perfect 4th respectively -- leaving
+  the chord neither major nor minor, an open or leaning color with
+  nothing to resolve. A **dominant 7sus4** chord (root, +5, +7, +10) is a
+  sus4 chord with the same minor 7th a plain dominant 7th chord uses
+  stacked on top, giving it dominant function and pull while the
+  suspended 4th softens the sharp major-3rd edge -- a favorite gentler
+  stand-in for V7. A **6/9** chord (root, +4, +3, +2, +5 -- 5 notes) is a
+  plain major triad with both a 6th and a 9th stacked on top and, like a
+  plain 6th chord or add9 chord, **no 7th of any kind**, making it an
+  even richer, fuller "at rest" tonic color. The **Chord Inversions**
+  lesson (Lesson 22) has also been updated to include all four chord
+  types in its Learn tab and All Chord Types reference table.
+
+- The **Now Behold the Lamb -- Song Trainer** lesson follows the same
+  two-hand, real-arrangement pattern as the His Eye Is on the Sparrow
+  Song Trainer (Lesson 18): nothing about the original piano arrangement
+  is altered, only its key. The source is a real 4-track solo-piano
+  performance MIDI file (Kirk Franklin's own gospel-piano accompaniment)
+  which was merged down to two channels -- right-hand chord comping on
+  channel 0, left-hand bass on channel 1 -- then transposed into each of
+  the 12 keys, exactly as the earlier Song Trainer lessons' files were.
+  Its chord chart was built the same way as His Eye Is on the Sparrow's:
+  by combining both hands' notes at each moment and matching the
+  resulting pitch-class set against known chord shapes, producing 168
+  chord changes across the roughly 6-minute arrangement -- by far the
+  richest harmonic analysis of any lesson in this app. The source
+  arrangement is written in C major and modulates up a whole step to D
+  major about two-thirds of the way through; each `SONG_CHORDS` entry
+  carries a `keyOffset` field (0 before the modulation tick, 2 semitones
+  after it) on top of its `semitoneFromTonic`, so the modulation is
+  reproduced correctly no matter which of the 12 keys the trainer is
+  playing in.
+
 The home page (`index.html`) is a landing page with an interactive
 hero keyboard and cards linking to each lesson.
 
@@ -294,6 +339,11 @@ PianoNoteTrainers/
 ├─ major-seventh-flat-five-chord-trainer.html # Lesson 24
 ├─ major-seventh-sharp-eleven-chord-trainer.html # Lesson 25
 ├─ add9-chord-trainer.html      # Lesson 26
+├─ sus2-chord-trainer.html      # Lesson 27
+├─ sus4-chord-trainer.html      # Lesson 28
+├─ dominant-seventh-sus4-chord-trainer.html # Lesson 29
+├─ six-nine-chord-trainer.html  # Lesson 30
+├─ now-behold-the-lamb-trainer.html # Lesson 31
 ├─ css/
 │  └─ styles.css                # Shared, responsive design system
 ├─ js/
@@ -304,7 +354,7 @@ PianoNoteTrainers/
 │  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major/minor/augmented/diminished + 6th + 7th chords + augmented 7th + major 7th♭5 + major 7th♯11 + add9 + inversions/progressions)
 │  ├─ progression-picker.js     # Shared root-position-only progression-picker exercise (Jazz/Gospel tabs on Lessons 20-21, 23, 24, 25 & 26)
 │  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader (tags each note with its source MIDI channel)
-│  ├─ midi-data.js              # Base64-embedded improvisation-demo + song MIDI data (major + Dorian + Phrygian + Power in the Blood + His Eye Is on the Sparrow)
+│  ├─ midi-data.js              # Base64-embedded improvisation-demo + song MIDI data (major + Dorian + Phrygian + Power in the Blood + His Eye Is on the Sparrow + Now Behold the Lamb)
 │  ├─ home.js                   # Home page hero keyboard
 │  ├─ white-trainer.js          # Lesson 1 page logic
 │  ├─ accidental-trainer.js     # Shared logic for Lessons 2 & 3 (sharp/flat)
@@ -329,8 +379,13 @@ PianoNoteTrainers/
 │  ├─ augmented-seventh-chord-trainer.js # Lesson 23 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
 │  ├─ major-seventh-flat-five-chord-trainer.js # Lesson 24 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
 │  ├─ major-seventh-sharp-eleven-chord-trainer.js # Lesson 25 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  └─ add9-chord-trainer.js     # Lesson 26 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-├─ midi/                        # Sample MIDI files for Lessons 5-7, 12 & 18's playback (one per key each; Lessons 12 & 18's files each carry melody on channel 0 and chords/accompaniment on channel 1)
+│  ├─ add9-chord-trainer.js     # Lesson 26 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
+│  ├─ sus2-chord-trainer.js     # Lesson 27 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
+│  ├─ sus4-chord-trainer.js     # Lesson 28 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
+│  ├─ dominant-seventh-sus4-chord-trainer.js # Lesson 29 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
+│  ├─ six-nine-chord-trainer.js # Lesson 30 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
+│  └─ now-behold-the-lamb-trainer.js # Lesson 31 page logic (learn tab + two-hand Song Player)
+├─ midi/                        # Sample MIDI files for Lessons 5-7, 12, 18 & 31's playback (one per key each; Lessons 12, 18 & 31's files each carry the right hand on channel 0 and left hand on channel 1)
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file
 ```
