@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Now Behold the Lamb — Song Trainer — Piano Note Trainers</title>
+<meta name="description" content="Play Kirk Franklin's gospel classic 'Now Behold the Lamb' from its real piano accompaniment (right-hand chord comping and left-hand bass, both from the original arrangement, including sus2, sus4, dominant 7sus4, and 6/9 chords), in all 12 keys, on the full 8-octave keyboard." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="now-behold-the-lamb">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 31 · All 12 keys</div>
+    <h1>Now Behold the Lamb — Song Trainer</h1>
+    <p>Play Kirk Franklin's gospel classic "Now Behold the Lamb" exactly as arranged for solo piano — right-hand chord comping, left-hand bass, unaltered — in every one of the 12 keys. This is real gospel-piano harmony in action: alongside the familiar major, minor, dominant 7th, minor 7th, major 7th, and 6th chords, this arrangement leans heavily on the add9 and 6/9 chords (Lessons 26 &amp; 30) and introduces the sus2, sus4, and dominant 7sus4 chords (Lessons 27-29) — four chord types this app didn't teach before this song motivated them. Listen closely around the two-thirds mark and you'll also hear the whole arrangement modulate up a whole step for its final section, preserved in every key this trainer plays.</p>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button type="button" class="is-active" data-tab="learn" role="tab" aria-selected="true">Learn</button>
+    <button type="button" data-tab="player" role="tab" aria-selected="false">Song Player</button>
+  </div>
+
+  <!-- ===================== LEARN ===================== -->
+  <section class="tabpanel is-active" data-tabpanel="learn">
+    <div class="stack">
+
+      <div class="card">
+        <h3 style="font-size:1.1rem;">Two hands, exactly as played</h3>
+        <p>This lesson changes <strong>nothing</strong> about the original piano arrangement — only its key:</p>
+        <ol style="margin:0.75rem 0 0.75rem 1.25rem; padding:0; line-height:1.7;">
+          <li><strong>Right hand — the chords.</strong> The arrangement's own comping, note for note, straight off the original piano MIDI.</li>
+          <li><strong>Left hand — the bass.</strong> The arrangement's own bass line, note for note.</li>
+        </ol>
+        <div class="alert alert-info">
+          The source arrangement is written in C major (modulating up a whole step to D major about two-thirds of the way through — see the chord chart below) and leans on gospel-piano color chords far more than the hymn arrangements in earlier Song Trainer lessons. Alongside the familiar <strong>I, ii, IV, V,</strong> and <strong>vi</strong> triads and the dominant 7th and minor 7th chords, you'll hear four chords new to this app: the <span class="pill pill-major">add9</span> and <span class="pill pill-major">6/9</span> chords (rich, "no 7th" tonic and subdominant colors — see the <a href="add9-chord-trainer.html">Add9</a> and <a href="six-nine-chord-trainer.html">6/9</a> lessons), and the <span class="pill pill-major">sus2</span>, <span class="pill pill-major">sus4</span>, and <span class="pill pill-dom7">dominant 7sus4</span> chords (open or leaning substitutes for a plain triad or V7 — see the <a href="sus2-chord-trainer.html">Sus2</a>, <a href="sus4-chord-trainer.html">Sus4</a>, and <a href="dominant-seventh-sus4-chord-trainer.html">Dominant 7sus4</a> lessons). This song's harmony is exactly what motivated adding those four lessons to this app.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">The chord chart</h3>
+        <p style="margin-top:0;">A harmonic analysis of every chord the two hands sound together in the unaltered arrangement, in order, for whichever key you're practicing in — 168 chord changes across the whole 6-minute arrangement. <span class="pill pill-major">Gold</span> = major-family (major, add9, 6th, 6/9, sus2, sus4, major 7th, major 7th♯11), <span class="pill pill-dom7">orange</span> = dominant-family (dominant 7th, dominant 7sus4), <span class="pill pill-minor">blue</span> = minor or minor 7th, <span class="pill pill-dim7">purple</span> = diminished. Roman numerals shown in lowercase with no ° mark are a plain minor triad on that scale degree; degrees outside the current section's major scale show no roman numeral at all (chromatic/borrowed).</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="hes-learn-key">Key</label>
+            <select id="hes-learn-key"></select>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Function</th><th>Chord</th><th>Notes</th></tr></thead>
+            <tbody id="hes-learn-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">About the song</h3>
+        <p style="margin-top:0;">"Now Behold the Lamb" is a modern gospel classic written and recorded by Kirk Franklin, built around the refrain "Now behold the Lamb, the precious Lamb of God" — a favorite for communion and Good Friday services in churches worldwide, and a staple of the contemporary gospel-piano repertoire this lesson's accompaniment is drawn from.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SONG PLAYER ===================== -->
+  <section class="tabpanel" data-tabpanel="player">
+    <div class="stack">
+
+      <div class="card">
+        <p style="margin-top:0;">Pick a key and press Play to hear the full two-hand arrangement — right-hand melody and left-hand accompaniment together — through the built-in synth or a connected MIDI device, highlighted on the keyboard as it plays.</p>
+        <div class="controls-row">
+          <div class="field">
+            <label for="sp-key">Key</label>
+            <select id="sp-key"></select>
+          </div>
+          <div class="field" style="min-width:220px;">
+            <label for="sp-tempo">Playback speed: <span id="sp-tempo-value">100</span>%</label>
+            <input type="range" id="sp-tempo" min="50" max="150" value="100" />
+          </div>
+          <div class="field">
+            <label for="sp-output">Sound output</label>
+            <select id="sp-output"><option value="">Built-in synth (no MIDI device needed)</option></select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn btn-success" id="sp-play">▶ Play song</button>
+          <button class="btn btn-ghost" id="sp-step">⏭ Step (no sound)</button>
+          <button class="btn btn-danger" id="sp-stop" disabled>■ Stop</button>
+        </div>
+
+        <div class="hand-legend">
+          <span class="hand-legend__item"><span class="hand-legend__swatch hand-legend__swatch--melody"></span> Right hand (melody)</span>
+          <span class="hand-legend__item"><span class="hand-legend__swatch hand-legend__swatch--chord"></span> Left hand (accompaniment)</span>
+        </div>
+
+        <div class="alert alert-warning" id="sp-midi-warning" style="display:none;">
+          Web MIDI isn't available in this browser (try Chrome or Edge) — playback will use the built-in synth.
+        </div>
+        <div class="alert alert-danger" id="sp-load-error" style="display:none;"></div>
+      </div>
+
+      <div class="card now-playing">
+        <div class="eyebrow" id="sp-key-label">Key of C</div>
+        <div class="now-playing__value" id="sp-current-melody">—</div>
+        <div class="now-playing__sub" id="sp-current-chord"></div>
+        <div class="progress"><div class="progress__bar" id="sp-progress"></div></div>
+      </div>
+
+      <div class="card"><div id="sp-keyboard"></div></div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">Chord chart in this key</h3>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Degree</th><th>Chord</th><th>Notes</th><th>Starts at</th></tr></thead>
+            <tbody id="sp-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/piano-keyboard.js"></script>
+<script src="js/midi-file-reader.js"></script>
+<script src="js/midi-data.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/now-behold-the-lamb-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
