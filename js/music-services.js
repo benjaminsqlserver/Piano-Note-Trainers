@@ -3185,6 +3185,1568 @@ const AlteredDominantChordService = (() => {
 })();
 
 
+// ------------------------------------------------ Minor Extensions, Major Extensions,
+// Suspended & Add Extensions, Diminished & Augmented Variants, and
+// Gospel & Modal Color Chords (Lessons 42-64)
+
+const MinorNinthChordService = (() => {
+  // A Minor 9th chord (e.g. Cm9) is built as a minor 7th chord (Lesson 15) with a 9th stacked on top:
+  //   pitch-class pattern [0, 3, 7, 10, 14] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 3, 7, 10, 14];
+  const CHORD_TONE_LABELS = ["Root", "Minor 3rd", "Perfect 5th", "Minor 7th", "9th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 3 semitones up from the root — the minor 3rd.",
+    "Count 4 more semitones up from the 3rd (7 semitones from the root) — the perfect 5th.",
+    "Count 3 more semitones up from the 5th (10 semitones from the root) — the minor 7th, the same 7th a plain minor 7th chord uses.",
+    "Count 4 more semitones up from the 7th (14 semitones from the root — an octave plus a major 2nd) — the 9th, stacked on top of a complete minor 7th chord."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Minor 9th chord (Root, Minor 3rd, Perfect 5th, Minor 7th, 9th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MinorEleventhChordService = (() => {
+  // A Minor 11th chord (e.g. Cm11) is built as a minor 9th chord (Lesson 42) with an 11th stacked on top:
+  //   pitch-class pattern [0, 3, 7, 10, 14, 17] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 3, 7, 10, 14, 17];
+  const CHORD_TONE_LABELS = ["Root", "Minor 3rd", "Perfect 5th", "Minor 7th", "9th", "11th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 3 semitones up from the root — the minor 3rd.",
+    "Count 4 more semitones up from the 3rd (7 semitones from the root) — the perfect 5th.",
+    "Count 3 more semitones up from the 5th (10 semitones from the root) — the minor 7th.",
+    "Count 4 more semitones up from the 7th (14 semitones from the root) — the 9th.",
+    "Count 3 more semitones up from the 9th (17 semitones from the root — an octave plus a perfect 4th) — the 11th."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Minor 11th chord (Root, Minor 3rd, Perfect 5th, Minor 7th, 9th, 11th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MinorThirteenthChordService = (() => {
+  // A Minor 13th chord (e.g. Cm13) is built as a minor 11th chord (Lesson 43) with a 13th stacked on top — the fullest stock minor 7th-family chord:
+  //   pitch-class pattern [0, 3, 7, 10, 14, 17, 21] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 3, 7, 10, 14, 17, 21];
+  const CHORD_TONE_LABELS = ["Root", "Minor 3rd", "Perfect 5th", "Minor 7th", "9th", "11th", "13th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 3 semitones up from the root — the minor 3rd.",
+    "Count 4 more semitones up from the 3rd (7 semitones from the root) — the perfect 5th.",
+    "Count 3 more semitones up from the 5th (10 semitones from the root) — the minor 7th.",
+    "Count 4 more semitones up from the 7th (14 semitones from the root) — the 9th.",
+    "Count 3 more semitones up from the 9th (17 semitones from the root) — the 11th.",
+    "Count 4 more semitones up from the 11th (21 semitones from the root — an octave plus a major 6th) — the 13th."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Minor 13th chord (Root, Minor 3rd, Perfect 5th, Minor 7th, 9th, 11th, 13th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MinorSixNineChordService = (() => {
+  // A Minor 6/9 chord (e.g. Cm6/9) is built as a minor 6th chord (Lesson 21) with a 9th stacked on top, and no 7th of any kind:
+  //   pitch-class pattern [0, 3, 7, 9, 14] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 3, 7, 9, 14];
+  const CHORD_TONE_LABELS = ["Root", "Minor 3rd", "Perfect 5th", "Major 6th", "9th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 3 semitones up from the root — the minor 3rd.",
+    "Count 4 more semitones up from the 3rd (7 semitones from the root) — the perfect 5th.",
+    "Count 2 more semitones up from the 5th (9 semitones from the root) — the major 6th, the same 6th a minor 6th chord (Lesson 21) uses.",
+    "Count 5 more semitones up from the 6th (14 semitones from the root — an octave plus a major 2nd) — the 9th, stacked on top."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Minor 6/9 chord (Root, Minor 3rd, Perfect 5th, Major 6th, 9th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MinorMajorSeventhChordService = (() => {
+  // A Minor-major 7th chord (e.g. Cm(maj7)) is built as a minor triad (Lesson 9) with a major 7th on top, instead of the minor 7th a plain minor 7th chord uses:
+  //   pitch-class pattern [0, 3, 7, 11] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 3, 7, 11];
+  const CHORD_TONE_LABELS = ["Root", "Minor 3rd", "Perfect 5th", "Major 7th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 3 semitones up from the root — the minor 3rd.",
+    "Count 4 more semitones up from the 3rd (7 semitones from the root) — the perfect 5th.",
+    "Count 4 more semitones up from the 5th (11 semitones from the root) — the major 7th, not the minor 7th a plain minor 7th chord (Lesson 15) uses."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Minor-major 7th chord (Root, Minor 3rd, Perfect 5th, Major 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MinorMajorNinthChordService = (() => {
+  // A Minor-major 9th chord (e.g. Cm(maj9)) is built as a minor-major 7th chord (Lesson 46) with a 9th stacked on top:
+  //   pitch-class pattern [0, 3, 7, 11, 14] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 3, 7, 11, 14];
+  const CHORD_TONE_LABELS = ["Root", "Minor 3rd", "Perfect 5th", "Major 7th", "9th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 3 semitones up from the root — the minor 3rd.",
+    "Count 4 more semitones up from the 3rd (7 semitones from the root) — the perfect 5th.",
+    "Count 4 more semitones up from the 5th (11 semitones from the root) — the major 7th.",
+    "Count 3 more semitones up from the 7th (14 semitones from the root — an octave plus a major 2nd) — the 9th, stacked on top."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Minor-major 9th chord (Root, Minor 3rd, Perfect 5th, Major 7th, 9th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MajorNinthChordService = (() => {
+  // A Major 9th chord (e.g. Cmaj9) is built as a major 7th chord (Lesson 16) with a 9th stacked on top:
+  //   pitch-class pattern [0, 4, 7, 11, 14] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 4, 7, 11, 14];
+  const CHORD_TONE_LABELS = ["Root", "Major 3rd", "Perfect 5th", "Major 7th", "9th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 4 semitones up from the root — the major 3rd.",
+    "Count 3 more semitones up from the 3rd (7 semitones from the root) — the perfect 5th.",
+    "Count 4 more semitones up from the 5th (11 semitones from the root) — the major 7th, the same 7th a plain major 7th chord (Lesson 16) uses.",
+    "Count 3 more semitones up from the 7th (14 semitones from the root — an octave plus a major 2nd) — the 9th, stacked on top of a complete major 7th chord."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Major 9th chord (Root, Major 3rd, Perfect 5th, Major 7th, 9th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MajorThirteenthChordService = (() => {
+  // A Major 13th chord (e.g. Cmaj13) is built as a major 9th chord (Lesson 48) with a 13th stacked on top — the fullest stock major 7th-family chord:
+  //   pitch-class pattern [0, 4, 7, 11, 14, 21] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 4, 7, 11, 14, 21];
+  const CHORD_TONE_LABELS = ["Root", "Major 3rd", "Perfect 5th", "Major 7th", "9th", "13th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 4 semitones up from the root — the major 3rd.",
+    "Count 3 more semitones up from the 3rd (7 semitones from the root) — the perfect 5th.",
+    "Count 4 more semitones up from the 5th (11 semitones from the root) — the major 7th.",
+    "Count 3 more semitones up from the 7th (14 semitones from the root) — the 9th.",
+    "Count 7 more semitones up from the 9th (21 semitones from the root — an octave plus a major 6th) — the 13th; the 11th is skipped, since it clashes with the major 3rd a half step below it."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Major 13th chord (Root, Major 3rd, Perfect 5th, Major 7th, 9th, 13th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MajorSeventhSharpFiveChordService = (() => {
+  // A Major 7th♯5 chord (augmented major 7th) (e.g. Cmaj7♯5) is built as an augmented triad (Lesson 10) with a major 7th on top, instead of the minor 7th an augmented 7th chord (Lesson 23) uses:
+  //   pitch-class pattern [0, 4, 8, 11] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 4, 8, 11];
+  const CHORD_TONE_LABELS = ["Root", "Major 3rd", "Augmented 5th", "Major 7th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 4 semitones up from the root — the major 3rd.",
+    "Count 4 more semitones up from the 3rd (8 semitones from the root) — the augmented (raised) 5th, the same raised 5th an augmented triad (Lesson 10) uses.",
+    "Count 3 more semitones up from the 5th (11 semitones from the root) — the major 7th."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Major 7th♯5 chord (augmented major 7th) (Root, Major 3rd, Augmented 5th, Major 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const DominantNineSusFourChordService = (() => {
+  // A Dominant 9sus4 chord (e.g. C9sus4) is built as a dominant 7sus4 chord (Lesson 29) with a 9th stacked on top:
+  //   pitch-class pattern [0, 5, 7, 10, 14] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 5, 7, 10, 14];
+  const CHORD_TONE_LABELS = ["Root", "Perfect 4th", "Perfect 5th", "Minor 7th", "9th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 5 semitones up from the root — the perfect 4th, replacing the 3rd exactly like a sus4 chord (Lesson 28).",
+    "Count 2 more semitones up from the 4th (7 semitones from the root) — the perfect 5th.",
+    "Count 3 more semitones up from the 5th (10 semitones from the root) — the minor 7th, the same 7th a dominant 7sus4 chord (Lesson 29) uses.",
+    "Count 4 more semitones up from the 7th (14 semitones from the root — an octave plus a major 2nd) — the 9th, stacked on top."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Dominant 9sus4 chord (Root, Perfect 4th, Perfect 5th, Minor 7th, 9th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const DominantThirteenSusFourChordService = (() => {
+  // A Dominant 13sus4 chord (e.g. C13sus4) is built as a dominant 9sus4 chord (Lesson 51) with a 13th stacked on top:
+  //   pitch-class pattern [0, 5, 7, 10, 14, 21] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 5, 7, 10, 14, 21];
+  const CHORD_TONE_LABELS = ["Root", "Perfect 4th", "Perfect 5th", "Minor 7th", "9th", "13th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 5 semitones up from the root — the perfect 4th.",
+    "Count 2 more semitones up from the 4th (7 semitones from the root) — the perfect 5th.",
+    "Count 3 more semitones up from the 5th (10 semitones from the root) — the minor 7th.",
+    "Count 4 more semitones up from the 7th (14 semitones from the root) — the 9th.",
+    "Count 7 more semitones up from the 9th (21 semitones from the root — an octave plus a major 6th) — the 13th."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Dominant 13sus4 chord (Root, Perfect 4th, Perfect 5th, Minor 7th, 9th, 13th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MajorSeventhSusTwoChordService = (() => {
+  // A Major 7sus2 chord (e.g. Cmaj7sus2) is built as a sus2 chord (Lesson 27) with a major 7th stacked on top:
+  //   pitch-class pattern [0, 2, 7, 11] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 2, 7, 11];
+  const CHORD_TONE_LABELS = ["Root", "Major 2nd", "Perfect 5th", "Major 7th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 2 semitones up from the root — the major 2nd, replacing the 3rd exactly like a sus2 chord (Lesson 27).",
+    "Count 5 more semitones up from the 2nd (7 semitones from the root) — the perfect 5th.",
+    "Count 4 more semitones up from the 5th (11 semitones from the root) — the major 7th, the same 7th a major 7th chord (Lesson 16) uses."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Major 7sus2 chord (Root, Major 2nd, Perfect 5th, Major 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MajorSeventhSusFourChordService = (() => {
+  // A Major 7sus4 chord (e.g. Cmaj7sus4) is built as a sus4 chord (Lesson 28) with a major 7th stacked on top, instead of the minor 7th a dominant 7sus4 chord (Lesson 29) uses:
+  //   pitch-class pattern [0, 5, 7, 11] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 5, 7, 11];
+  const CHORD_TONE_LABELS = ["Root", "Perfect 4th", "Perfect 5th", "Major 7th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 5 semitones up from the root — the perfect 4th, replacing the 3rd exactly like a sus4 chord (Lesson 28).",
+    "Count 2 more semitones up from the 4th (7 semitones from the root) — the perfect 5th.",
+    "Count 4 more semitones up from the 5th (11 semitones from the root) — the major 7th, instead of the minor 7th a dominant 7sus4 chord (Lesson 29) uses."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Major 7sus4 chord (Root, Perfect 4th, Perfect 5th, Major 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const Add11ChordService = (() => {
+  // A Add11 chord (add4) (e.g. Cadd11) is built as a major triad (Lesson 8) with an 11th (4th) added, keeping the 3rd — distinct from a sus4 chord (Lesson 28), which removes the 3rd:
+  //   pitch-class pattern [0, 4, 5, 7] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 4, 5, 7];
+  const CHORD_TONE_LABELS = ["Root", "Major 3rd", "11th (Perfect 4th)", "Perfect 5th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 4 semitones up from the root — the major 3rd, kept in (unlike a sus4 chord, which removes it).",
+    "Count 1 more semitone up from the 3rd (5 semitones from the root) — the 11th (the same pitch as a perfect 4th), added right alongside the 3rd rather than replacing it.",
+    "Count 2 more semitones up from the 11th (7 semitones from the root) — the perfect 5th."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Add11 chord (add4) (Root, Major 3rd, 11th (Perfect 4th), Perfect 5th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const DiminishedMajorSeventhChordService = (() => {
+  // A Diminished major 7th chord (e.g. C°(maj7)) is built as a diminished triad (Lesson 11) with a major 7th on top, instead of the diminished 7th a diminished 7th chord (Lesson 14) uses:
+  //   pitch-class pattern [0, 3, 6, 11] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 3, 6, 11];
+  const CHORD_TONE_LABELS = ["Root", "Minor 3rd", "Diminished 5th", "Major 7th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 3 semitones up from the root — the minor 3rd.",
+    "Count 3 more semitones up from the 3rd (6 semitones from the root) — the diminished (lowered) 5th, the same 5th a diminished triad (Lesson 11) uses.",
+    "Count 5 more semitones up from the 5th (11 semitones from the root) — the major 7th, instead of the diminished 7th a diminished 7th chord (Lesson 14) uses."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Diminished major 7th chord (Root, Minor 3rd, Diminished 5th, Major 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const MinorSeventhFlatNineChordService = (() => {
+  // A Minor 7♭9 chord (e.g. Cm7♭9) is built as a minor 7th chord (Lesson 15) with a ♭9th stacked on top, instead of the natural 9th a minor 9th chord (Lesson 42) uses:
+  //   pitch-class pattern [0, 3, 7, 10, 13] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 3, 7, 10, 13];
+  const CHORD_TONE_LABELS = ["Root", "Minor 3rd", "Perfect 5th", "Minor 7th", "♭9th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 3 semitones up from the root — the minor 3rd.",
+    "Count 4 more semitones up from the 3rd (7 semitones from the root) — the perfect 5th.",
+    "Count 3 more semitones up from the 5th (10 semitones from the root) — the minor 7th.",
+    "Count 3 more semitones up from the 7th (13 semitones from the root — an octave plus a minor 2nd) — the ♭9th, one semitone lower than the natural 9th a minor 9th chord (Lesson 42) uses."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Minor 7♭9 chord (Root, Minor 3rd, Perfect 5th, Minor 7th, ♭9th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const HalfDiminishedEleventhChordService = (() => {
+  // A Half-diminished 11th chord (e.g. Cm11♭5) is built as a half-diminished 7th chord (Lesson 17) with a 9th and 11th stacked on top:
+  //   pitch-class pattern [0, 3, 6, 10, 14, 17] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 3, 6, 10, 14, 17];
+  const CHORD_TONE_LABELS = ["Root", "Minor 3rd", "Diminished 5th", "Minor 7th", "9th", "11th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 3 semitones up from the root — the minor 3rd.",
+    "Count 3 more semitones up from the 3rd (6 semitones from the root) — the diminished 5th, the same 5th a half-diminished 7th chord (Lesson 17) uses.",
+    "Count 4 more semitones up from the 5th (10 semitones from the root) — the minor 7th.",
+    "Count 4 more semitones up from the 7th (14 semitones from the root) — the 9th.",
+    "Count 3 more semitones up from the 9th (17 semitones from the root — an octave plus a perfect 4th) — the 11th."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Half-diminished 11th chord (Root, Minor 3rd, Diminished 5th, Minor 7th, 9th, 11th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const PowerChordService = (() => {
+  // A Power chord (e.g. C5) is built as just a root and a perfect 5th, with no 3rd at all — the simplest possible chord shape:
+  //   pitch-class pattern [0, 7] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 7];
+  const CHORD_TONE_LABELS = ["Root", "Perfect 5th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 7 semitones up from the root — the perfect 5th. There is no 3rd at all."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Power chord (Root, Perfect 5th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const SplitThirdBluesChordService = (() => {
+  // A Split-third "blues" chord (e.g. C7(♭3/♮3)) is built as a dominant 7th chord (Lesson 13) with both the minor 3rd and major 3rd sounded together, instead of just the major 3rd:
+  //   pitch-class pattern [0, 3, 4, 7, 10] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 3, 4, 7, 10];
+  const CHORD_TONE_LABELS = ["Root", "Minor 3rd", "Major 3rd", "Perfect 5th", "Minor 7th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 3 semitones up from the root — the minor 3rd (the \"blue\" 3rd).",
+    "Count 1 more semitone up from the minor 3rd (4 semitones from the root) — the major 3rd, sounded right alongside it rather than instead of it.",
+    "Count 3 more semitones up from the major 3rd (7 semitones from the root) — the perfect 5th.",
+    "Count 3 more semitones up from the 5th (10 semitones from the root) — the minor 7th, the same 7th a plain dominant 7th chord (Lesson 13) uses."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Split-third "blues" chord (Root, Minor 3rd, Major 3rd, Perfect 5th, Minor 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const QuartalChordService = (() => {
+  // A Quartal chord ("So What" voicing) (e.g. Cquartal) is built as five notes stacked entirely in perfect 4ths, instead of the stacked 3rds every other chord in this app uses:
+  //   pitch-class pattern [0, 5, 10, 15, 19] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 5, 10, 15, 19];
+  const CHORD_TONE_LABELS = ["Root", "Stacked 4th (♭7th, oct.)", "Stacked 4th (♭3rd, oct. up)", "Stacked 4th (5th, oct. up)", "Stacked 4th (top voice)"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 5 semitones up from the root — a perfect 4th, the first \"stack.\"",
+    "Count 5 more semitones up (10 semitones from the root) — another perfect 4th stacked on top, landing on the ♭7th.",
+    "Count 5 more semitones up (15 semitones from the root — an octave plus a minor 3rd) — another perfect 4th stacked on top.",
+    "Count 4 more semitones up (19 semitones from the root — an octave plus a perfect 5th) — the top voice, closing out five notes built entirely from stacked perfect 4ths."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Quartal chord ("So What" voicing) (Root, Stacked 4th (♭7th, oct.), Stacked 4th (♭3rd, oct. up), Stacked 4th (5th, oct. up), Stacked 4th (top voice)) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const ToneClusterChordService = (() => {
+  // A Tone cluster (e.g. Ccluster) is built as three adjacent notes struck together — a half step and a whole step stacked right on top of the root, with no 3rd, 5th, or 7th at all:
+  //   pitch-class pattern [0, 1, 2] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 1, 2];
+  const CHORD_TONE_LABELS = ["Root", "Minor 2nd", "Major 2nd"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this note names the chord.",
+    "Count 1 semitone up from the root — the minor 2nd, right next door to the root.",
+    "Count 1 more semitone up from the minor 2nd (2 semitones from the root) — the major 2nd."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Tone cluster (Root, Minor 2nd, Major 2nd) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const PolychordService = (() => {
+  // A Polychord / slash chord (e.g. C/) is built as a major triad (Lesson 8) rooted a whole step above the bass note, stacked over a dominant 7th chord (Lesson 13) built on that bass note — the app’s reference voicing for "X/Y" slash-chord notation:
+  //   pitch-class pattern [0, 2, 4, 6, 7, 9, 10] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [0, 2, 4, 6, 7, 9, 10];
+  const CHORD_TONE_LABELS = ["Root (bass)", "Upper triad root (+2)", "Major 3rd", "Upper triad 3rd (+6)", "Perfect 5th", "Upper triad 5th (+9)", "Minor 7th"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "The starting note — this is the bass note, the \"denominator\" of the slash chord.",
+    "Build a plain dominant 7th chord (Lesson 13) on this bass note: +4 (major 3rd, 4 semitones), +7 (perfect 5th), +10 (minor 7th) — that is the \"lower\" chord.",
+    "Then count 2 semitones up from the root — this is the root of the \"upper\" triad stacked on top.",
+    "Build a plain major triad (Lesson 8) on that note, a whole step above the bass: +4 more semitones (6 from the root) for its 3rd, and +3 more (9 from the root) for its 5th.",
+    "The combined 7-note sound — a major triad rooted a whole step above the bass, played over a dominant 7th chord — is this app’s reference polychord, transposable to any of the 12 keys."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Polychord / slash chord (Root (bass), Upper triad root (+2), Major 3rd, Upper triad 3rd (+6), Perfect 5th, Upper triad 5th (+9), Minor 7th) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
+const NeapolitanChordService = (() => {
+  // A Neapolitan (♭II) chord (e.g. C♭II) is built as a plain major triad (Lesson 8), but rooted a minor 2nd (half step) above the tonic instead of on it:
+  //   pitch-class pattern [1, 5, 8] from the root, in every one of the 12 keys.
+  const INTERVALS_FROM_ROOT = [1, 5, 8];
+  const CHORD_TONE_LABELS = ["♭II (chord root)", "Major 3rd of ♭II", "Perfect 5th of ♭II"];
+  const CHORD_TONE_EXPLANATIONS = [
+    "Start from the tonic you select — the Neapolitan chord is built relative to it, not on it.",
+    "Count 1 semitone up from the tonic — the ♭2nd degree, which becomes the root of this chord (hence \"♭II\").",
+    "Count 4 more semitones up from that root (5 semitones from the tonic) — the major 3rd of the ♭II chord.",
+    "Count 3 more semitones up from the 3rd (8 semitones from the tonic) — the perfect 5th of the ♭II chord, completing a plain major triad (Lesson 8) built a half step above the tonic."
+  ];
+
+  const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  const keys = SHARP_NAMES.map((name, semitoneFromC) => ({
+    semitoneFromC,
+    name,
+    flatName: FLAT_NAMES[semitoneFromC],
+    midiNoteForOctave(octave) { return 12 * (octave + 1) + semitoneFromC; },
+  }));
+
+  const CIRCLE_OF_FOURTHS_SEMITONES = [0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7];
+  const circleOfFourths = CIRCLE_OF_FOURTHS_SEMITONES.map((semitoneFromC, position) => {
+    const key = keys[semitoneFromC];
+    const isEnharmonicLink = semitoneFromC === 6; // Gb / F#
+    return {
+      position: position + 1,
+      semitoneFromC,
+      name: isEnharmonicLink ? `${FLAT_NAMES[6]} (${SHARP_NAMES[6]})` : key.flatName,
+      key,
+    };
+  });
+
+  function noteNameFor(absSemitoneFromC, preferFlats) {
+    const idx = ((absSemitoneFromC % 12) + 12) % 12;
+    return preferFlats ? FLAT_NAMES[idx] : SHARP_NAMES[idx];
+  }
+
+  /** Builds a Neapolitan (♭II) chord (♭II (chord root), Major 3rd of ♭II, Perfect 5th of ♭II) for `key` at `octave`. */
+  function buildChord(key, octave, preferFlats) {
+    const rootMidi = key.midiNoteForOctave(octave);
+    return INTERVALS_FROM_ROOT.map((semitone, i) => ({
+      role: CHORD_TONE_LABELS[i],
+      explanation: CHORD_TONE_EXPLANATIONS[i],
+      semitoneFromRoot: semitone,
+      midiNote: rootMidi + semitone,
+      noteName: noteNameFor(key.semitoneFromC + semitone, preferFlats),
+    }));
+  }
+
+  function chordMidiNotes(key, octave) {
+    return INTERVALS_FROM_ROOT.map((semitone) => key.midiNoteForOctave(octave) + semitone);
+  }
+
+  return {
+    keys,
+    circleOfFourths,
+    intervalsFromRoot: INTERVALS_FROM_ROOT,
+    chordToneLabels: CHORD_TONE_LABELS,
+    noteNameFor,
+    buildChord,
+    chordMidiNotes,
+  };
+})();
+
+
 // ------------------------------------------------------------ Inversions
 
 const InversionService = (() => {
@@ -3249,6 +4811,29 @@ const InversionService = (() => {
     dominant7FlatThirteen: { suffix: '7\u266d13', displayName: 'Dominant 7\u266d13 chord', intervals: [0, 4, 7, 10, 20], labels: ['Root', 'Major 3rd', 'Perfect 5th', 'Minor 7th', '\u266d13th'] },
     dominant9SharpEleven: { suffix: '9\u266f11', displayName: 'Dominant 9\u266f11 chord', intervals: [0, 4, 7, 10, 14, 18], labels: ['Root', 'Major 3rd', 'Perfect 5th', 'Minor 7th', '9th', '\u266f11th'] },
     dominantAlt:         { suffix: '7alt', displayName: 'Altered Dominant chord', intervals: [0, 4, 8, 10, 15], labels: ['Root', 'Major 3rd', '\u266f5th (Augmented 5th)', 'Minor 7th', '\u266f9th'] },
+    minorNinth: { suffix: "m9", displayName: "Minor 9th chord", intervals: [0, 3, 7, 10, 14], labels: ["Root", "Minor 3rd", "Perfect 5th", "Minor 7th", "9th"] },
+    minorEleventh: { suffix: "m11", displayName: "Minor 11th chord", intervals: [0, 3, 7, 10, 14, 17], labels: ["Root", "Minor 3rd", "Perfect 5th", "Minor 7th", "9th", "11th"] },
+    minorThirteenth: { suffix: "m13", displayName: "Minor 13th chord", intervals: [0, 3, 7, 10, 14, 17, 21], labels: ["Root", "Minor 3rd", "Perfect 5th", "Minor 7th", "9th", "11th", "13th"] },
+    minorSixNine: { suffix: "m6/9", displayName: "Minor 6/9 chord", intervals: [0, 3, 7, 9, 14], labels: ["Root", "Minor 3rd", "Perfect 5th", "Major 6th", "9th"] },
+    minorMajorSeventh: { suffix: "m(maj7)", displayName: "Minor-major 7th chord", intervals: [0, 3, 7, 11], labels: ["Root", "Minor 3rd", "Perfect 5th", "Major 7th"] },
+    minorMajorNinth: { suffix: "m(maj9)", displayName: "Minor-major 9th chord", intervals: [0, 3, 7, 11, 14], labels: ["Root", "Minor 3rd", "Perfect 5th", "Major 7th", "9th"] },
+    majorNinth: { suffix: "maj9", displayName: "Major 9th chord", intervals: [0, 4, 7, 11, 14], labels: ["Root", "Major 3rd", "Perfect 5th", "Major 7th", "9th"] },
+    majorThirteenth: { suffix: "maj13", displayName: "Major 13th chord", intervals: [0, 4, 7, 11, 14, 21], labels: ["Root", "Major 3rd", "Perfect 5th", "Major 7th", "9th", "13th"] },
+    majorSeventhSharpFive: { suffix: "maj7♯5", displayName: "Major 7th♯5 chord (augmented major 7th)", intervals: [0, 4, 8, 11], labels: ["Root", "Major 3rd", "Augmented 5th", "Major 7th"] },
+    dominantNineSusFour: { suffix: "9sus4", displayName: "Dominant 9sus4 chord", intervals: [0, 5, 7, 10, 14], labels: ["Root", "Perfect 4th", "Perfect 5th", "Minor 7th", "9th"] },
+    dominantThirteenSusFour: { suffix: "13sus4", displayName: "Dominant 13sus4 chord", intervals: [0, 5, 7, 10, 14, 21], labels: ["Root", "Perfect 4th", "Perfect 5th", "Minor 7th", "9th", "13th"] },
+    majorSeventhSusTwo: { suffix: "maj7sus2", displayName: "Major 7sus2 chord", intervals: [0, 2, 7, 11], labels: ["Root", "Major 2nd", "Perfect 5th", "Major 7th"] },
+    majorSeventhSusFour: { suffix: "maj7sus4", displayName: "Major 7sus4 chord", intervals: [0, 5, 7, 11], labels: ["Root", "Perfect 4th", "Perfect 5th", "Major 7th"] },
+    add11: { suffix: "add11", displayName: "Add11 chord (add4)", intervals: [0, 4, 5, 7], labels: ["Root", "Major 3rd", "11th (Perfect 4th)", "Perfect 5th"] },
+    diminishedMajorSeventh: { suffix: "°(maj7)", displayName: "Diminished major 7th chord", intervals: [0, 3, 6, 11], labels: ["Root", "Minor 3rd", "Diminished 5th", "Major 7th"] },
+    minorSeventhFlatNine: { suffix: "m7♭9", displayName: "Minor 7♭9 chord", intervals: [0, 3, 7, 10, 13], labels: ["Root", "Minor 3rd", "Perfect 5th", "Minor 7th", "♭9th"] },
+    halfDiminishedEleventh: { suffix: "m11♭5", displayName: "Half-diminished 11th chord", intervals: [0, 3, 6, 10, 14, 17], labels: ["Root", "Minor 3rd", "Diminished 5th", "Minor 7th", "9th", "11th"] },
+    powerChord: { suffix: "5", displayName: "Power chord", intervals: [0, 7], labels: ["Root", "Perfect 5th"] },
+    splitThirdBlues: { suffix: "7(♭3/♮3)", displayName: "Split-third \"blues\" chord", intervals: [0, 3, 4, 7, 10], labels: ["Root", "Minor 3rd", "Major 3rd", "Perfect 5th", "Minor 7th"] },
+    quartal: { suffix: "quartal", displayName: "Quartal chord (\"So What\" voicing)", intervals: [0, 5, 10, 15, 19], labels: ["Root", "Stacked 4th (♭7th, oct.)", "Stacked 4th (♭3rd, oct. up)", "Stacked 4th (5th, oct. up)", "Stacked 4th (top voice)"] },
+    toneCluster: { suffix: "cluster", displayName: "Tone cluster", intervals: [0, 1, 2], labels: ["Root", "Minor 2nd", "Major 2nd"] },
+    polychord: { suffix: "/", displayName: "Polychord / slash chord", intervals: [0, 2, 4, 6, 7, 9, 10], labels: ["Root (bass)", "Upper triad root (+2)", "Major 3rd", "Upper triad 3rd (+6)", "Perfect 5th", "Upper triad 5th (+9)", "Minor 7th"] },
+    neapolitan: { suffix: "♭II", displayName: "Neapolitan (♭II) chord", intervals: [1, 5, 8], labels: ["♭II (chord root)", "Major 3rd of ♭II", "Perfect 5th of ♭II"] },
   };
 
   // Display order used by the "All chord types" reference tab -- triads
@@ -3260,8 +4845,12 @@ const InversionService = (() => {
   // (Lessons 27-30), then the ten Dominant Extensions & Alterations
   // chords -- dominant 9th/11th/13th and the altered dominants 7\u266d9,
   // 7\u266f9, 7\u266d5, 7\u266f11, 7\u266d13, 9\u266f11, and the "alt" dominant
-  // (Lessons 32-41).
-  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7', 'augmentedSeventh', 'majorSeventhFlatFive', 'majorSeventhSharpEleven', 'add9', 'susTwo', 'susFour', 'dominantSeventhSusFour', 'sixNine', 'dominant9', 'dominant11', 'dominant13', 'dominant7FlatNine', 'dominant7SharpNine', 'dominant7FlatFive', 'dominant7SharpEleven', 'dominant7FlatThirteen', 'dominant9SharpEleven', 'dominantAlt'];
+  // (Lessons 32-41), then the 23 remaining chords from the Jazz & Gospel
+  // reference list -- Minor Extensions (Lessons 42-47), Major Extensions
+  // (Lessons 48-50), Suspended & Add Extensions (Lessons 51-55),
+  // Diminished & Augmented Variants (Lessons 56-58), and Gospel & Modal
+  // Color Chords (Lessons 59-64).
+  const QUALITY_ORDER = ['major', 'minor', 'augmented', 'diminished', 'sixth', 'minorSixth', 'dominant7', 'diminished7', 'minor7', 'major7', 'halfDiminished7', 'augmentedSeventh', 'majorSeventhFlatFive', 'majorSeventhSharpEleven', 'add9', 'susTwo', 'susFour', 'dominantSeventhSusFour', 'sixNine', 'dominant9', 'dominant11', 'dominant13', 'dominant7FlatNine', 'dominant7SharpNine', 'dominant7FlatFive', 'dominant7SharpEleven', 'dominant7FlatThirteen', 'dominant9SharpEleven', 'dominantAlt', 'minorNinth', 'minorEleventh', 'minorThirteenth', 'minorSixNine', 'minorMajorSeventh', 'minorMajorNinth', 'majorNinth', 'majorThirteenth', 'majorSeventhSharpFive', 'dominantNineSusFour', 'dominantThirteenSusFour', 'majorSeventhSusTwo', 'majorSeventhSusFour', 'add11', 'diminishedMajorSeventh', 'minorSeventhFlatNine', 'halfDiminishedEleventh', 'powerChord', 'splitThirdBlues', 'quartal', 'toneCluster', 'polychord', 'neapolitan'];
 
   // Most chord types this app teaches have 3 or 4 notes (root position
   // plus 2 or 3 inversions). The major 7th\u266f11, 6/9, dominant 9th,
@@ -6079,6 +7668,2945 @@ const InversionService = (() => {
     },
   ];
 
+  // Five jazz chord progressions built around the Minor 9th chord.
+  const MINOR_NINTH_JAZZ_PROGRESSIONS = [
+    {
+      id: "minor-ninth-chord-ii-V-i",
+      name: "Minor ii–V–i with Minor 9th chord",
+      label: "iim9 – V7 – i7",
+      description: "A minor ii–V–i with the ii chord colored as a Minor 9th chord instead of a plain minor 7th or half-diminished 7th.",
+      degrees: [
+        { roman: "iim9", name: "Supertonic", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-ninth-chord-turnaround",
+      name: "Turnaround with Minor 9th chord",
+      label: "iim9 – V7 – iim9 – i",
+      description: "A vamp-like turnaround that lingers on the Minor 9th chord before resolving down to the minor tonic.",
+      degrees: [
+        { roman: "iim9", name: "Color chord", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "iim9", name: "Color chord", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-ninth-chord-iv-color",
+      name: "Minor 9th chord Subdominant Color",
+      label: "i7 – iim9 – V7 – i7",
+      description: "A minor-key cadence that colors its middle chord as a Minor 9th chord before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iim9", name: "Color chord", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-ninth-chord-relative-major",
+      name: "Relative-Major Turnaround with Minor 9th chord",
+      label: "III – iim9 – V7 – i",
+      description: "A move through the relative major before the Minor 9th chord colors the approach to the closing V7–i.",
+      degrees: [
+        { roman: "III", name: "Relative major", semitoneFromKey: 4, quality: "major" },
+        { roman: "iim9", name: "Color chord", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-ninth-chord-blues",
+      name: "Minor Blues Turnaround with Minor 9th chord",
+      label: "i7 – iv7 – iim9 – V7",
+      description: "A minor-blues turnaround voicing its final approach chord as a Minor 9th chord before the closing dominant.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iv7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "minor7" },
+        { roman: "iim9", name: "Color chord", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Minor 9th chord.
+  const MINOR_NINTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: "minor-ninth-chord-gospel-turnaround",
+      name: "Minor Gospel Turnaround with Minor 9th chord",
+      label: "i – iim9 – V7 – i",
+      description: "A minor-key gospel turnaround whose middle chord blooms into a Minor 9th chord before the dominant pulls back home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iim9", name: "Color chord", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-ninth-chord-vamp",
+      name: "Minor Vamp with Minor 9th chord",
+      label: "i – iv – iim9 – i",
+      description: "A sustained minor-key vamp that settles onto the rich Minor 9th chord just before returning to the tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "iim9", name: "Color chord", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-ninth-chord-secondary",
+      name: "Secondary Minor 9th chord Turnaround",
+      label: "i – ♭VI – iim9 – V7",
+      description: "A chromatic ♭VI passing chord leads into a Minor 9th chord before the closing dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♭VI", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "major" },
+        { roman: "iim9", name: "Color chord", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "minor-ninth-chord-extended-turnaround",
+      name: "Extended Minor Turnaround with Minor 9th chord",
+      label: "i – iv – iim9 – V7 – i",
+      description: "A five-chord minor turnaround whose penultimate approach chord is colored as a Minor 9th chord.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "iim9", name: "Color chord", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-ninth-chord-cadence",
+      name: "Minor Gospel Cadence with Minor 9th chord",
+      label: "iim9 – V7 – i",
+      description: "A short, direct minor gospel cadence approaching the tonic through a Minor 9th chord.",
+      degrees: [
+        { roman: "iim9", name: "Color chord", semitoneFromKey: 2, quality: "minorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Minor 11th chord.
+  const MINOR_ELEVENTH_JAZZ_PROGRESSIONS = [
+    {
+      id: "minor-eleventh-chord-ii-V-i",
+      name: "Minor ii–V–i with Minor 11th chord",
+      label: "vim11 – V7 – i7",
+      description: "A minor ii–V–i with the ii chord colored as a Minor 11th chord instead of a plain minor 7th or half-diminished 7th.",
+      degrees: [
+        { roman: "vim11", name: "Supertonic", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-eleventh-chord-turnaround",
+      name: "Turnaround with Minor 11th chord",
+      label: "vim11 – V7 – vim11 – i",
+      description: "A vamp-like turnaround that lingers on the Minor 11th chord before resolving down to the minor tonic.",
+      degrees: [
+        { roman: "vim11", name: "Color chord", semitoneFromKey: 9, quality: "minorEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "vim11", name: "Color chord", semitoneFromKey: 9, quality: "minorEleventh" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-eleventh-chord-iv-color",
+      name: "Minor 11th chord Subdominant Color",
+      label: "i7 – vim11 – V7 – i7",
+      description: "A minor-key cadence that colors its middle chord as a Minor 11th chord before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "vim11", name: "Color chord", semitoneFromKey: 9, quality: "minorEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-eleventh-chord-relative-major",
+      name: "Relative-Major Turnaround with Minor 11th chord",
+      label: "III – vim11 – V7 – i",
+      description: "A move through the relative major before the Minor 11th chord colors the approach to the closing V7–i.",
+      degrees: [
+        { roman: "III", name: "Relative major", semitoneFromKey: 4, quality: "major" },
+        { roman: "vim11", name: "Color chord", semitoneFromKey: 9, quality: "minorEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-eleventh-chord-blues",
+      name: "Minor Blues Turnaround with Minor 11th chord",
+      label: "i7 – iv7 – vim11 – V7",
+      description: "A minor-blues turnaround voicing its final approach chord as a Minor 11th chord before the closing dominant.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iv7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "minor7" },
+        { roman: "vim11", name: "Color chord", semitoneFromKey: 9, quality: "minorEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Minor 11th chord.
+  const MINOR_ELEVENTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: "minor-eleventh-chord-gospel-turnaround",
+      name: "Minor Gospel Turnaround with Minor 11th chord",
+      label: "i – vim11 – V7 – i",
+      description: "A minor-key gospel turnaround whose middle chord blooms into a Minor 11th chord before the dominant pulls back home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "vim11", name: "Color chord", semitoneFromKey: 9, quality: "minorEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-eleventh-chord-vamp",
+      name: "Minor Vamp with Minor 11th chord",
+      label: "i – iv – vim11 – i",
+      description: "A sustained minor-key vamp that settles onto the rich Minor 11th chord just before returning to the tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "vim11", name: "Color chord", semitoneFromKey: 9, quality: "minorEleventh" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-eleventh-chord-secondary",
+      name: "Secondary Minor 11th chord Turnaround",
+      label: "i – ♭VI – vim11 – V7",
+      description: "A chromatic ♭VI passing chord leads into a Minor 11th chord before the closing dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♭VI", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "major" },
+        { roman: "vim11", name: "Color chord", semitoneFromKey: 9, quality: "minorEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "minor-eleventh-chord-extended-turnaround",
+      name: "Extended Minor Turnaround with Minor 11th chord",
+      label: "i – iv – vim11 – V7 – i",
+      description: "A five-chord minor turnaround whose penultimate approach chord is colored as a Minor 11th chord.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "vim11", name: "Color chord", semitoneFromKey: 9, quality: "minorEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-eleventh-chord-cadence",
+      name: "Minor Gospel Cadence with Minor 11th chord",
+      label: "vim11 – V7 – i",
+      description: "A short, direct minor gospel cadence approaching the tonic through a Minor 11th chord.",
+      degrees: [
+        { roman: "vim11", name: "Color chord", semitoneFromKey: 9, quality: "minorEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Minor 13th chord.
+  const MINOR_THIRTEENTH_JAZZ_PROGRESSIONS = [
+    {
+      id: "minor-thirteenth-chord-ii-V-i",
+      name: "Minor ii–V–i with Minor 13th chord",
+      label: "iim13 – V7 – i7",
+      description: "A minor ii–V–i with the ii chord colored as a Minor 13th chord instead of a plain minor 7th or half-diminished 7th.",
+      degrees: [
+        { roman: "iim13", name: "Supertonic", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-thirteenth-chord-turnaround",
+      name: "Turnaround with Minor 13th chord",
+      label: "iim13 – V7 – iim13 – i",
+      description: "A vamp-like turnaround that lingers on the Minor 13th chord before resolving down to the minor tonic.",
+      degrees: [
+        { roman: "iim13", name: "Color chord", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "iim13", name: "Color chord", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-thirteenth-chord-iv-color",
+      name: "Minor 13th chord Subdominant Color",
+      label: "i7 – iim13 – V7 – i7",
+      description: "A minor-key cadence that colors its middle chord as a Minor 13th chord before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iim13", name: "Color chord", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-thirteenth-chord-relative-major",
+      name: "Relative-Major Turnaround with Minor 13th chord",
+      label: "III – iim13 – V7 – i",
+      description: "A move through the relative major before the Minor 13th chord colors the approach to the closing V7–i.",
+      degrees: [
+        { roman: "III", name: "Relative major", semitoneFromKey: 4, quality: "major" },
+        { roman: "iim13", name: "Color chord", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-thirteenth-chord-blues",
+      name: "Minor Blues Turnaround with Minor 13th chord",
+      label: "i7 – iv7 – iim13 – V7",
+      description: "A minor-blues turnaround voicing its final approach chord as a Minor 13th chord before the closing dominant.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iv7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "minor7" },
+        { roman: "iim13", name: "Color chord", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Minor 13th chord.
+  const MINOR_THIRTEENTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: "minor-thirteenth-chord-gospel-turnaround",
+      name: "Minor Gospel Turnaround with Minor 13th chord",
+      label: "i – iim13 – V7 – i",
+      description: "A minor-key gospel turnaround whose middle chord blooms into a Minor 13th chord before the dominant pulls back home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iim13", name: "Color chord", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-thirteenth-chord-vamp",
+      name: "Minor Vamp with Minor 13th chord",
+      label: "i – iv – iim13 – i",
+      description: "A sustained minor-key vamp that settles onto the rich Minor 13th chord just before returning to the tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "iim13", name: "Color chord", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-thirteenth-chord-secondary",
+      name: "Secondary Minor 13th chord Turnaround",
+      label: "i – ♭VI – iim13 – V7",
+      description: "A chromatic ♭VI passing chord leads into a Minor 13th chord before the closing dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♭VI", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "major" },
+        { roman: "iim13", name: "Color chord", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "minor-thirteenth-chord-extended-turnaround",
+      name: "Extended Minor Turnaround with Minor 13th chord",
+      label: "i – iv – iim13 – V7 – i",
+      description: "A five-chord minor turnaround whose penultimate approach chord is colored as a Minor 13th chord.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "iim13", name: "Color chord", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-thirteenth-chord-cadence",
+      name: "Minor Gospel Cadence with Minor 13th chord",
+      label: "iim13 – V7 – i",
+      description: "A short, direct minor gospel cadence approaching the tonic through a Minor 13th chord.",
+      degrees: [
+        { roman: "iim13", name: "Color chord", semitoneFromKey: 2, quality: "minorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Minor 6/9 chord.
+  const MINOR_SIX_NINE_JAZZ_PROGRESSIONS = [
+    {
+      id: "minor-six-nine-chord-ii-V-i",
+      name: "Minor ii–V–i with Minor 6/9 chord",
+      label: "im6/9 – V7 – i7",
+      description: "A minor ii–V–i with the ii chord colored as a Minor 6/9 chord instead of a plain minor 7th or half-diminished 7th.",
+      degrees: [
+        { roman: "im6/9", name: "Supertonic", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-six-nine-chord-turnaround",
+      name: "Turnaround with Minor 6/9 chord",
+      label: "im6/9 – V7 – im6/9 – i",
+      description: "A vamp-like turnaround that lingers on the Minor 6/9 chord before resolving down to the minor tonic.",
+      degrees: [
+        { roman: "im6/9", name: "Color chord", semitoneFromKey: 0, quality: "minorSixNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "im6/9", name: "Color chord", semitoneFromKey: 0, quality: "minorSixNine" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-six-nine-chord-iv-color",
+      name: "Minor 6/9 chord Subdominant Color",
+      label: "i7 – im6/9 – V7 – i7",
+      description: "A minor-key cadence that colors its middle chord as a Minor 6/9 chord before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "im6/9", name: "Color chord", semitoneFromKey: 0, quality: "minorSixNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-six-nine-chord-relative-major",
+      name: "Relative-Major Turnaround with Minor 6/9 chord",
+      label: "III – im6/9 – V7 – i",
+      description: "A move through the relative major before the Minor 6/9 chord colors the approach to the closing V7–i.",
+      degrees: [
+        { roman: "III", name: "Relative major", semitoneFromKey: 4, quality: "major" },
+        { roman: "im6/9", name: "Color chord", semitoneFromKey: 0, quality: "minorSixNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-six-nine-chord-blues",
+      name: "Minor Blues Turnaround with Minor 6/9 chord",
+      label: "i7 – iv7 – im6/9 – V7",
+      description: "A minor-blues turnaround voicing its final approach chord as a Minor 6/9 chord before the closing dominant.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iv7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "minor7" },
+        { roman: "im6/9", name: "Color chord", semitoneFromKey: 0, quality: "minorSixNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Minor 6/9 chord.
+  const MINOR_SIX_NINE_GOSPEL_PROGRESSIONS = [
+    {
+      id: "minor-six-nine-chord-gospel-turnaround",
+      name: "Minor Gospel Turnaround with Minor 6/9 chord",
+      label: "i – im6/9 – V7 – i",
+      description: "A minor-key gospel turnaround whose middle chord blooms into a Minor 6/9 chord before the dominant pulls back home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "im6/9", name: "Color chord", semitoneFromKey: 0, quality: "minorSixNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-six-nine-chord-vamp",
+      name: "Minor Vamp with Minor 6/9 chord",
+      label: "i – iv – im6/9 – i",
+      description: "A sustained minor-key vamp that settles onto the rich Minor 6/9 chord just before returning to the tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "im6/9", name: "Color chord", semitoneFromKey: 0, quality: "minorSixNine" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-six-nine-chord-secondary",
+      name: "Secondary Minor 6/9 chord Turnaround",
+      label: "i – ♭VI – im6/9 – V7",
+      description: "A chromatic ♭VI passing chord leads into a Minor 6/9 chord before the closing dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♭VI", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "major" },
+        { roman: "im6/9", name: "Color chord", semitoneFromKey: 0, quality: "minorSixNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "minor-six-nine-chord-extended-turnaround",
+      name: "Extended Minor Turnaround with Minor 6/9 chord",
+      label: "i – iv – im6/9 – V7 – i",
+      description: "A five-chord minor turnaround whose penultimate approach chord is colored as a Minor 6/9 chord.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "im6/9", name: "Color chord", semitoneFromKey: 0, quality: "minorSixNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-six-nine-chord-cadence",
+      name: "Minor Gospel Cadence with Minor 6/9 chord",
+      label: "im6/9 – V7 – i",
+      description: "A short, direct minor gospel cadence approaching the tonic through a Minor 6/9 chord.",
+      degrees: [
+        { roman: "im6/9", name: "Color chord", semitoneFromKey: 0, quality: "minorSixNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Minor-major 7th chord.
+  const MINOR_MAJOR_SEVENTH_JAZZ_PROGRESSIONS = [
+    {
+      id: "minor-major-seventh-chord-ii-V-i",
+      name: "Minor ii–V–i with Minor-major 7th chord",
+      label: "im(maj7) – V7 – i7",
+      description: "A minor ii–V–i with the ii chord colored as a Minor-major 7th chord instead of a plain minor 7th or half-diminished 7th.",
+      degrees: [
+        { roman: "im(maj7)", name: "Supertonic", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-major-seventh-chord-turnaround",
+      name: "Turnaround with Minor-major 7th chord",
+      label: "im(maj7) – V7 – im(maj7) – i",
+      description: "A vamp-like turnaround that lingers on the Minor-major 7th chord before resolving down to the minor tonic.",
+      degrees: [
+        { roman: "im(maj7)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorSeventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "im(maj7)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorSeventh" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-major-seventh-chord-iv-color",
+      name: "Minor-major 7th chord Subdominant Color",
+      label: "i7 – im(maj7) – V7 – i7",
+      description: "A minor-key cadence that colors its middle chord as a Minor-major 7th chord before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "im(maj7)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorSeventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-major-seventh-chord-relative-major",
+      name: "Relative-Major Turnaround with Minor-major 7th chord",
+      label: "III – im(maj7) – V7 – i",
+      description: "A move through the relative major before the Minor-major 7th chord colors the approach to the closing V7–i.",
+      degrees: [
+        { roman: "III", name: "Relative major", semitoneFromKey: 4, quality: "major" },
+        { roman: "im(maj7)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorSeventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-major-seventh-chord-blues",
+      name: "Minor Blues Turnaround with Minor-major 7th chord",
+      label: "i7 – iv7 – im(maj7) – V7",
+      description: "A minor-blues turnaround voicing its final approach chord as a Minor-major 7th chord before the closing dominant.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iv7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "minor7" },
+        { roman: "im(maj7)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorSeventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Minor-major 7th chord.
+  const MINOR_MAJOR_SEVENTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: "minor-major-seventh-chord-gospel-turnaround",
+      name: "Minor Gospel Turnaround with Minor-major 7th chord",
+      label: "i – im(maj7) – V7 – i",
+      description: "A minor-key gospel turnaround whose middle chord blooms into a Minor-major 7th chord before the dominant pulls back home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "im(maj7)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorSeventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-major-seventh-chord-vamp",
+      name: "Minor Vamp with Minor-major 7th chord",
+      label: "i – iv – im(maj7) – i",
+      description: "A sustained minor-key vamp that settles onto the rich Minor-major 7th chord just before returning to the tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "im(maj7)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorSeventh" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-major-seventh-chord-secondary",
+      name: "Secondary Minor-major 7th chord Turnaround",
+      label: "i – ♭VI – im(maj7) – V7",
+      description: "A chromatic ♭VI passing chord leads into a Minor-major 7th chord before the closing dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♭VI", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "major" },
+        { roman: "im(maj7)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorSeventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "minor-major-seventh-chord-extended-turnaround",
+      name: "Extended Minor Turnaround with Minor-major 7th chord",
+      label: "i – iv – im(maj7) – V7 – i",
+      description: "A five-chord minor turnaround whose penultimate approach chord is colored as a Minor-major 7th chord.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "im(maj7)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorSeventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-major-seventh-chord-cadence",
+      name: "Minor Gospel Cadence with Minor-major 7th chord",
+      label: "im(maj7) – V7 – i",
+      description: "A short, direct minor gospel cadence approaching the tonic through a Minor-major 7th chord.",
+      degrees: [
+        { roman: "im(maj7)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorSeventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Minor-major 9th chord.
+  const MINOR_MAJOR_NINTH_JAZZ_PROGRESSIONS = [
+    {
+      id: "minor-major-ninth-chord-ii-V-i",
+      name: "Minor ii–V–i with Minor-major 9th chord",
+      label: "im(maj9) – V7 – i7",
+      description: "A minor ii–V–i with the ii chord colored as a Minor-major 9th chord instead of a plain minor 7th or half-diminished 7th.",
+      degrees: [
+        { roman: "im(maj9)", name: "Supertonic", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-major-ninth-chord-turnaround",
+      name: "Turnaround with Minor-major 9th chord",
+      label: "im(maj9) – V7 – im(maj9) – i",
+      description: "A vamp-like turnaround that lingers on the Minor-major 9th chord before resolving down to the minor tonic.",
+      degrees: [
+        { roman: "im(maj9)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "im(maj9)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorNinth" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-major-ninth-chord-iv-color",
+      name: "Minor-major 9th chord Subdominant Color",
+      label: "i7 – im(maj9) – V7 – i7",
+      description: "A minor-key cadence that colors its middle chord as a Minor-major 9th chord before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "im(maj9)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-major-ninth-chord-relative-major",
+      name: "Relative-Major Turnaround with Minor-major 9th chord",
+      label: "III – im(maj9) – V7 – i",
+      description: "A move through the relative major before the Minor-major 9th chord colors the approach to the closing V7–i.",
+      degrees: [
+        { roman: "III", name: "Relative major", semitoneFromKey: 4, quality: "major" },
+        { roman: "im(maj9)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-major-ninth-chord-blues",
+      name: "Minor Blues Turnaround with Minor-major 9th chord",
+      label: "i7 – iv7 – im(maj9) – V7",
+      description: "A minor-blues turnaround voicing its final approach chord as a Minor-major 9th chord before the closing dominant.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iv7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "minor7" },
+        { roman: "im(maj9)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Minor-major 9th chord.
+  const MINOR_MAJOR_NINTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: "minor-major-ninth-chord-gospel-turnaround",
+      name: "Minor Gospel Turnaround with Minor-major 9th chord",
+      label: "i – im(maj9) – V7 – i",
+      description: "A minor-key gospel turnaround whose middle chord blooms into a Minor-major 9th chord before the dominant pulls back home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "im(maj9)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-major-ninth-chord-vamp",
+      name: "Minor Vamp with Minor-major 9th chord",
+      label: "i – iv – im(maj9) – i",
+      description: "A sustained minor-key vamp that settles onto the rich Minor-major 9th chord just before returning to the tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "im(maj9)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorNinth" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-major-ninth-chord-secondary",
+      name: "Secondary Minor-major 9th chord Turnaround",
+      label: "i – ♭VI – im(maj9) – V7",
+      description: "A chromatic ♭VI passing chord leads into a Minor-major 9th chord before the closing dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♭VI", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "major" },
+        { roman: "im(maj9)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "minor-major-ninth-chord-extended-turnaround",
+      name: "Extended Minor Turnaround with Minor-major 9th chord",
+      label: "i – iv – im(maj9) – V7 – i",
+      description: "A five-chord minor turnaround whose penultimate approach chord is colored as a Minor-major 9th chord.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "im(maj9)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-major-ninth-chord-cadence",
+      name: "Minor Gospel Cadence with Minor-major 9th chord",
+      label: "im(maj9) – V7 – i",
+      description: "A short, direct minor gospel cadence approaching the tonic through a Minor-major 9th chord.",
+      degrees: [
+        { roman: "im(maj9)", name: "Color chord", semitoneFromKey: 0, quality: "minorMajorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Major 9th chord.
+  const MAJOR_NINTH_JAZZ_PROGRESSIONS = [
+    {
+      id: "major-ninth-chord-ii-V-I",
+      name: "ii–V–I with Major 9th chord Tonic",
+      label: "ii7 – V7 – Imaj9",
+      description: "The familiar ii–V–I resolves onto Imaj9 instead of a plain major 7th, for extra color at the cadence.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "Imaj9", name: "Tonic", semitoneFromKey: 0, quality: "majorNinth" },
+      ],
+    },
+    {
+      id: "major-ninth-chord-iv-color",
+      name: "IVmaj9 Color Change",
+      label: "Imaj7 – IVmaj9 – iii7 – vi7",
+      description: "A Major 9th chord stands in for the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IVmaj9", name: "Subdominant", semitoneFromKey: 5, quality: "majorNinth" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "major-ninth-chord-turnaround",
+      name: "Turnaround with Major 9th chord Color",
+      label: "iii7 – VI7 – ii7 – V7",
+      description: "A falling turnaround that passes briefly through a Major 9th chord-colored submediant before the closing V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "VImaj9", name: "Submediant", semitoneFromKey: 9, quality: "majorNinth" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-ninth-chord-minor-key",
+      name: "Minor-Key Cadence with Major 9th chord",
+      label: "i7 – IVmaj9 – V7 – i7",
+      description: "A minor-key cadence borrowing the parallel major’s IV, colored as a full Major 9th chord for extra richness before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "IVmaj9", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "majorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "major-ninth-chord-blues",
+      name: "Jazz Blues Turnaround with Major 9th chord Tonic",
+      label: "Imaj9 – IV7 – ii7 – V7",
+      description: "A jazz-blues turnaround that opens on Imaj9 instead of a plain major or dominant tonic, establishing a rich color right away.",
+      degrees: [
+        { roman: "Imaj9", name: "Tonic", semitoneFromKey: 0, quality: "majorNinth" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Major 9th chord.
+  const MAJOR_NINTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: "major-ninth-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Major 9th chord IV",
+      label: "I – vi – IV – V7",
+      description: "The classic gospel turnaround, closing on a Major 9th chord-colored tonic feel just before the final V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-ninth-chord-amen-vamp",
+      name: "Amen Vamp with Major 9th chord Landing",
+      label: "I – IV – iv – Imaj9",
+      description: "The classic plagal \"Amen\" vamp, but the final chord blooms into a full Major 9th chord instead of a plain triad — a warm, richly colored landing.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "iv", name: "Borrowed minor subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "Imaj9", name: "Tonic", semitoneFromKey: 0, quality: "majorNinth" },
+      ],
+    },
+    {
+      id: "major-ninth-chord-secondary",
+      name: "Secondary Major 9th chord Turnaround",
+      label: "I – IIImaj9 – vi – V7",
+      description: "A secondary chord built on the mediant, colored as a Major 9th chord instead of the usual minor triad, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IIImaj9", name: "Mediant", semitoneFromKey: 4, quality: "majorNinth" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-ninth-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Major 9th chord Color",
+      label: "iii7 – vi7 – ii7 – ♭VImaj9 – Imaj9",
+      description: "A five-chord walk-back turnaround that closes with a chromatic ♭VImaj9 passing chord just before landing on a full, rich Major 9th chord.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "♭VImaj9", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "majorNinth" },
+        { roman: "Imaj9", name: "Tonic", semitoneFromKey: 0, quality: "majorNinth" },
+      ],
+    },
+    {
+      id: "major-ninth-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Major 9th chord IV",
+      label: "i – IVmaj9 – V7 – i",
+      description: "A minor-key gospel cadence where the subdominant borrows the parallel major’s IV and blooms into a Major 9th chord, giving a rich lift before the dominant pulls home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "IVmaj9", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "majorNinth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Major 13th chord.
+  const MAJOR_THIRTEENTH_JAZZ_PROGRESSIONS = [
+    {
+      id: "major-thirteenth-chord-ii-V-I",
+      name: "ii–V–I with Major 13th chord Tonic",
+      label: "ii7 – V7 – Imaj13",
+      description: "The familiar ii–V–I resolves onto Imaj13 instead of a plain major 7th, for extra color at the cadence.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "Imaj13", name: "Tonic", semitoneFromKey: 0, quality: "majorThirteenth" },
+      ],
+    },
+    {
+      id: "major-thirteenth-chord-iv-color",
+      name: "IVmaj13 Color Change",
+      label: "Imaj7 – IVmaj13 – iii7 – vi7",
+      description: "A Major 13th chord stands in for the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IVmaj13", name: "Subdominant", semitoneFromKey: 5, quality: "majorThirteenth" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "major-thirteenth-chord-turnaround",
+      name: "Turnaround with Major 13th chord Color",
+      label: "iii7 – VI7 – ii7 – V7",
+      description: "A falling turnaround that passes briefly through a Major 13th chord-colored submediant before the closing V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "VImaj13", name: "Submediant", semitoneFromKey: 9, quality: "majorThirteenth" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-thirteenth-chord-minor-key",
+      name: "Minor-Key Cadence with Major 13th chord",
+      label: "i7 – IVmaj13 – V7 – i7",
+      description: "A minor-key cadence borrowing the parallel major’s IV, colored as a full Major 13th chord for extra richness before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "IVmaj13", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "majorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "major-thirteenth-chord-blues",
+      name: "Jazz Blues Turnaround with Major 13th chord Tonic",
+      label: "Imaj13 – IV7 – ii7 – V7",
+      description: "A jazz-blues turnaround that opens on Imaj13 instead of a plain major or dominant tonic, establishing a rich color right away.",
+      degrees: [
+        { roman: "Imaj13", name: "Tonic", semitoneFromKey: 0, quality: "majorThirteenth" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Major 13th chord.
+  const MAJOR_THIRTEENTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: "major-thirteenth-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Major 13th chord IV",
+      label: "I – vi – IV – V7",
+      description: "The classic gospel turnaround, closing on a Major 13th chord-colored tonic feel just before the final V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-thirteenth-chord-amen-vamp",
+      name: "Amen Vamp with Major 13th chord Landing",
+      label: "I – IV – iv – Imaj13",
+      description: "The classic plagal \"Amen\" vamp, but the final chord blooms into a full Major 13th chord instead of a plain triad — a warm, richly colored landing.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "iv", name: "Borrowed minor subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "Imaj13", name: "Tonic", semitoneFromKey: 0, quality: "majorThirteenth" },
+      ],
+    },
+    {
+      id: "major-thirteenth-chord-secondary",
+      name: "Secondary Major 13th chord Turnaround",
+      label: "I – IIImaj13 – vi – V7",
+      description: "A secondary chord built on the mediant, colored as a Major 13th chord instead of the usual minor triad, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IIImaj13", name: "Mediant", semitoneFromKey: 4, quality: "majorThirteenth" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-thirteenth-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Major 13th chord Color",
+      label: "iii7 – vi7 – ii7 – ♭VImaj13 – Imaj13",
+      description: "A five-chord walk-back turnaround that closes with a chromatic ♭VImaj13 passing chord just before landing on a full, rich Major 13th chord.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "♭VImaj13", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "majorThirteenth" },
+        { roman: "Imaj13", name: "Tonic", semitoneFromKey: 0, quality: "majorThirteenth" },
+      ],
+    },
+    {
+      id: "major-thirteenth-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Major 13th chord IV",
+      label: "i – IVmaj13 – V7 – i",
+      description: "A minor-key gospel cadence where the subdominant borrows the parallel major’s IV and blooms into a Major 13th chord, giving a rich lift before the dominant pulls home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "IVmaj13", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "majorThirteenth" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Major 7th♯5 chord (augmented major 7th).
+  const MAJOR_SEVENTH_SHARP_FIVE_JAZZ_PROGRESSIONS = [
+    {
+      id: "major-seventh-sharp-five-chord-ii-V-I",
+      name: "ii–V–I with Major 7th♯5 chord (augmented major 7th) Tonic",
+      label: "ii7 – V7 – Imaj7♯5",
+      description: "The familiar ii–V–I resolves onto Imaj7♯5 instead of a plain major 7th, for extra color at the cadence.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "Imaj7♯5", name: "Tonic", semitoneFromKey: 0, quality: "majorSeventhSharpFive" },
+      ],
+    },
+    {
+      id: "major-seventh-sharp-five-chord-iv-color",
+      name: "IVmaj7♯5 Color Change",
+      label: "Imaj7 – IVmaj7♯5 – iii7 – vi7",
+      description: "A Major 7th♯5 chord (augmented major 7th) stands in for the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IVmaj7♯5", name: "Subdominant", semitoneFromKey: 5, quality: "majorSeventhSharpFive" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "major-seventh-sharp-five-chord-turnaround",
+      name: "Turnaround with Major 7th♯5 chord (augmented major 7th) Color",
+      label: "iii7 – VI7 – ii7 – V7",
+      description: "A falling turnaround that passes briefly through a Major 7th♯5 chord (augmented major 7th)-colored submediant before the closing V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "VImaj7♯5", name: "Submediant", semitoneFromKey: 9, quality: "majorSeventhSharpFive" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-seventh-sharp-five-chord-minor-key",
+      name: "Minor-Key Cadence with Major 7th♯5 chord (augmented major 7th)",
+      label: "i7 – IVmaj7♯5 – V7 – i7",
+      description: "A minor-key cadence borrowing the parallel major’s IV, colored as a full Major 7th♯5 chord (augmented major 7th) for extra richness before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "IVmaj7♯5", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "majorSeventhSharpFive" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "major-seventh-sharp-five-chord-blues",
+      name: "Jazz Blues Turnaround with Major 7th♯5 chord (augmented major 7th) Tonic",
+      label: "Imaj7♯5 – IV7 – ii7 – V7",
+      description: "A jazz-blues turnaround that opens on Imaj7♯5 instead of a plain major or dominant tonic, establishing a rich color right away.",
+      degrees: [
+        { roman: "Imaj7♯5", name: "Tonic", semitoneFromKey: 0, quality: "majorSeventhSharpFive" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Major 7th♯5 chord (augmented major 7th).
+  const MAJOR_SEVENTH_SHARP_FIVE_GOSPEL_PROGRESSIONS = [
+    {
+      id: "major-seventh-sharp-five-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Major 7th♯5 chord (augmented major 7th) IV",
+      label: "I – vi – IV – V7",
+      description: "The classic gospel turnaround, closing on a Major 7th♯5 chord (augmented major 7th)-colored tonic feel just before the final V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-seventh-sharp-five-chord-amen-vamp",
+      name: "Amen Vamp with Major 7th♯5 chord (augmented major 7th) Landing",
+      label: "I – IV – iv – Imaj7♯5",
+      description: "The classic plagal \"Amen\" vamp, but the final chord blooms into a full Major 7th♯5 chord (augmented major 7th) instead of a plain triad — a warm, richly colored landing.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "iv", name: "Borrowed minor subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "Imaj7♯5", name: "Tonic", semitoneFromKey: 0, quality: "majorSeventhSharpFive" },
+      ],
+    },
+    {
+      id: "major-seventh-sharp-five-chord-secondary",
+      name: "Secondary Major 7th♯5 chord (augmented major 7th) Turnaround",
+      label: "I – IIImaj7♯5 – vi – V7",
+      description: "A secondary chord built on the mediant, colored as a Major 7th♯5 chord (augmented major 7th) instead of the usual minor triad, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IIImaj7♯5", name: "Mediant", semitoneFromKey: 4, quality: "majorSeventhSharpFive" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-seventh-sharp-five-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Major 7th♯5 chord (augmented major 7th) Color",
+      label: "iii7 – vi7 – ii7 – ♭VImaj7♯5 – Imaj7♯5",
+      description: "A five-chord walk-back turnaround that closes with a chromatic ♭VImaj7♯5 passing chord just before landing on a full, rich Major 7th♯5 chord (augmented major 7th).",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "♭VImaj7♯5", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "majorSeventhSharpFive" },
+        { roman: "Imaj7♯5", name: "Tonic", semitoneFromKey: 0, quality: "majorSeventhSharpFive" },
+      ],
+    },
+    {
+      id: "major-seventh-sharp-five-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Major 7th♯5 chord (augmented major 7th) IV",
+      label: "i – IVmaj7♯5 – V7 – i",
+      description: "A minor-key gospel cadence where the subdominant borrows the parallel major’s IV and blooms into a Major 7th♯5 chord (augmented major 7th), giving a rich lift before the dominant pulls home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "IVmaj7♯5", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "majorSeventhSharpFive" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Dominant 9sus4 chord.
+  const DOMINANT_NINE_SUS_FOUR_JAZZ_PROGRESSIONS = [
+    {
+      id: "dominant-nine-sus4-chord-ii-V-I",
+      name: "ii–V–I with Dominant 9sus4 chord",
+      label: "ii7 – V9sus4 – Imaj7",
+      description: "The familiar ii–V–I resolves through a V9sus4 instead of a plain V7, adding extra color on the way to the tonic.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V9sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantNineSusFour" },
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+      ],
+    },
+    {
+      id: "dominant-nine-sus4-chord-iv-color",
+      name: "IV9sus4 Color Change",
+      label: "Imaj7 – IV9sus4 – iii7 – vi7",
+      description: "A Dominant 9sus4 chord colors the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IV9sus4", name: "Subdominant", semitoneFromKey: 5, quality: "dominantNineSusFour" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "dominant-nine-sus4-chord-turnaround",
+      name: "Turnaround with Dominant 9sus4 chord",
+      label: "iii7 – vi7 – ii7 – V9sus4",
+      description: "A falling turnaround whose closing dominant blooms into a V9sus4 instead of a plain V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V9sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantNineSusFour" },
+      ],
+    },
+    {
+      id: "dominant-nine-sus4-chord-minor-key",
+      name: "Minor ii–V–i with Dominant 9sus4 chord",
+      label: "iiø7 – V9sus4 – i7",
+      description: "The minor-key ii–V–i, with the dominant voiced as a V9sus4 before resolving to the minor 7th tonic.",
+      degrees: [
+        { roman: "iiø7", name: "Supertonic half-diminished 7th", semitoneFromKey: 2, quality: "halfDiminished7" },
+        { roman: "V9sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantNineSusFour" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "dominant-nine-sus4-chord-blues",
+      name: "Jazz Blues Turnaround with Dominant 9sus4 chord",
+      label: "I9sus4 – IV9sus4 – ii7 – V9sus4",
+      description: "A jazz-blues turnaround voicing the tonic, subdominant, and dominant all as Dominant 9sus4 chords.",
+      degrees: [
+        { roman: "I9sus4", name: "Tonic", semitoneFromKey: 0, quality: "dominantNineSusFour" },
+        { roman: "IV9sus4", name: "Subdominant", semitoneFromKey: 5, quality: "dominantNineSusFour" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V9sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantNineSusFour" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Dominant 9sus4 chord.
+  const DOMINANT_NINE_SUS_FOUR_GOSPEL_PROGRESSIONS = [
+    {
+      id: "dominant-nine-sus4-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Dominant 9sus4 chord V",
+      label: "I – vi – IV – V9sus4",
+      description: "The classic gospel turnaround, closing on a rich V9sus4 instead of a plain dominant 7th.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V9sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantNineSusFour" },
+      ],
+    },
+    {
+      id: "dominant-nine-sus4-chord-vamp-release",
+      name: "Vamp with Dominant 9sus4 chord–V7 Release",
+      label: "I – IV – V9sus4 – V7 – I",
+      description: "A gospel vamp move: the dominant arrives first colored as a V9sus4, then 'releases' into a plain V7 right before the tonic returns.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V9sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantNineSusFour" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "dominant-nine-sus4-chord-secondary",
+      name: "Secondary Dominant 9sus4 chord Turnaround",
+      label: "I – III9sus4 – vi – V7",
+      description: "A secondary dominant on the mediant, colored as a III9sus4 for extra richness, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "III9sus4", name: "Mediant", semitoneFromKey: 4, quality: "dominantNineSusFour" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "dominant-nine-sus4-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Dominant 9sus4 chord Color",
+      label: "iii7 – vi7 – ii7 – V9sus4 – Imaj7",
+      description: "A five-chord walk-back turnaround whose penultimate dominant blooms into a V9sus4 before landing on a lush tonic major 7th.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V9sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantNineSusFour" },
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+      ],
+    },
+    {
+      id: "dominant-nine-sus4-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Dominant 9sus4 chord V",
+      label: "i – iv – V9sus4 – i",
+      description: "A minor-key gospel cadence whose dominant is colored as a V9sus4 before pulling back home to the minor tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "V9sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantNineSusFour" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Dominant 13sus4 chord.
+  const DOMINANT_THIRTEEN_SUS_FOUR_JAZZ_PROGRESSIONS = [
+    {
+      id: "dominant-thirteen-sus4-chord-ii-V-I",
+      name: "ii–V–I with Dominant 13sus4 chord",
+      label: "ii7 – V13sus4 – Imaj7",
+      description: "The familiar ii–V–I resolves through a V13sus4 instead of a plain V7, adding extra color on the way to the tonic.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V13sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantThirteenSusFour" },
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+      ],
+    },
+    {
+      id: "dominant-thirteen-sus4-chord-iv-color",
+      name: "IV13sus4 Color Change",
+      label: "Imaj7 – IV13sus4 – iii7 – vi7",
+      description: "A Dominant 13sus4 chord colors the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IV13sus4", name: "Subdominant", semitoneFromKey: 5, quality: "dominantThirteenSusFour" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "dominant-thirteen-sus4-chord-turnaround",
+      name: "Turnaround with Dominant 13sus4 chord",
+      label: "iii7 – vi7 – ii7 – V13sus4",
+      description: "A falling turnaround whose closing dominant blooms into a V13sus4 instead of a plain V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V13sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantThirteenSusFour" },
+      ],
+    },
+    {
+      id: "dominant-thirteen-sus4-chord-minor-key",
+      name: "Minor ii–V–i with Dominant 13sus4 chord",
+      label: "iiø7 – V13sus4 – i7",
+      description: "The minor-key ii–V–i, with the dominant voiced as a V13sus4 before resolving to the minor 7th tonic.",
+      degrees: [
+        { roman: "iiø7", name: "Supertonic half-diminished 7th", semitoneFromKey: 2, quality: "halfDiminished7" },
+        { roman: "V13sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantThirteenSusFour" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "dominant-thirteen-sus4-chord-blues",
+      name: "Jazz Blues Turnaround with Dominant 13sus4 chord",
+      label: "I13sus4 – IV13sus4 – ii7 – V13sus4",
+      description: "A jazz-blues turnaround voicing the tonic, subdominant, and dominant all as Dominant 13sus4 chords.",
+      degrees: [
+        { roman: "I13sus4", name: "Tonic", semitoneFromKey: 0, quality: "dominantThirteenSusFour" },
+        { roman: "IV13sus4", name: "Subdominant", semitoneFromKey: 5, quality: "dominantThirteenSusFour" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V13sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantThirteenSusFour" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Dominant 13sus4 chord.
+  const DOMINANT_THIRTEEN_SUS_FOUR_GOSPEL_PROGRESSIONS = [
+    {
+      id: "dominant-thirteen-sus4-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Dominant 13sus4 chord V",
+      label: "I – vi – IV – V13sus4",
+      description: "The classic gospel turnaround, closing on a rich V13sus4 instead of a plain dominant 7th.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V13sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantThirteenSusFour" },
+      ],
+    },
+    {
+      id: "dominant-thirteen-sus4-chord-vamp-release",
+      name: "Vamp with Dominant 13sus4 chord–V7 Release",
+      label: "I – IV – V13sus4 – V7 – I",
+      description: "A gospel vamp move: the dominant arrives first colored as a V13sus4, then 'releases' into a plain V7 right before the tonic returns.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V13sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantThirteenSusFour" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "dominant-thirteen-sus4-chord-secondary",
+      name: "Secondary Dominant 13sus4 chord Turnaround",
+      label: "I – III13sus4 – vi – V7",
+      description: "A secondary dominant on the mediant, colored as a III13sus4 for extra richness, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "III13sus4", name: "Mediant", semitoneFromKey: 4, quality: "dominantThirteenSusFour" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "dominant-thirteen-sus4-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Dominant 13sus4 chord Color",
+      label: "iii7 – vi7 – ii7 – V13sus4 – Imaj7",
+      description: "A five-chord walk-back turnaround whose penultimate dominant blooms into a V13sus4 before landing on a lush tonic major 7th.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V13sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantThirteenSusFour" },
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+      ],
+    },
+    {
+      id: "dominant-thirteen-sus4-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Dominant 13sus4 chord V",
+      label: "i – iv – V13sus4 – i",
+      description: "A minor-key gospel cadence whose dominant is colored as a V13sus4 before pulling back home to the minor tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "V13sus4", name: "Dominant", semitoneFromKey: 7, quality: "dominantThirteenSusFour" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Major 7sus2 chord.
+  const MAJOR_SEVENTH_SUS_TWO_JAZZ_PROGRESSIONS = [
+    {
+      id: "major-seventh-sus2-chord-ii-V-I",
+      name: "ii–V–I with Major 7sus2 chord Tonic",
+      label: "ii7 – V7 – Imaj7sus2",
+      description: "The familiar ii–V–I resolves onto Imaj7sus2 instead of a plain major 7th, for extra color at the cadence.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "Imaj7sus2", name: "Tonic", semitoneFromKey: 0, quality: "majorSeventhSusTwo" },
+      ],
+    },
+    {
+      id: "major-seventh-sus2-chord-iv-color",
+      name: "IVmaj7sus2 Color Change",
+      label: "Imaj7 – IVmaj7sus2 – iii7 – vi7",
+      description: "A Major 7sus2 chord stands in for the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IVmaj7sus2", name: "Subdominant", semitoneFromKey: 5, quality: "majorSeventhSusTwo" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "major-seventh-sus2-chord-turnaround",
+      name: "Turnaround with Major 7sus2 chord Color",
+      label: "iii7 – VI7 – ii7 – V7",
+      description: "A falling turnaround that passes briefly through a Major 7sus2 chord-colored submediant before the closing V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "VImaj7sus2", name: "Submediant", semitoneFromKey: 9, quality: "majorSeventhSusTwo" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-seventh-sus2-chord-minor-key",
+      name: "Minor-Key Cadence with Major 7sus2 chord",
+      label: "i7 – IVmaj7sus2 – V7 – i7",
+      description: "A minor-key cadence borrowing the parallel major’s IV, colored as a full Major 7sus2 chord for extra richness before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "IVmaj7sus2", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "majorSeventhSusTwo" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "major-seventh-sus2-chord-blues",
+      name: "Jazz Blues Turnaround with Major 7sus2 chord Tonic",
+      label: "Imaj7sus2 – IV7 – ii7 – V7",
+      description: "A jazz-blues turnaround that opens on Imaj7sus2 instead of a plain major or dominant tonic, establishing a rich color right away.",
+      degrees: [
+        { roman: "Imaj7sus2", name: "Tonic", semitoneFromKey: 0, quality: "majorSeventhSusTwo" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Major 7sus2 chord.
+  const MAJOR_SEVENTH_SUS_TWO_GOSPEL_PROGRESSIONS = [
+    {
+      id: "major-seventh-sus2-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Major 7sus2 chord IV",
+      label: "I – vi – IV – V7",
+      description: "The classic gospel turnaround, closing on a Major 7sus2 chord-colored tonic feel just before the final V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-seventh-sus2-chord-amen-vamp",
+      name: "Amen Vamp with Major 7sus2 chord Landing",
+      label: "I – IV – iv – Imaj7sus2",
+      description: "The classic plagal \"Amen\" vamp, but the final chord blooms into a full Major 7sus2 chord instead of a plain triad — a warm, richly colored landing.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "iv", name: "Borrowed minor subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "Imaj7sus2", name: "Tonic", semitoneFromKey: 0, quality: "majorSeventhSusTwo" },
+      ],
+    },
+    {
+      id: "major-seventh-sus2-chord-secondary",
+      name: "Secondary Major 7sus2 chord Turnaround",
+      label: "I – IIImaj7sus2 – vi – V7",
+      description: "A secondary chord built on the mediant, colored as a Major 7sus2 chord instead of the usual minor triad, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IIImaj7sus2", name: "Mediant", semitoneFromKey: 4, quality: "majorSeventhSusTwo" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-seventh-sus2-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Major 7sus2 chord Color",
+      label: "iii7 – vi7 – ii7 – ♭VImaj7sus2 – Imaj7sus2",
+      description: "A five-chord walk-back turnaround that closes with a chromatic ♭VImaj7sus2 passing chord just before landing on a full, rich Major 7sus2 chord.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "♭VImaj7sus2", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "majorSeventhSusTwo" },
+        { roman: "Imaj7sus2", name: "Tonic", semitoneFromKey: 0, quality: "majorSeventhSusTwo" },
+      ],
+    },
+    {
+      id: "major-seventh-sus2-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Major 7sus2 chord IV",
+      label: "i – IVmaj7sus2 – V7 – i",
+      description: "A minor-key gospel cadence where the subdominant borrows the parallel major’s IV and blooms into a Major 7sus2 chord, giving a rich lift before the dominant pulls home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "IVmaj7sus2", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "majorSeventhSusTwo" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Major 7sus4 chord.
+  const MAJOR_SEVENTH_SUS_FOUR_JAZZ_PROGRESSIONS = [
+    {
+      id: "major-seventh-sus4-chord-ii-V-I",
+      name: "ii–V–I with Major 7sus4 chord Tonic",
+      label: "ii7 – V7 – IVmaj7sus4",
+      description: "The familiar ii–V–I resolves onto IVmaj7sus4 instead of a plain major 7th, for extra color at the cadence.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "IVmaj7sus4", name: "Subdominant", semitoneFromKey: 5, quality: "majorSeventhSusFour" },
+      ],
+    },
+    {
+      id: "major-seventh-sus4-chord-iv-color",
+      name: "IVmaj7sus4 Color Change",
+      label: "Imaj7 – IVmaj7sus4 – iii7 – vi7",
+      description: "A Major 7sus4 chord stands in for the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IVmaj7sus4", name: "Subdominant", semitoneFromKey: 5, quality: "majorSeventhSusFour" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "major-seventh-sus4-chord-turnaround",
+      name: "Turnaround with Major 7sus4 chord Color",
+      label: "iii7 – VI7 – ii7 – V7",
+      description: "A falling turnaround that passes briefly through a Major 7sus4 chord-colored submediant before the closing V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "VImaj7sus4", name: "Submediant", semitoneFromKey: 9, quality: "majorSeventhSusFour" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-seventh-sus4-chord-minor-key",
+      name: "Minor-Key Cadence with Major 7sus4 chord",
+      label: "i7 – IVmaj7sus4 – V7 – i7",
+      description: "A minor-key cadence borrowing the parallel major’s IV, colored as a full Major 7sus4 chord for extra richness before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "IVmaj7sus4", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "majorSeventhSusFour" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "major-seventh-sus4-chord-blues",
+      name: "Jazz Blues Turnaround with Major 7sus4 chord Tonic",
+      label: "IVmaj7sus4 – IV7 – ii7 – V7",
+      description: "A jazz-blues turnaround that opens on IVmaj7sus4 instead of a plain major or dominant tonic, establishing a rich color right away.",
+      degrees: [
+        { roman: "IVmaj7sus4", name: "Subdominant", semitoneFromKey: 5, quality: "majorSeventhSusFour" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Major 7sus4 chord.
+  const MAJOR_SEVENTH_SUS_FOUR_GOSPEL_PROGRESSIONS = [
+    {
+      id: "major-seventh-sus4-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Major 7sus4 chord IV",
+      label: "I – vi – IVmaj7sus4 – V7",
+      description: "The classic gospel turnaround, swapping the usual IV triad for a Major 7sus4 chord color chord just before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IVmaj7sus4", name: "Subdominant", semitoneFromKey: 5, quality: "majorSeventhSusFour" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-seventh-sus4-chord-amen-vamp",
+      name: "Amen Vamp with Major 7sus4 chord Landing",
+      label: "I – IV – iv – IVmaj7sus4",
+      description: "The classic plagal \"Amen\" vamp, but the final chord blooms into a full Major 7sus4 chord instead of a plain triad — a warm, richly colored landing.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "iv", name: "Borrowed minor subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "IVmaj7sus4", name: "Subdominant", semitoneFromKey: 5, quality: "majorSeventhSusFour" },
+      ],
+    },
+    {
+      id: "major-seventh-sus4-chord-secondary",
+      name: "Secondary Major 7sus4 chord Turnaround",
+      label: "I – IIImaj7sus4 – vi – V7",
+      description: "A secondary chord built on the mediant, colored as a Major 7sus4 chord instead of the usual minor triad, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IIImaj7sus4", name: "Mediant", semitoneFromKey: 4, quality: "majorSeventhSusFour" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "major-seventh-sus4-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Major 7sus4 chord Color",
+      label: "iii7 – vi7 – ii7 – ♭VImaj7sus4 – IVmaj7sus4",
+      description: "A five-chord walk-back turnaround that closes with a chromatic ♭VImaj7sus4 passing chord just before landing on a full, rich Major 7sus4 chord.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "♭VImaj7sus4", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "majorSeventhSusFour" },
+        { roman: "IVmaj7sus4", name: "Subdominant", semitoneFromKey: 5, quality: "majorSeventhSusFour" },
+      ],
+    },
+    {
+      id: "major-seventh-sus4-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Major 7sus4 chord IV",
+      label: "i – IVmaj7sus4 – V7 – i",
+      description: "A minor-key gospel cadence where the subdominant borrows the parallel major’s IV and blooms into a Major 7sus4 chord, giving a rich lift before the dominant pulls home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "IVmaj7sus4", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "majorSeventhSusFour" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Add11 chord (add4).
+  const ADD11_JAZZ_PROGRESSIONS = [
+    {
+      id: "add11-chord-ii-V-I",
+      name: "ii–V–I with Add11 chord (add4) Tonic",
+      label: "ii7 – V7 – IVadd11",
+      description: "The familiar ii–V–I resolves onto IVadd11 instead of a plain major 7th, for extra color at the cadence.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "IVadd11", name: "Subdominant", semitoneFromKey: 5, quality: "add11" },
+      ],
+    },
+    {
+      id: "add11-chord-iv-color",
+      name: "IVadd11 Color Change",
+      label: "Imaj7 – IVadd11 – iii7 – vi7",
+      description: "A Add11 chord (add4) stands in for the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IVadd11", name: "Subdominant", semitoneFromKey: 5, quality: "add11" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "add11-chord-turnaround",
+      name: "Turnaround with Add11 chord (add4) Color",
+      label: "iii7 – VI7 – ii7 – V7",
+      description: "A falling turnaround that passes briefly through a Add11 chord (add4)-colored submediant before the closing V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "VIadd11", name: "Submediant", semitoneFromKey: 9, quality: "add11" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "add11-chord-minor-key",
+      name: "Minor-Key Cadence with Add11 chord (add4)",
+      label: "i7 – IVadd11 – V7 – i7",
+      description: "A minor-key cadence borrowing the parallel major’s IV, colored as a full Add11 chord (add4) for extra richness before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "IVadd11", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "add11" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "add11-chord-blues",
+      name: "Jazz Blues Turnaround with Add11 chord (add4) Tonic",
+      label: "IVadd11 – IV7 – ii7 – V7",
+      description: "A jazz-blues turnaround that opens on IVadd11 instead of a plain major or dominant tonic, establishing a rich color right away.",
+      degrees: [
+        { roman: "IVadd11", name: "Subdominant", semitoneFromKey: 5, quality: "add11" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Add11 chord (add4).
+  const ADD11_GOSPEL_PROGRESSIONS = [
+    {
+      id: "add11-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Add11 chord (add4) IV",
+      label: "I – vi – IVadd11 – V7",
+      description: "The classic gospel turnaround, swapping the usual IV triad for a Add11 chord (add4) color chord just before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IVadd11", name: "Subdominant", semitoneFromKey: 5, quality: "add11" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "add11-chord-amen-vamp",
+      name: "Amen Vamp with Add11 chord (add4) Landing",
+      label: "I – IV – iv – IVadd11",
+      description: "The classic plagal \"Amen\" vamp, but the final chord blooms into a full Add11 chord (add4) instead of a plain triad — a warm, richly colored landing.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "iv", name: "Borrowed minor subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "IVadd11", name: "Subdominant", semitoneFromKey: 5, quality: "add11" },
+      ],
+    },
+    {
+      id: "add11-chord-secondary",
+      name: "Secondary Add11 chord (add4) Turnaround",
+      label: "I – IIIadd11 – vi – V7",
+      description: "A secondary chord built on the mediant, colored as a Add11 chord (add4) instead of the usual minor triad, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IIIadd11", name: "Mediant", semitoneFromKey: 4, quality: "add11" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "add11-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Add11 chord (add4) Color",
+      label: "iii7 – vi7 – ii7 – ♭VIadd11 – IVadd11",
+      description: "A five-chord walk-back turnaround that closes with a chromatic ♭VIadd11 passing chord just before landing on a full, rich Add11 chord (add4).",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "♭VIadd11", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "add11" },
+        { roman: "IVadd11", name: "Subdominant", semitoneFromKey: 5, quality: "add11" },
+      ],
+    },
+    {
+      id: "add11-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Add11 chord (add4) IV",
+      label: "i – IVadd11 – V7 – i",
+      description: "A minor-key gospel cadence where the subdominant borrows the parallel major’s IV and blooms into a Add11 chord (add4), giving a rich lift before the dominant pulls home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "IVadd11", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "add11" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Diminished major 7th chord.
+  const DIMINISHED_MAJOR_SEVENTH_JAZZ_PROGRESSIONS = [
+    {
+      id: "diminished-major-seventh-chord-passing-ii",
+      name: "Chromatic Passing Chord: I to ii with Diminished major 7th chord",
+      label: "I – (maj7)dim – ii7",
+      description: "A Diminished major 7th chord passes chromatically between the tonic and the ii chord, a half step below ii.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "#i°(maj7)", name: "Chromatic passing chord", semitoneFromKey: 1, quality: "diminishedMajorSeventh" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+      ],
+    },
+    {
+      id: "diminished-major-seventh-chord-ii-V-i",
+      name: "Minor ii–V–i with Diminished major 7th chord Passing Chord",
+      label: "i – (maj7)dim – V7 – i",
+      description: "A minor-key cadence where a Diminished major 7th chord passes between the tonic and the dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♯i°(maj7)", name: "Chromatic passing chord", semitoneFromKey: 1, quality: "diminishedMajorSeventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "diminished-major-seventh-chord-turnaround",
+      name: "Turnaround with Diminished major 7th chord",
+      label: "iii7 – vi7 – ♯i(maj7)dim – ii7",
+      description: "A falling turnaround that slips through a Diminished major 7th chord on its way to the ii chord.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "♯i°(maj7)", name: "Chromatic passing chord", semitoneFromKey: 1, quality: "diminishedMajorSeventh" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+      ],
+    },
+    {
+      id: "diminished-major-seventh-chord-blues",
+      name: "Blues Approach with Diminished major 7th chord",
+      label: "I7 – IV7 – ♯iv(maj7)dim – I7",
+      description: "A classic blues chromatic-passing move, coloring the approach chord as a Diminished major 7th chord instead of a plain diminished 7th.",
+      degrees: [
+        { roman: "I7", name: "Tonic 7th", semitoneFromKey: 0, quality: "dominant7" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "♯iv°(maj7)", name: "Chromatic passing chord", semitoneFromKey: 6, quality: "diminishedMajorSeventh" },
+        { roman: "I7", name: "Tonic 7th", semitoneFromKey: 0, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "diminished-major-seventh-chord-minor-key",
+      name: "Minor-Key Turnaround with Diminished major 7th chord",
+      label: "i – ♯i(maj7)dim – iiø7 – V7",
+      description: "A minor-key turnaround using a Diminished major 7th chord as a chromatic bridge between the tonic and the ii chord.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♯i°(maj7)", name: "Chromatic passing chord", semitoneFromKey: 1, quality: "diminishedMajorSeventh" },
+        { roman: "iiø7", name: "Supertonic half-diminished 7th", semitoneFromKey: 2, quality: "halfDiminished7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Diminished major 7th chord.
+  const DIMINISHED_MAJOR_SEVENTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: "diminished-major-seventh-chord-gospel-passing",
+      name: "Gospel Passing Chord with Diminished major 7th chord",
+      label: "I – ♯i(maj7)dim – ii – V7",
+      description: "A gospel harmonization that slides from the tonic to ii through a chromatic Diminished major 7th chord.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "♯i°(maj7)", name: "Chromatic passing chord", semitoneFromKey: 1, quality: "diminishedMajorSeventh" },
+        { roman: "ii", name: "Supertonic", semitoneFromKey: 2, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "diminished-major-seventh-chord-vamp",
+      name: "Vamp with Diminished major 7th chord Approach",
+      label: "I – IV – ♯iv(maj7)dim – I",
+      description: "A vamp where the Diminished major 7th chord briefly darkens the color just before the tonic returns.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "♯iv°(maj7)", name: "Chromatic passing chord", semitoneFromKey: 6, quality: "diminishedMajorSeventh" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "diminished-major-seventh-chord-secondary",
+      name: "Secondary Approach with Diminished major 7th chord",
+      label: "I – ♯i(maj7)dim – vi – V7",
+      description: "A Diminished major 7th chord bridges the tonic and the submediant before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "♯i°(maj7)", name: "Chromatic passing chord", semitoneFromKey: 1, quality: "diminishedMajorSeventh" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "diminished-major-seventh-chord-extended",
+      name: "Extended Gospel Turnaround with Diminished major 7th chord",
+      label: "iii7 – vi7 – ♯i(maj7)dim – ii7 – V7",
+      description: "An extended turnaround that slips through a Diminished major 7th chord on its way down to ii7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "♯i°(maj7)", name: "Chromatic passing chord", semitoneFromKey: 1, quality: "diminishedMajorSeventh" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "diminished-major-seventh-chord-minor-cadence",
+      name: "Minor Gospel Cadence with Diminished major 7th chord",
+      label: "i – ♯i(maj7)dim – V7 – i",
+      description: "A minor gospel cadence bridging the tonic and dominant with a chromatic Diminished major 7th chord.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♯i°(maj7)", name: "Chromatic passing chord", semitoneFromKey: 1, quality: "diminishedMajorSeventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Minor 7♭9 chord.
+  const MINOR_SEVENTH_FLAT_NINE_JAZZ_PROGRESSIONS = [
+    {
+      id: "minor-seventh-flat-nine-chord-ii-V-i",
+      name: "Minor ii–V–i with Minor 7♭9 chord",
+      label: "iim7♭9 – V7 – i7",
+      description: "A minor ii–V–i with the ii chord colored as a Minor 7♭9 chord instead of a plain minor 7th or half-diminished 7th.",
+      degrees: [
+        { roman: "iim7♭9", name: "Supertonic", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-seventh-flat-nine-chord-turnaround",
+      name: "Turnaround with Minor 7♭9 chord",
+      label: "iim7♭9 – V7 – iim7♭9 – i",
+      description: "A vamp-like turnaround that lingers on the Minor 7♭9 chord before resolving down to the minor tonic.",
+      degrees: [
+        { roman: "iim7♭9", name: "Color chord", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "iim7♭9", name: "Color chord", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-seventh-flat-nine-chord-iv-color",
+      name: "Minor 7♭9 chord Subdominant Color",
+      label: "i7 – iim7♭9 – V7 – i7",
+      description: "A minor-key cadence that colors its middle chord as a Minor 7♭9 chord before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iim7♭9", name: "Color chord", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "minor-seventh-flat-nine-chord-relative-major",
+      name: "Relative-Major Turnaround with Minor 7♭9 chord",
+      label: "III – iim7♭9 – V7 – i",
+      description: "A move through the relative major before the Minor 7♭9 chord colors the approach to the closing V7–i.",
+      degrees: [
+        { roman: "III", name: "Relative major", semitoneFromKey: 4, quality: "major" },
+        { roman: "iim7♭9", name: "Color chord", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-seventh-flat-nine-chord-blues",
+      name: "Minor Blues Turnaround with Minor 7♭9 chord",
+      label: "i7 – iv7 – iim7♭9 – V7",
+      description: "A minor-blues turnaround voicing its final approach chord as a Minor 7♭9 chord before the closing dominant.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iv7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "minor7" },
+        { roman: "iim7♭9", name: "Color chord", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Minor 7♭9 chord.
+  const MINOR_SEVENTH_FLAT_NINE_GOSPEL_PROGRESSIONS = [
+    {
+      id: "minor-seventh-flat-nine-chord-gospel-turnaround",
+      name: "Minor Gospel Turnaround with Minor 7♭9 chord",
+      label: "i – iim7♭9 – V7 – i",
+      description: "A minor-key gospel turnaround whose middle chord blooms into a Minor 7♭9 chord before the dominant pulls back home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iim7♭9", name: "Color chord", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-seventh-flat-nine-chord-vamp",
+      name: "Minor Vamp with Minor 7♭9 chord",
+      label: "i – iv – iim7♭9 – i",
+      description: "A sustained minor-key vamp that settles onto the rich Minor 7♭9 chord just before returning to the tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "iim7♭9", name: "Color chord", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-seventh-flat-nine-chord-secondary",
+      name: "Secondary Minor 7♭9 chord Turnaround",
+      label: "i – ♭VI – iim7♭9 – V7",
+      description: "A chromatic ♭VI passing chord leads into a Minor 7♭9 chord before the closing dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♭VI", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "major" },
+        { roman: "iim7♭9", name: "Color chord", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "minor-seventh-flat-nine-chord-extended-turnaround",
+      name: "Extended Minor Turnaround with Minor 7♭9 chord",
+      label: "i – iv – iim7♭9 – V7 – i",
+      description: "A five-chord minor turnaround whose penultimate approach chord is colored as a Minor 7♭9 chord.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "iim7♭9", name: "Color chord", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "minor-seventh-flat-nine-chord-cadence",
+      name: "Minor Gospel Cadence with Minor 7♭9 chord",
+      label: "iim7♭9 – V7 – i",
+      description: "A short, direct minor gospel cadence approaching the tonic through a Minor 7♭9 chord.",
+      degrees: [
+        { roman: "iim7♭9", name: "Color chord", semitoneFromKey: 2, quality: "minorSeventhFlatNine" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Half-diminished 11th chord.
+  const HALF_DIMINISHED_ELEVENTH_JAZZ_PROGRESSIONS = [
+    {
+      id: "half-diminished-eleventh-chord-ii-V-i",
+      name: "Minor ii–V–i with Half-diminished 11th chord",
+      label: "iim11♭5 – V7 – i7",
+      description: "A minor ii–V–i with the ii chord colored as a Half-diminished 11th chord instead of a plain minor 7th or half-diminished 7th.",
+      degrees: [
+        { roman: "iim11♭5", name: "Supertonic", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "half-diminished-eleventh-chord-turnaround",
+      name: "Turnaround with Half-diminished 11th chord",
+      label: "iim11♭5 – V7 – iim11♭5 – i",
+      description: "A vamp-like turnaround that lingers on the Half-diminished 11th chord before resolving down to the minor tonic.",
+      degrees: [
+        { roman: "iim11♭5", name: "Color chord", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "iim11♭5", name: "Color chord", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "half-diminished-eleventh-chord-iv-color",
+      name: "Half-diminished 11th chord Subdominant Color",
+      label: "i7 – iim11♭5 – V7 – i7",
+      description: "A minor-key cadence that colors its middle chord as a Half-diminished 11th chord before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iim11♭5", name: "Color chord", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "half-diminished-eleventh-chord-relative-major",
+      name: "Relative-Major Turnaround with Half-diminished 11th chord",
+      label: "III – iim11♭5 – V7 – i",
+      description: "A move through the relative major before the Half-diminished 11th chord colors the approach to the closing V7–i.",
+      degrees: [
+        { roman: "III", name: "Relative major", semitoneFromKey: 4, quality: "major" },
+        { roman: "iim11♭5", name: "Color chord", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "half-diminished-eleventh-chord-blues",
+      name: "Minor Blues Turnaround with Half-diminished 11th chord",
+      label: "i7 – iv7 – iim11♭5 – V7",
+      description: "A minor-blues turnaround voicing its final approach chord as a Half-diminished 11th chord before the closing dominant.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "iv7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "minor7" },
+        { roman: "iim11♭5", name: "Color chord", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Half-diminished 11th chord.
+  const HALF_DIMINISHED_ELEVENTH_GOSPEL_PROGRESSIONS = [
+    {
+      id: "half-diminished-eleventh-chord-gospel-turnaround",
+      name: "Minor Gospel Turnaround with Half-diminished 11th chord",
+      label: "i – iim11♭5 – V7 – i",
+      description: "A minor-key gospel turnaround whose middle chord blooms into a Half-diminished 11th chord before the dominant pulls back home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iim11♭5", name: "Color chord", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "half-diminished-eleventh-chord-vamp",
+      name: "Minor Vamp with Half-diminished 11th chord",
+      label: "i – iv – iim11♭5 – i",
+      description: "A sustained minor-key vamp that settles onto the rich Half-diminished 11th chord just before returning to the tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "iim11♭5", name: "Color chord", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "half-diminished-eleventh-chord-secondary",
+      name: "Secondary Half-diminished 11th chord Turnaround",
+      label: "i – ♭VI – iim11♭5 – V7",
+      description: "A chromatic ♭VI passing chord leads into a Half-diminished 11th chord before the closing dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♭VI", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "major" },
+        { roman: "iim11♭5", name: "Color chord", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "half-diminished-eleventh-chord-extended-turnaround",
+      name: "Extended Minor Turnaround with Half-diminished 11th chord",
+      label: "i – iv – iim11♭5 – V7 – i",
+      description: "A five-chord minor turnaround whose penultimate approach chord is colored as a Half-diminished 11th chord.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "iim11♭5", name: "Color chord", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "half-diminished-eleventh-chord-cadence",
+      name: "Minor Gospel Cadence with Half-diminished 11th chord",
+      label: "iim11♭5 – V7 – i",
+      description: "A short, direct minor gospel cadence approaching the tonic through a Half-diminished 11th chord.",
+      degrees: [
+        { roman: "iim11♭5", name: "Color chord", semitoneFromKey: 2, quality: "halfDiminishedEleventh" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Power chord.
+  const POWER_CHORD_JAZZ_PROGRESSIONS = [
+    {
+      id: "power-chord-ii-V-I",
+      name: "ii–V–I with Power chord Tonic",
+      label: "ii7 – V7 – I5",
+      description: "The familiar ii–V–I resolves onto I5 instead of a plain major 7th, for extra color at the cadence.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "I5", name: "Tonic", semitoneFromKey: 0, quality: "powerChord" },
+      ],
+    },
+    {
+      id: "power-chord-iv-color",
+      name: "IV5 Color Change",
+      label: "Imaj7 – IV5 – iii7 – vi7",
+      description: "A Power chord stands in for the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IV5", name: "Subdominant", semitoneFromKey: 5, quality: "powerChord" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "power-chord-turnaround",
+      name: "Turnaround with Power chord Color",
+      label: "iii7 – VI7 – ii7 – V7",
+      description: "A falling turnaround that passes briefly through a Power chord-colored submediant before the closing V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "VI5", name: "Submediant", semitoneFromKey: 9, quality: "powerChord" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "power-chord-minor-key",
+      name: "Minor-Key Cadence with Power chord",
+      label: "i7 – IV5 – V7 – i7",
+      description: "A minor-key cadence borrowing the parallel major’s IV, colored as a full Power chord for extra richness before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "IV5", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "powerChord" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "power-chord-blues",
+      name: "Jazz Blues Turnaround with Power chord Tonic",
+      label: "I5 – IV7 – ii7 – V7",
+      description: "A jazz-blues turnaround that opens on I5 instead of a plain major or dominant tonic, establishing a rich color right away.",
+      degrees: [
+        { roman: "I5", name: "Tonic", semitoneFromKey: 0, quality: "powerChord" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Power chord.
+  const POWER_CHORD_GOSPEL_PROGRESSIONS = [
+    {
+      id: "power-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Power chord IV",
+      label: "I – vi – IV – V7",
+      description: "The classic gospel turnaround, closing on a Power chord-colored tonic feel just before the final V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "power-chord-amen-vamp",
+      name: "Amen Vamp with Power chord Landing",
+      label: "I – IV – iv – I5",
+      description: "The classic plagal \"Amen\" vamp, but the final chord blooms into a full Power chord instead of a plain triad — a warm, richly colored landing.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "iv", name: "Borrowed minor subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "I5", name: "Tonic", semitoneFromKey: 0, quality: "powerChord" },
+      ],
+    },
+    {
+      id: "power-chord-secondary",
+      name: "Secondary Power chord Turnaround",
+      label: "I – III5 – vi – V7",
+      description: "A secondary chord built on the mediant, colored as a Power chord instead of the usual minor triad, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "III5", name: "Mediant", semitoneFromKey: 4, quality: "powerChord" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "power-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Power chord Color",
+      label: "iii7 – vi7 – ii7 – ♭VI5 – I5",
+      description: "A five-chord walk-back turnaround that closes with a chromatic ♭VI5 passing chord just before landing on a full, rich Power chord.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "♭VI5", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "powerChord" },
+        { roman: "I5", name: "Tonic", semitoneFromKey: 0, quality: "powerChord" },
+      ],
+    },
+    {
+      id: "power-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Power chord IV",
+      label: "i – IV5 – V7 – i",
+      description: "A minor-key gospel cadence where the subdominant borrows the parallel major’s IV and blooms into a Power chord, giving a rich lift before the dominant pulls home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "IV5", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "powerChord" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Split-third "blues" chord.
+  const SPLIT_THIRD_BLUES_JAZZ_PROGRESSIONS = [
+    {
+      id: "split-third-blues-chord-ii-V-I",
+      name: "ii–V–I with Split-third \"blues\" chord Tonic",
+      label: "ii7 – V7 – I7(♭3/♮3)",
+      description: "The familiar ii–V–I resolves onto I7(♭3/♮3) instead of a plain major 7th, for extra color at the cadence.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "I7(♭3/♮3)", name: "Tonic", semitoneFromKey: 0, quality: "splitThirdBlues" },
+      ],
+    },
+    {
+      id: "split-third-blues-chord-iv-color",
+      name: "IV7(♭3/♮3) Color Change",
+      label: "Imaj7 – IV7(♭3/♮3) – iii7 – vi7",
+      description: "A Split-third \"blues\" chord stands in for the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IV7(♭3/♮3)", name: "Subdominant", semitoneFromKey: 5, quality: "splitThirdBlues" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "split-third-blues-chord-turnaround",
+      name: "Turnaround with Split-third \"blues\" chord Color",
+      label: "iii7 – VI7 – ii7 – V7",
+      description: "A falling turnaround that passes briefly through a Split-third \"blues\" chord-colored submediant before the closing V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "VI7(♭3/♮3)", name: "Submediant", semitoneFromKey: 9, quality: "splitThirdBlues" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "split-third-blues-chord-minor-key",
+      name: "Minor-Key Cadence with Split-third \"blues\" chord",
+      label: "i7 – IV7(♭3/♮3) – V7 – i7",
+      description: "A minor-key cadence borrowing the parallel major’s IV, colored as a full Split-third \"blues\" chord for extra richness before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "IV7(♭3/♮3)", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "splitThirdBlues" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "split-third-blues-chord-blues",
+      name: "Jazz Blues Turnaround with Split-third \"blues\" chord Tonic",
+      label: "I7(♭3/♮3) – IV7 – ii7 – V7",
+      description: "A jazz-blues turnaround that opens on I7(♭3/♮3) instead of a plain major or dominant tonic, establishing a rich color right away.",
+      degrees: [
+        { roman: "I7(♭3/♮3)", name: "Tonic", semitoneFromKey: 0, quality: "splitThirdBlues" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Split-third "blues" chord.
+  const SPLIT_THIRD_BLUES_GOSPEL_PROGRESSIONS = [
+    {
+      id: "split-third-blues-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Split-third \"blues\" chord IV",
+      label: "I – vi – IV – V7",
+      description: "The classic gospel turnaround, closing on a Split-third \"blues\" chord-colored tonic feel just before the final V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "split-third-blues-chord-amen-vamp",
+      name: "Amen Vamp with Split-third \"blues\" chord Landing",
+      label: "I – IV – iv – I7(♭3/♮3)",
+      description: "The classic plagal \"Amen\" vamp, but the final chord blooms into a full Split-third \"blues\" chord instead of a plain triad — a warm, richly colored landing.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "iv", name: "Borrowed minor subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "I7(♭3/♮3)", name: "Tonic", semitoneFromKey: 0, quality: "splitThirdBlues" },
+      ],
+    },
+    {
+      id: "split-third-blues-chord-secondary",
+      name: "Secondary Split-third \"blues\" chord Turnaround",
+      label: "I – III7(♭3/♮3) – vi – V7",
+      description: "A secondary chord built on the mediant, colored as a Split-third \"blues\" chord instead of the usual minor triad, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "III7(♭3/♮3)", name: "Mediant", semitoneFromKey: 4, quality: "splitThirdBlues" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "split-third-blues-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Split-third \"blues\" chord Color",
+      label: "iii7 – vi7 – ii7 – ♭VI7(♭3/♮3) – I7(♭3/♮3)",
+      description: "A five-chord walk-back turnaround that closes with a chromatic ♭VI7(♭3/♮3) passing chord just before landing on a full, rich Split-third \"blues\" chord.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "♭VI7(♭3/♮3)", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "splitThirdBlues" },
+        { roman: "I7(♭3/♮3)", name: "Tonic", semitoneFromKey: 0, quality: "splitThirdBlues" },
+      ],
+    },
+    {
+      id: "split-third-blues-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Split-third \"blues\" chord IV",
+      label: "i – IV7(♭3/♮3) – V7 – i",
+      description: "A minor-key gospel cadence where the subdominant borrows the parallel major’s IV and blooms into a Split-third \"blues\" chord, giving a rich lift before the dominant pulls home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "IV7(♭3/♮3)", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "splitThirdBlues" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Quartal chord ("So What" voicing).
+  const QUARTAL_JAZZ_PROGRESSIONS = [
+    {
+      id: "quartal-chord-ii-V-I",
+      name: "ii–V–I with Quartal chord (\"So What\" voicing) Tonic",
+      label: "ii7 – V7 – Iquartal",
+      description: "The familiar ii–V–I resolves onto Iquartal instead of a plain major 7th, for extra color at the cadence.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "Iquartal", name: "Tonic", semitoneFromKey: 0, quality: "quartal" },
+      ],
+    },
+    {
+      id: "quartal-chord-iv-color",
+      name: "IVquartal Color Change",
+      label: "Imaj7 – IVquartal – iii7 – vi7",
+      description: "A Quartal chord (\"So What\" voicing) stands in for the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IVquartal", name: "Subdominant", semitoneFromKey: 5, quality: "quartal" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "quartal-chord-turnaround",
+      name: "Turnaround with Quartal chord (\"So What\" voicing) Color",
+      label: "iii7 – VI7 – ii7 – V7",
+      description: "A falling turnaround that passes briefly through a Quartal chord (\"So What\" voicing)-colored submediant before the closing V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "VIquartal", name: "Submediant", semitoneFromKey: 9, quality: "quartal" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "quartal-chord-minor-key",
+      name: "Minor-Key Cadence with Quartal chord (\"So What\" voicing)",
+      label: "i7 – IVquartal – V7 – i7",
+      description: "A minor-key cadence borrowing the parallel major’s IV, colored as a full Quartal chord (\"So What\" voicing) for extra richness before the dominant resolves home.",
+      degrees: [
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+        { roman: "IVquartal", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "quartal" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "quartal-chord-blues",
+      name: "Jazz Blues Turnaround with Quartal chord (\"So What\" voicing) Tonic",
+      label: "Iquartal – IV7 – ii7 – V7",
+      description: "A jazz-blues turnaround that opens on Iquartal instead of a plain major or dominant tonic, establishing a rich color right away.",
+      degrees: [
+        { roman: "Iquartal", name: "Tonic", semitoneFromKey: 0, quality: "quartal" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Quartal chord ("So What" voicing).
+  const QUARTAL_GOSPEL_PROGRESSIONS = [
+    {
+      id: "quartal-chord-gospel-turnaround",
+      name: "Gospel Turnaround with Quartal chord (\"So What\" voicing) IV",
+      label: "I – vi – IV – V7",
+      description: "The classic gospel turnaround, closing on a Quartal chord (\"So What\" voicing)-colored tonic feel just before the final V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "quartal-chord-amen-vamp",
+      name: "Amen Vamp with Quartal chord (\"So What\" voicing) Landing",
+      label: "I – IV – iv – Iquartal",
+      description: "The classic plagal \"Amen\" vamp, but the final chord blooms into a full Quartal chord (\"So What\" voicing) instead of a plain triad — a warm, richly colored landing.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "iv", name: "Borrowed minor subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "Iquartal", name: "Tonic", semitoneFromKey: 0, quality: "quartal" },
+      ],
+    },
+    {
+      id: "quartal-chord-secondary",
+      name: "Secondary Quartal chord (\"So What\" voicing) Turnaround",
+      label: "I – IIIquartal – vi – V7",
+      description: "A secondary chord built on the mediant, colored as a Quartal chord (\"So What\" voicing) instead of the usual minor triad, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IIIquartal", name: "Mediant", semitoneFromKey: 4, quality: "quartal" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "quartal-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Quartal chord (\"So What\" voicing) Color",
+      label: "iii7 – vi7 – ii7 – ♭VIquartal – Iquartal",
+      description: "A five-chord walk-back turnaround that closes with a chromatic ♭VIquartal passing chord just before landing on a full, rich Quartal chord (\"So What\" voicing).",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "♭VIquartal", name: "Chromatic passing chord", semitoneFromKey: 8, quality: "quartal" },
+        { roman: "Iquartal", name: "Tonic", semitoneFromKey: 0, quality: "quartal" },
+      ],
+    },
+    {
+      id: "quartal-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Quartal chord (\"So What\" voicing) IV",
+      label: "i – IVquartal – V7 – i",
+      description: "A minor-key gospel cadence where the subdominant borrows the parallel major’s IV and blooms into a Quartal chord (\"So What\" voicing), giving a rich lift before the dominant pulls home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "IVquartal", name: "Borrowed subdominant", semitoneFromKey: 5, quality: "quartal" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Tone cluster.
+  const TONE_CLUSTER_JAZZ_PROGRESSIONS = [
+    {
+      id: "tone-cluster-chord-hit-tonic",
+      name: "Tone cluster Hit on the Tonic",
+      label: "I – Tone cluster – I",
+      description: "A percussive Tone cluster struck on the tonic as a rhythmic accent, then released back to the plain triad.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "hit", name: "Percussive accent", semitoneFromKey: 0, quality: "toneCluster" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "tone-cluster-chord-turnaround-hits",
+      name: "Turnaround with Tone cluster Accents",
+      label: "ii7 – Tone cluster – V7 – I",
+      description: "A ii–V–I turnaround with a Tone cluster struck as a percussive accent between the ii and V chords.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "hit", name: "Percussive accent", semitoneFromKey: 2, quality: "toneCluster" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "tone-cluster-chord-blues-hit",
+      name: "Blues Turnaround with Tone cluster Accent",
+      label: "I7 – IV7 – Tone cluster – V7",
+      description: "A blues turnaround with a Tone cluster struck as a dramatic accent right before the closing dominant.",
+      degrees: [
+        { roman: "I7", name: "Tonic 7th", semitoneFromKey: 0, quality: "dominant7" },
+        { roman: "IV7", name: "Subdominant 7th", semitoneFromKey: 5, quality: "dominant7" },
+        { roman: "hit", name: "Percussive accent", semitoneFromKey: 7, quality: "toneCluster" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "tone-cluster-chord-vamp-hit",
+      name: "Vamp with Tone cluster Punctuation",
+      label: "I – IV – Tone cluster – I",
+      description: "A subdominant vamp punctuated by a percussive Tone cluster right before returning to the tonic.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "hit", name: "Percussive accent", semitoneFromKey: 5, quality: "toneCluster" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "tone-cluster-chord-minor-hit",
+      name: "Minor Cadence with Tone cluster Accent",
+      label: "i – Tone cluster – V7 – i",
+      description: "A minor cadence with a Tone cluster struck as a percussive accent leading into the dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "hit", name: "Percussive accent", semitoneFromKey: 0, quality: "toneCluster" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Tone cluster.
+  const TONE_CLUSTER_GOSPEL_PROGRESSIONS = [
+    {
+      id: "tone-cluster-chord-gospel-hit",
+      name: "Gospel Hit with Tone cluster",
+      label: "I – vi – Tone cluster – IV – V7",
+      description: "A gospel progression punctuated by a percussive Tone cluster accent between the vi and IV chords.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "hit", name: "Percussive accent", semitoneFromKey: 9, quality: "toneCluster" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "tone-cluster-chord-amen-hit",
+      name: "Amen Vamp with Tone cluster Accent",
+      label: "I – IV – Tone cluster – I",
+      description: "The classic plagal \"Amen\" vamp, punctuated by a percussive Tone cluster hit right before the final tonic.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "hit", name: "Percussive accent", semitoneFromKey: 5, quality: "toneCluster" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "tone-cluster-chord-secondary-hit",
+      name: "Secondary Turnaround with Tone cluster Accent",
+      label: "I – Tone cluster – vi – V7",
+      description: "A percussive Tone cluster punctuates the turnaround immediately after the tonic.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "hit", name: "Percussive accent", semitoneFromKey: 0, quality: "toneCluster" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "tone-cluster-chord-extended-hit",
+      name: "Extended Turnaround with Tone cluster Accent",
+      label: "iii7 – vi7 – ii7 – Tone cluster – I",
+      description: "A five-chord walk-back turnaround closing with a percussive Tone cluster hit just before landing on the tonic.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "hit", name: "Percussive accent", semitoneFromKey: 2, quality: "toneCluster" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "tone-cluster-chord-minor-gospel-hit",
+      name: "Minor Gospel Cadence with Tone cluster Accent",
+      label: "i – Tone cluster – V7 – i",
+      description: "A minor-key gospel cadence with a percussive Tone cluster accent leading into the dominant.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "hit", name: "Percussive accent", semitoneFromKey: 0, quality: "toneCluster" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Polychord / slash chord.
+  const POLYCHORD_JAZZ_PROGRESSIONS = [
+    {
+      id: "polychord-ii-V-I",
+      name: "ii–V–I with Polychord / slash chord",
+      label: "ii7 – V/ – Imaj7",
+      description: "The familiar ii–V–I resolves through a V/ instead of a plain V7, adding extra color on the way to the tonic.",
+      degrees: [
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V/", name: "Dominant", semitoneFromKey: 7, quality: "polychord" },
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+      ],
+    },
+    {
+      id: "polychord-iv-color",
+      name: "IV/ Color Change",
+      label: "Imaj7 – IV/ – iii7 – vi7",
+      description: "A Polychord / slash chord colors the subdominant before the harmony falls back through iii7 to vi7.",
+      degrees: [
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+        { roman: "IV/", name: "Subdominant", semitoneFromKey: 5, quality: "polychord" },
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+      ],
+    },
+    {
+      id: "polychord-turnaround",
+      name: "Turnaround with Polychord / slash chord",
+      label: "iii7 – vi7 – ii7 – V/",
+      description: "A falling turnaround whose closing dominant blooms into a V/ instead of a plain V7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V/", name: "Dominant", semitoneFromKey: 7, quality: "polychord" },
+      ],
+    },
+    {
+      id: "polychord-minor-key",
+      name: "Minor ii–V–i with Polychord / slash chord",
+      label: "iiø7 – V/ – i7",
+      description: "The minor-key ii–V–i, with the dominant voiced as a V/ before resolving to the minor 7th tonic.",
+      degrees: [
+        { roman: "iiø7", name: "Supertonic half-diminished 7th", semitoneFromKey: 2, quality: "halfDiminished7" },
+        { roman: "V/", name: "Dominant", semitoneFromKey: 7, quality: "polychord" },
+        { roman: "i7", name: "Tonic 7th", semitoneFromKey: 0, quality: "minor7" },
+      ],
+    },
+    {
+      id: "polychord-blues",
+      name: "Jazz Blues Turnaround with Polychord / slash chord",
+      label: "I/ – IV/ – ii7 – V/",
+      description: "A jazz-blues turnaround voicing the tonic, subdominant, and dominant all as Polychord / slash chords.",
+      degrees: [
+        { roman: "I/", name: "Tonic", semitoneFromKey: 0, quality: "polychord" },
+        { roman: "IV/", name: "Subdominant", semitoneFromKey: 5, quality: "polychord" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V/", name: "Dominant", semitoneFromKey: 7, quality: "polychord" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Polychord / slash chord.
+  const POLYCHORD_GOSPEL_PROGRESSIONS = [
+    {
+      id: "polychord-gospel-turnaround",
+      name: "Gospel Turnaround with Polychord / slash chord V",
+      label: "I – vi – IV – V/",
+      description: "The classic gospel turnaround, closing on a rich V/ instead of a plain dominant 7th.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V/", name: "Dominant", semitoneFromKey: 7, quality: "polychord" },
+      ],
+    },
+    {
+      id: "polychord-vamp-release",
+      name: "Vamp with Polychord / slash chord–V7 Release",
+      label: "I – IV – V/ – V7 – I",
+      description: "A gospel vamp move: the dominant arrives first colored as a V/, then 'releases' into a plain V7 right before the tonic returns.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "V/", name: "Dominant", semitoneFromKey: 7, quality: "polychord" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "polychord-secondary",
+      name: "Secondary Polychord / slash chord Turnaround",
+      label: "I – III/ – vi – V7",
+      description: "A secondary dominant on the mediant, colored as a III/ for extra richness, resolving into vi before the closing V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "III/", name: "Mediant", semitoneFromKey: 4, quality: "polychord" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "polychord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Polychord / slash chord Color",
+      label: "iii7 – vi7 – ii7 – V/ – Imaj7",
+      description: "A five-chord walk-back turnaround whose penultimate dominant blooms into a V/ before landing on a lush tonic major 7th.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "ii7", name: "Supertonic 7th", semitoneFromKey: 2, quality: "minor7" },
+        { roman: "V/", name: "Dominant", semitoneFromKey: 7, quality: "polychord" },
+        { roman: "Imaj7", name: "Tonic 7th", semitoneFromKey: 0, quality: "major7" },
+      ],
+    },
+    {
+      id: "polychord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Polychord / slash chord V",
+      label: "i – iv – V/ – i",
+      description: "A minor-key gospel cadence whose dominant is colored as a V/ before pulling back home to the minor tonic.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "iv", name: "Subdominant", semitoneFromKey: 5, quality: "minor" },
+        { roman: "V/", name: "Dominant", semitoneFromKey: 7, quality: "polychord" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
+  // Five jazz chord progressions built around the Neapolitan (♭II) chord.
+  const NEAPOLITAN_JAZZ_PROGRESSIONS = [
+    {
+      id: "neapolitan-chord-neapolitan-cadence",
+      name: "Neapolitan Cadence",
+      label: "♭II – V7 – I",
+      description: "The textbook Neapolitan cadence: a Neapolitan (♭II) chord substitutes for the subdominant, resolving through V7 to the tonic.",
+      degrees: [
+        { roman: "♭II", name: "Neapolitan", semitoneFromKey: 1, quality: "neapolitan" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "neapolitan-chord-minor-neapolitan",
+      name: "Minor-Key Neapolitan Cadence",
+      label: "i – ♭II – V7 – i",
+      description: "The Neapolitan chord in its original minor-key home, substituting for the subdominant before the dominant resolves home.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♭II", name: "Neapolitan", semitoneFromKey: 1, quality: "neapolitan" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+    {
+      id: "neapolitan-chord-turnaround",
+      name: "Turnaround with Neapolitan Approach",
+      label: "iii7 – vi7 – ♭II – V7",
+      description: "A falling turnaround that detours through the Neapolitan chord just before the closing dominant.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "♭II", name: "Neapolitan", semitoneFromKey: 1, quality: "neapolitan" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "neapolitan-chord-extended",
+      name: "Extended Cadence with Neapolitan Color",
+      label: "I – vi – ♭II – V7 – I",
+      description: "A five-chord cadence bringing the Neapolitan chord in as a surprise color just before the final dominant.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "♭II", name: "Neapolitan", semitoneFromKey: 1, quality: "neapolitan" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "neapolitan-chord-classical",
+      name: "Classical-Style Neapolitan Progression",
+      label: "I – IV – ♭II – V7 – I",
+      description: "A classical-flavored progression where the Neapolitan chord takes over the subdominant’s usual role.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "♭II", name: "Neapolitan", semitoneFromKey: 1, quality: "neapolitan" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+  ];
+
+  // Five gospel chord progressions built around the Neapolitan (♭II) chord.
+  const NEAPOLITAN_GOSPEL_PROGRESSIONS = [
+    {
+      id: "neapolitan-chord-gospel-cadence",
+      name: "Gospel Neapolitan Cadence",
+      label: "I – vi – ♭II – V7",
+      description: "A gospel turnaround borrowing the Neapolitan chord in place of the usual IV or ii, for a surprising chromatic lift before the V7.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "♭II", name: "Neapolitan", semitoneFromKey: 1, quality: "neapolitan" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "neapolitan-chord-vamp",
+      name: "Vamp with Neapolitan Color",
+      label: "I – IV – ♭II – I",
+      description: "A vamp that briefly borrows the Neapolitan color just before returning home to the tonic.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "IV", name: "Subdominant", semitoneFromKey: 5, quality: "major" },
+        { roman: "♭II", name: "Neapolitan", semitoneFromKey: 1, quality: "neapolitan" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "neapolitan-chord-secondary",
+      name: "Secondary Turnaround with Neapolitan Color",
+      label: "I – ♭II – vi – V7",
+      description: "The Neapolitan chord appears early in the turnaround, well before the closing dominant.",
+      degrees: [
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+        { roman: "♭II", name: "Neapolitan", semitoneFromKey: 1, quality: "neapolitan" },
+        { roman: "vi", name: "Submediant", semitoneFromKey: 9, quality: "minor" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+      ],
+    },
+    {
+      id: "neapolitan-chord-extended-turnaround",
+      name: "Extended Gospel Turnaround with Neapolitan Color",
+      label: "iii7 – vi7 – ♭II – V7 – I",
+      description: "A five-chord walk-back turnaround with the Neapolitan chord standing in for ii7.",
+      degrees: [
+        { roman: "iii7", name: "Mediant 7th", semitoneFromKey: 4, quality: "minor7" },
+        { roman: "vi7", name: "Submediant 7th", semitoneFromKey: 9, quality: "minor7" },
+        { roman: "♭II", name: "Neapolitan", semitoneFromKey: 1, quality: "neapolitan" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "I", name: "Tonic", semitoneFromKey: 0, quality: "major" },
+      ],
+    },
+    {
+      id: "neapolitan-chord-minor-gospel-cadence",
+      name: "Minor Gospel Cadence with Neapolitan Color",
+      label: "i – ♭II – V7 – i",
+      description: "A minor-key gospel cadence with the Neapolitan chord taking the subdominant’s place.",
+      degrees: [
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+        { roman: "♭II", name: "Neapolitan", semitoneFromKey: 1, quality: "neapolitan" },
+        { roman: "V7", name: "Dominant 7th", semitoneFromKey: 7, quality: "dominant7" },
+        { roman: "i", name: "Tonic", semitoneFromKey: 0, quality: "minor" },
+      ],
+    },
+  ];
+
   return {
     keys,
     qualities: QUALITIES,
@@ -6131,5 +10659,51 @@ const InversionService = (() => {
     dominantNinthSharpElevenGospelProgressions: DOMINANT_NINTH_SHARP_ELEVEN_GOSPEL_PROGRESSIONS,
     alteredDominantJazzProgressions: ALTERED_DOMINANT_JAZZ_PROGRESSIONS,
     alteredDominantGospelProgressions: ALTERED_DOMINANT_GOSPEL_PROGRESSIONS,
+    minorNinthJazzProgressions: MINOR_NINTH_JAZZ_PROGRESSIONS,
+    minorNinthGospelProgressions: MINOR_NINTH_GOSPEL_PROGRESSIONS,
+    minorEleventhJazzProgressions: MINOR_ELEVENTH_JAZZ_PROGRESSIONS,
+    minorEleventhGospelProgressions: MINOR_ELEVENTH_GOSPEL_PROGRESSIONS,
+    minorThirteenthJazzProgressions: MINOR_THIRTEENTH_JAZZ_PROGRESSIONS,
+    minorThirteenthGospelProgressions: MINOR_THIRTEENTH_GOSPEL_PROGRESSIONS,
+    minorSixNineJazzProgressions: MINOR_SIX_NINE_JAZZ_PROGRESSIONS,
+    minorSixNineGospelProgressions: MINOR_SIX_NINE_GOSPEL_PROGRESSIONS,
+    minorMajorSeventhJazzProgressions: MINOR_MAJOR_SEVENTH_JAZZ_PROGRESSIONS,
+    minorMajorSeventhGospelProgressions: MINOR_MAJOR_SEVENTH_GOSPEL_PROGRESSIONS,
+    minorMajorNinthJazzProgressions: MINOR_MAJOR_NINTH_JAZZ_PROGRESSIONS,
+    minorMajorNinthGospelProgressions: MINOR_MAJOR_NINTH_GOSPEL_PROGRESSIONS,
+    majorNinthJazzProgressions: MAJOR_NINTH_JAZZ_PROGRESSIONS,
+    majorNinthGospelProgressions: MAJOR_NINTH_GOSPEL_PROGRESSIONS,
+    majorThirteenthJazzProgressions: MAJOR_THIRTEENTH_JAZZ_PROGRESSIONS,
+    majorThirteenthGospelProgressions: MAJOR_THIRTEENTH_GOSPEL_PROGRESSIONS,
+    majorSeventhSharpFiveJazzProgressions: MAJOR_SEVENTH_SHARP_FIVE_JAZZ_PROGRESSIONS,
+    majorSeventhSharpFiveGospelProgressions: MAJOR_SEVENTH_SHARP_FIVE_GOSPEL_PROGRESSIONS,
+    dominantNineSusFourJazzProgressions: DOMINANT_NINE_SUS_FOUR_JAZZ_PROGRESSIONS,
+    dominantNineSusFourGospelProgressions: DOMINANT_NINE_SUS_FOUR_GOSPEL_PROGRESSIONS,
+    dominantThirteenSusFourJazzProgressions: DOMINANT_THIRTEEN_SUS_FOUR_JAZZ_PROGRESSIONS,
+    dominantThirteenSusFourGospelProgressions: DOMINANT_THIRTEEN_SUS_FOUR_GOSPEL_PROGRESSIONS,
+    majorSeventhSusTwoJazzProgressions: MAJOR_SEVENTH_SUS_TWO_JAZZ_PROGRESSIONS,
+    majorSeventhSusTwoGospelProgressions: MAJOR_SEVENTH_SUS_TWO_GOSPEL_PROGRESSIONS,
+    majorSeventhSusFourJazzProgressions: MAJOR_SEVENTH_SUS_FOUR_JAZZ_PROGRESSIONS,
+    majorSeventhSusFourGospelProgressions: MAJOR_SEVENTH_SUS_FOUR_GOSPEL_PROGRESSIONS,
+    add11JazzProgressions: ADD11_JAZZ_PROGRESSIONS,
+    add11GospelProgressions: ADD11_GOSPEL_PROGRESSIONS,
+    diminishedMajorSeventhJazzProgressions: DIMINISHED_MAJOR_SEVENTH_JAZZ_PROGRESSIONS,
+    diminishedMajorSeventhGospelProgressions: DIMINISHED_MAJOR_SEVENTH_GOSPEL_PROGRESSIONS,
+    minorSeventhFlatNineJazzProgressions: MINOR_SEVENTH_FLAT_NINE_JAZZ_PROGRESSIONS,
+    minorSeventhFlatNineGospelProgressions: MINOR_SEVENTH_FLAT_NINE_GOSPEL_PROGRESSIONS,
+    halfDiminishedEleventhJazzProgressions: HALF_DIMINISHED_ELEVENTH_JAZZ_PROGRESSIONS,
+    halfDiminishedEleventhGospelProgressions: HALF_DIMINISHED_ELEVENTH_GOSPEL_PROGRESSIONS,
+    powerChordJazzProgressions: POWER_CHORD_JAZZ_PROGRESSIONS,
+    powerChordGospelProgressions: POWER_CHORD_GOSPEL_PROGRESSIONS,
+    splitThirdBluesJazzProgressions: SPLIT_THIRD_BLUES_JAZZ_PROGRESSIONS,
+    splitThirdBluesGospelProgressions: SPLIT_THIRD_BLUES_GOSPEL_PROGRESSIONS,
+    quartalJazzProgressions: QUARTAL_JAZZ_PROGRESSIONS,
+    quartalGospelProgressions: QUARTAL_GOSPEL_PROGRESSIONS,
+    toneClusterJazzProgressions: TONE_CLUSTER_JAZZ_PROGRESSIONS,
+    toneClusterGospelProgressions: TONE_CLUSTER_GOSPEL_PROGRESSIONS,
+    polychordJazzProgressions: POLYCHORD_JAZZ_PROGRESSIONS,
+    polychordGospelProgressions: POLYCHORD_GOSPEL_PROGRESSIONS,
+    neapolitanJazzProgressions: NEAPOLITAN_JAZZ_PROGRESSIONS,
+    neapolitanGospelProgressions: NEAPOLITAN_GOSPEL_PROGRESSIONS,
   };
 })();
