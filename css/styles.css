@@ -236,6 +236,34 @@ a { color: inherit; }
   background: rgba(201,162,39,0.12);
 }
 
+/* Grouped dropdown (currently just Chords): non-clickable sub-headings
+   plus a wider, multi-column layout so 50+ links don't turn into one
+   giant single-column scroll. */
+.site-nav__dropdown--grouped {
+  min-width: 560px;
+  columns: 2;
+  column-gap: 0.5rem;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.site-nav__dropdown-heading {
+  break-inside: avoid;
+  break-after: avoid;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brass-bright);
+  padding: 0.6rem 0.7rem 0.2rem;
+  margin-top: 0.2rem;
+  white-space: nowrap;
+}
+
+.site-nav__dropdown-heading:first-child {
+  margin-top: 0;
+}
+
 .site-nav__toggle {
   display: none;
   background: none;
@@ -316,6 +344,17 @@ a { color: inherit; }
 
   .site-nav__dropdown a {
     padding: 0.65rem 0.75rem 0.65rem 1.5rem;
+  }
+
+  .site-nav__dropdown--grouped {
+    min-width: 0;
+    columns: 1;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .site-nav__dropdown-heading {
+    padding-left: 0.75rem;
   }
 }
 

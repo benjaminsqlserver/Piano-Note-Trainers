@@ -34,60 +34,100 @@ const NAV_GROUPS = [
   {
     id: 'chords',
     label: 'Chords',
-    links: [
-      { page: 'major-chord', href: 'major-chord-trainer.html', label: 'Major Chords' },
-      { page: 'minor-chord', href: 'minor-chord-trainer.html', label: 'Minor Chords' },
-      { page: 'augmented-chord', href: 'augmented-chord-trainer.html', label: 'Augmented Chords' },
-      { page: 'diminished-chord', href: 'diminished-chord-trainer.html', label: 'Diminished Chords' },
-      { page: 'dominant-seventh-chord', href: 'dominant-seventh-chord-trainer.html', label: 'Dominant 7th Chords' },
-      { page: 'diminished-seventh-chord', href: 'diminished-seventh-chord-trainer.html', label: 'Diminished 7th Chords' },
-      { page: 'minor-seventh-chord', href: 'minor-seventh-chord-trainer.html', label: 'Minor 7th Chords' },
-      { page: 'major-seventh-chord', href: 'major-seventh-chord-trainer.html', label: 'Major 7th Chords' },
-      { page: 'half-diminished-seventh-chord', href: 'half-diminished-seventh-chord-trainer.html', label: 'Half-Diminished 7th Chords' },
-      { page: 'sixth-chord', href: 'sixth-chord-trainer.html', label: '6th Chords' },
-      { page: 'minor-sixth-chord', href: 'minor-sixth-chord-trainer.html', label: 'Minor 6th Chords' },
-      { page: 'inversions', href: 'inversions-trainer.html', label: 'Chord Inversions' },
-      { page: 'augmented-seventh-chord', href: 'augmented-seventh-chord-trainer.html', label: 'Augmented 7th Chords' },
-      { page: 'major-seventh-flat-five-chord', href: 'major-seventh-flat-five-chord-trainer.html', label: 'Major 7th ♭5 Chords' },
-      { page: 'major-seventh-sharp-eleven-chord', href: 'major-seventh-sharp-eleven-chord-trainer.html', label: 'Major 7th ♯11 Chords' },
-      { page: 'add9-chord', href: 'add9-chord-trainer.html', label: 'Add9 Chords' },
-      { page: 'sus2-chord', href: 'sus2-chord-trainer.html', label: 'Sus2 Chords' },
-      { page: 'sus4-chord', href: 'sus4-chord-trainer.html', label: 'Sus4 Chords' },
-      { page: 'dominant-seventh-sus4-chord', href: 'dominant-seventh-sus4-chord-trainer.html', label: 'Dominant 7sus4 Chords' },
-      { page: 'six-nine-chord', href: 'six-nine-chord-trainer.html', label: '6/9 Chords' },
-      { page: 'dominant-ninth-chord', href: 'dominant-ninth-chord-trainer.html', label: 'Dominant 9th Chords' },
-      { page: 'dominant-eleventh-chord', href: 'dominant-eleventh-chord-trainer.html', label: 'Dominant 11th Chords' },
-      { page: 'dominant-thirteenth-chord', href: 'dominant-thirteenth-chord-trainer.html', label: 'Dominant 13th Chords' },
-      { page: 'dominant-seventh-flat-nine-chord', href: 'dominant-seventh-flat-nine-chord-trainer.html', label: 'Dominant 7♭9 Chords' },
-      { page: 'dominant-seventh-sharp-nine-chord', href: 'dominant-seventh-sharp-nine-chord-trainer.html', label: 'Dominant 7♯9 Chords' },
-      { page: 'dominant-seventh-flat-five-chord', href: 'dominant-seventh-flat-five-chord-trainer.html', label: 'Dominant 7♭5 Chords' },
-      { page: 'dominant-seventh-sharp-eleven-chord', href: 'dominant-seventh-sharp-eleven-chord-trainer.html', label: 'Dominant 7♯11 Chords' },
-      { page: 'dominant-seventh-flat-thirteen-chord', href: 'dominant-seventh-flat-thirteen-chord-trainer.html', label: 'Dominant 7♭13 Chords' },
-      { page: 'dominant-ninth-sharp-eleven-chord', href: 'dominant-ninth-sharp-eleven-chord-trainer.html', label: 'Dominant 9♯11 Chords' },
-      { page: 'altered-dominant-chord', href: 'altered-dominant-chord-trainer.html', label: 'Altered Dominant Chords' },
-      { page: 'minor-ninth-chord', href: 'minor-ninth-chord-trainer.html', label: 'Minor 9th Chords' },
-      { page: 'minor-eleventh-chord', href: 'minor-eleventh-chord-trainer.html', label: 'Minor 11th Chords' },
-      { page: 'minor-thirteenth-chord', href: 'minor-thirteenth-chord-trainer.html', label: 'Minor 13th Chords' },
-      { page: 'minor-six-nine-chord', href: 'minor-six-nine-chord-trainer.html', label: 'Minor 6/9 Chords' },
-      { page: 'minor-major-seventh-chord', href: 'minor-major-seventh-chord-trainer.html', label: 'Minor-Major 7th Chords' },
-      { page: 'minor-major-ninth-chord', href: 'minor-major-ninth-chord-trainer.html', label: 'Minor-Major 9th Chords' },
-      { page: 'major-ninth-chord', href: 'major-ninth-chord-trainer.html', label: 'Major 9th Chords' },
-      { page: 'major-thirteenth-chord', href: 'major-thirteenth-chord-trainer.html', label: 'Major 13th Chords' },
-      { page: 'major-seventh-sharp-five-chord', href: 'major-seventh-sharp-five-chord-trainer.html', label: 'Major 7th♯5 Chords' },
-      { page: 'dominant-nine-sus4-chord', href: 'dominant-nine-sus4-chord-trainer.html', label: 'Dominant 9sus4 Chords' },
-      { page: 'dominant-thirteen-sus4-chord', href: 'dominant-thirteen-sus4-chord-trainer.html', label: 'Dominant 13sus4 Chords' },
-      { page: 'major-seventh-sus2-chord', href: 'major-seventh-sus2-chord-trainer.html', label: 'Major 7sus2 Chords' },
-      { page: 'major-seventh-sus4-chord', href: 'major-seventh-sus4-chord-trainer.html', label: 'Major 7sus4 Chords' },
-      { page: 'add11-chord', href: 'add11-chord-trainer.html', label: 'Add11 Chords' },
-      { page: 'diminished-major-seventh-chord', href: 'diminished-major-seventh-chord-trainer.html', label: 'Diminished Major 7th Chords' },
-      { page: 'minor-seventh-flat-nine-chord', href: 'minor-seventh-flat-nine-chord-trainer.html', label: 'Minor 7♭9 Chords' },
-      { page: 'half-diminished-eleventh-chord', href: 'half-diminished-eleventh-chord-trainer.html', label: 'Half-Diminished 11th Chords' },
-      { page: 'power-chord', href: 'power-chord-trainer.html', label: 'Power Chords' },
-      { page: 'split-third-blues-chord', href: 'split-third-blues-chord-trainer.html', label: 'Split-Third Blues Chords' },
-      { page: 'quartal-chord', href: 'quartal-chord-trainer.html', label: 'Quartal Chords' },
-      { page: 'tone-cluster-chord', href: 'tone-cluster-chord-trainer.html', label: 'Tone Cluster Chords' },
-      { page: 'polychord', href: 'polychord-trainer.html', label: 'Polychord (Slash Chord)' },
-      { page: 'neapolitan-chord', href: 'neapolitan-chord-trainer.html', label: 'Neapolitan (♭II) Chords' },
+    // 53 chord lessons is too many for one flat list, so they're split
+    // into labeled sub-groups. Each sub-group renders as a non-clickable
+    // heading followed by its links (see renderNav's handling of
+    // `item.subgroups` below). Order within each sub-group preserves the
+    // original teaching/lesson order.
+    subgroups: [
+      {
+        heading: 'Triads',
+        links: [
+          { page: 'major-chord', href: 'major-chord-trainer.html', label: 'Major Chords' },
+          { page: 'minor-chord', href: 'minor-chord-trainer.html', label: 'Minor Chords' },
+          { page: 'augmented-chord', href: 'augmented-chord-trainer.html', label: 'Augmented Chords' },
+          { page: 'diminished-chord', href: 'diminished-chord-trainer.html', label: 'Diminished Chords' },
+          { page: 'power-chord', href: 'power-chord-trainer.html', label: 'Power Chords' },
+          { page: 'split-third-blues-chord', href: 'split-third-blues-chord-trainer.html', label: 'Split-Third Blues Chords' },
+        ],
+      },
+      {
+        heading: '7th Chords',
+        links: [
+          { page: 'dominant-seventh-chord', href: 'dominant-seventh-chord-trainer.html', label: 'Dominant 7th Chords' },
+          { page: 'diminished-seventh-chord', href: 'diminished-seventh-chord-trainer.html', label: 'Diminished 7th Chords' },
+          { page: 'minor-seventh-chord', href: 'minor-seventh-chord-trainer.html', label: 'Minor 7th Chords' },
+          { page: 'major-seventh-chord', href: 'major-seventh-chord-trainer.html', label: 'Major 7th Chords' },
+          { page: 'half-diminished-seventh-chord', href: 'half-diminished-seventh-chord-trainer.html', label: 'Half-Diminished 7th Chords' },
+          { page: 'augmented-seventh-chord', href: 'augmented-seventh-chord-trainer.html', label: 'Augmented 7th Chords' },
+          { page: 'diminished-major-seventh-chord', href: 'diminished-major-seventh-chord-trainer.html', label: 'Diminished Major 7th Chords' },
+          { page: 'minor-major-seventh-chord', href: 'minor-major-seventh-chord-trainer.html', label: 'Minor-Major 7th Chords' },
+        ],
+      },
+      {
+        heading: '6th & Added-Tone Chords',
+        links: [
+          { page: 'sixth-chord', href: 'sixth-chord-trainer.html', label: '6th Chords' },
+          { page: 'minor-sixth-chord', href: 'minor-sixth-chord-trainer.html', label: 'Minor 6th Chords' },
+          { page: 'six-nine-chord', href: 'six-nine-chord-trainer.html', label: '6/9 Chords' },
+          { page: 'minor-six-nine-chord', href: 'minor-six-nine-chord-trainer.html', label: 'Minor 6/9 Chords' },
+          { page: 'add9-chord', href: 'add9-chord-trainer.html', label: 'Add9 Chords' },
+          { page: 'add11-chord', href: 'add11-chord-trainer.html', label: 'Add11 Chords' },
+        ],
+      },
+      {
+        heading: 'Suspended Chords',
+        links: [
+          { page: 'sus2-chord', href: 'sus2-chord-trainer.html', label: 'Sus2 Chords' },
+          { page: 'sus4-chord', href: 'sus4-chord-trainer.html', label: 'Sus4 Chords' },
+          { page: 'dominant-seventh-sus4-chord', href: 'dominant-seventh-sus4-chord-trainer.html', label: 'Dominant 7sus4 Chords' },
+          { page: 'dominant-nine-sus4-chord', href: 'dominant-nine-sus4-chord-trainer.html', label: 'Dominant 9sus4 Chords' },
+          { page: 'dominant-thirteen-sus4-chord', href: 'dominant-thirteen-sus4-chord-trainer.html', label: 'Dominant 13sus4 Chords' },
+          { page: 'major-seventh-sus2-chord', href: 'major-seventh-sus2-chord-trainer.html', label: 'Major 7sus2 Chords' },
+          { page: 'major-seventh-sus4-chord', href: 'major-seventh-sus4-chord-trainer.html', label: 'Major 7sus4 Chords' },
+        ],
+      },
+      {
+        heading: 'Extended Chords (9ths, 11ths, 13ths)',
+        links: [
+          { page: 'dominant-ninth-chord', href: 'dominant-ninth-chord-trainer.html', label: 'Dominant 9th Chords' },
+          { page: 'dominant-eleventh-chord', href: 'dominant-eleventh-chord-trainer.html', label: 'Dominant 11th Chords' },
+          { page: 'dominant-thirteenth-chord', href: 'dominant-thirteenth-chord-trainer.html', label: 'Dominant 13th Chords' },
+          { page: 'minor-ninth-chord', href: 'minor-ninth-chord-trainer.html', label: 'Minor 9th Chords' },
+          { page: 'minor-eleventh-chord', href: 'minor-eleventh-chord-trainer.html', label: 'Minor 11th Chords' },
+          { page: 'minor-thirteenth-chord', href: 'minor-thirteenth-chord-trainer.html', label: 'Minor 13th Chords' },
+          { page: 'minor-major-ninth-chord', href: 'minor-major-ninth-chord-trainer.html', label: 'Minor-Major 9th Chords' },
+          { page: 'major-ninth-chord', href: 'major-ninth-chord-trainer.html', label: 'Major 9th Chords' },
+          { page: 'major-thirteenth-chord', href: 'major-thirteenth-chord-trainer.html', label: 'Major 13th Chords' },
+        ],
+      },
+      {
+        heading: 'Altered & Color Extensions',
+        links: [
+          { page: 'dominant-seventh-flat-nine-chord', href: 'dominant-seventh-flat-nine-chord-trainer.html', label: 'Dominant 7♭9 Chords' },
+          { page: 'dominant-seventh-sharp-nine-chord', href: 'dominant-seventh-sharp-nine-chord-trainer.html', label: 'Dominant 7♯9 Chords' },
+          { page: 'dominant-seventh-flat-five-chord', href: 'dominant-seventh-flat-five-chord-trainer.html', label: 'Dominant 7♭5 Chords' },
+          { page: 'dominant-seventh-sharp-eleven-chord', href: 'dominant-seventh-sharp-eleven-chord-trainer.html', label: 'Dominant 7♯11 Chords' },
+          { page: 'dominant-seventh-flat-thirteen-chord', href: 'dominant-seventh-flat-thirteen-chord-trainer.html', label: 'Dominant 7♭13 Chords' },
+          { page: 'dominant-ninth-sharp-eleven-chord', href: 'dominant-ninth-sharp-eleven-chord-trainer.html', label: 'Dominant 9♯11 Chords' },
+          { page: 'altered-dominant-chord', href: 'altered-dominant-chord-trainer.html', label: 'Altered Dominant Chords' },
+          { page: 'major-seventh-flat-five-chord', href: 'major-seventh-flat-five-chord-trainer.html', label: 'Major 7th ♭5 Chords' },
+          { page: 'major-seventh-sharp-eleven-chord', href: 'major-seventh-sharp-eleven-chord-trainer.html', label: 'Major 7th ♯11 Chords' },
+          { page: 'major-seventh-sharp-five-chord', href: 'major-seventh-sharp-five-chord-trainer.html', label: 'Major 7th♯5 Chords' },
+          { page: 'minor-seventh-flat-nine-chord', href: 'minor-seventh-flat-nine-chord-trainer.html', label: 'Minor 7♭9 Chords' },
+          { page: 'half-diminished-eleventh-chord', href: 'half-diminished-eleventh-chord-trainer.html', label: 'Half-Diminished 11th Chords' },
+        ],
+      },
+      {
+        heading: 'Special & Color Chords',
+        links: [
+          { page: 'inversions', href: 'inversions-trainer.html', label: 'Chord Inversions' },
+          { page: 'quartal-chord', href: 'quartal-chord-trainer.html', label: 'Quartal Chords' },
+          { page: 'tone-cluster-chord', href: 'tone-cluster-chord-trainer.html', label: 'Tone Cluster Chords' },
+          { page: 'polychord', href: 'polychord-trainer.html', label: 'Polychord (Slash Chord)' },
+          { page: 'neapolitan-chord', href: 'neapolitan-chord-trainer.html', label: 'Neapolitan (♭II) Chords' },
+        ],
+      },
     ],
   },
   {
@@ -126,18 +166,34 @@ function renderNav(mountEl) {
       return `<li><a href="${item.href}" data-page="${item.page}"${isActive ? ' class="is-active" aria-current="page"' : ''}>${item.label}</a></li>`;
     }
 
-    const groupHasActive = item.links.some((l) => l.page === currentPage);
-    const dropdownLinksHtml = item.links.map((l) => {
+    // Groups either have a flat `links` array, or a `subgroups` array of
+    // { heading, links } for longer lists (currently just Chords). Both
+    // shapes render into the same <ul class="site-nav__dropdown">; the
+    // only difference is that subgroups get a non-clickable heading in
+    // between the clusters of links.
+    const allLinks = item.subgroups
+      ? item.subgroups.flatMap((sg) => sg.links)
+      : item.links;
+    const groupHasActive = allLinks.some((l) => l.page === currentPage);
+
+    function linkHtml(l) {
       const isActive = l.page === currentPage;
       return `<li><a href="${l.href}" data-page="${l.page}"${isActive ? ' class="is-active" aria-current="page"' : ''}>${l.label}</a></li>`;
-    }).join('');
+    }
+
+    const dropdownLinksHtml = item.subgroups
+      ? item.subgroups.map((sg) => `
+          <li class="site-nav__dropdown-heading" role="presentation">${sg.heading}</li>
+          ${sg.links.map(linkHtml).join('')}
+        `).join('')
+      : item.links.map(linkHtml).join('');
 
     return `
       <li class="site-nav__group">
         <button type="button" class="site-nav__group-toggle${groupHasActive ? ' is-active' : ''}" aria-expanded="false" aria-haspopup="true" data-group="${item.id}">
           <span>${item.label}</span>${chevronSvg()}
         </button>
-        <ul class="site-nav__dropdown" data-group-panel="${item.id}">
+        <ul class="site-nav__dropdown${item.subgroups ? ' site-nav__dropdown--grouped' : ''}" data-group-panel="${item.id}">
           ${dropdownLinksHtml}
         </ul>
       </li>`;
