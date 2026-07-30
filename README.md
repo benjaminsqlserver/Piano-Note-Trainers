@@ -109,6 +109,7 @@ chord together and had no note-by-note option at all before.
 | 63 | **Polychord (Slash Chord)** (`polychord-trainer.html`) | How every / chord is built by counting semitones (a major triad (Lesson 8) rooted a whole step above the bass note, stacked over a dominant 7th chord (Lesson 13) built on that bass note — the app’s reference voicing for "X/Y" slash-chord notation), plus three MIDI exercises: all 12 polychords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this color, in every key |
 | 64 | **Neapolitan (♭II) Chords** (`neapolitan-chord-trainer.html`) | How every ♭II chord is built by counting semitones (a plain major triad (Lesson 8), but rooted a minor 2nd (half step) above the tonic instead of on it), plus three MIDI exercises: all 12 Neapolitan chords around the circle of fourths, and 5 jazz plus 5 gospel chord progressions built around this color, in every key |
 | 31 | **Now Behold the Lamb — Song Trainer** (`now-behold-the-lamb-trainer.html`) | Kirk Franklin's gospel classic "Now Behold the Lamb," played from its real piano accompaniment (right-hand chord comping + left-hand bass, both taken from the original arrangement) in every key — the song lesson whose harmony motivated Lessons 27-30, since its accompaniment uses the sus2, sus4, dominant 7sus4, and 6/9 chords they teach, alongside the major, minor, dominant 7th, minor 7th, add9, 6th, and major 7th♯11 chords taught earlier |
+| 65 | **Every Praise — Song Trainer** (`every-praise-trainer.html`) | Hezekiah Walker's gospel anthem "Every Praise," reproduced from its real recording across three parts — Alto lead vocal, piano right hand, and piano left hand — each on its own full 8-octave keyboard, all three visible and playing together the moment the lesson opens (no tabs to click through), in every key, with per-part mute toggles and a scrubbable seek bar |
 
 Each lesson page includes:
 
@@ -410,8 +411,10 @@ PianoNoteTrainers/
 ├─ polychord-trainer.html # Lesson 63
 ├─ neapolitan-chord-trainer.html # Lesson 64
 ├─ now-behold-the-lamb-trainer.html # Lesson 31
+├─ every-praise-trainer.html # Lesson 65
 ├─ css/
-│  └─ styles.css                # Shared, responsive design system
+│  ├─ styles.css                # Shared, responsive design system
+│  └─ every-praise.css          # Scoped styling for Lesson 65's three simultaneous instrument keyboards
 ├─ js/
 │  ├─ nav.js                    # Shared responsive navigation bar
 │  ├─ tabs.js                   # Shared tab / segmented-control helper
@@ -483,7 +486,9 @@ PianoNoteTrainers/
 │  ├─ tone-cluster-chord-trainer.js # Lesson 62 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
 │  ├─ polychord-trainer.js # Lesson 63 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
 │  ├─ neapolitan-chord-trainer.js # Lesson 64 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  └─ now-behold-the-lamb-trainer.js # Lesson 31 page logic (learn tab + two-hand Song Player)
+│  ├─ now-behold-the-lamb-trainer.js # Lesson 31 page logic (learn tab + two-hand Song Player)
+│  ├─ every-praise-data.js      # Lesson 65 song data (Alto, Piano Right Hand, Piano Left Hand note events extracted from the source MIDI file, plus song metadata)
+│  └─ every-praise-trainer.js   # Lesson 65 page logic (self-contained synth/keyboard/transport engine driving all three simultaneous instrument keyboards)
 ├─ midi/                        # Sample MIDI files for Lessons 5-7, 12, 18 & 31's playback (one per key each; Lessons 12, 18 & 31's files each carry the right hand on channel 0 and left hand on channel 1)
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file
