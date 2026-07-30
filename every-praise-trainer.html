@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Every Praise — Song Trainer — Piano Note Trainers</title>
+<meta name="description" content="Play Hezekiah Walker's gospel anthem 'Every Praise' three parts at once — lead vocal melody, piano right hand, and piano left hand — each on its own labeled 8-octave keyboard, in every one of the 12 keys." />
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/every-praise.css" />
+</head>
+<body data-page="every-praise">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Lesson 65 · All 12 keys · 3 parts</div>
+    <h1>Every Praise — Song Trainer</h1>
+    <p>Play Hezekiah Walker's gospel anthem "Every Praise" the way it was actually recorded — three parts sounding together, each on its own full 8-octave keyboard: the <strong>Alto lead vocal</strong>, the <strong>piano's right hand</strong>, and the <strong>piano's left hand</strong>. All three keyboards are visible below as soon as this lesson opens, no tabs to click through. Transpose to any of the 12 keys, adjust the tempo, mute any single part to isolate it, or just click a key on any keyboard to hear its pitch on its own.</p>
+  </header>
+
+  <div class="card">
+    <h3 style="font-size:1rem;">Transport</h3>
+    <p style="margin-top:0;">Pick a key and tempo, then press Play — all three keyboards light up together as the song plays through the built-in synth.</p>
+    <div class="controls-row">
+      <div class="field">
+        <label for="ep-key">Key</label>
+        <select id="ep-key"></select>
+      </div>
+      <div class="field" style="min-width:220px;">
+        <label for="ep-tempo">Tempo: <span id="ep-tempo-label">— BPM</span></label>
+        <input type="range" id="ep-tempo" min="60" max="200" step="1" value="104" />
+      </div>
+    </div>
+    <div class="actions-row">
+      <button class="btn btn-success" id="ep-play">▶ Play</button>
+      <button class="btn btn-ghost" id="ep-restart">⏮ Restart</button>
+      <button class="btn btn-danger" id="ep-stop">■ Stop</button>
+    </div>
+    <div class="ep-seek-row">
+      <input type="range" id="ep-seek" min="0" max="100" step="0.1" value="0" />
+      <span id="ep-time">0:00 / 0:00</span>
+    </div>
+  </div>
+
+  <div id="ep-instruments"></div>
+
+  <div class="card">
+    <h3 style="font-size:1rem;">About the song</h3>
+    <p style="margin-top:0;">"Every Praise" is a contemporary gospel anthem written and recorded by Hezekiah Walker, built around the declaration "Every praise is to our God" — a modern worship staple known for its driving, syncopated piano comping and its call-and-response lead vocal, both reproduced note for note in this lesson's Alto, Piano Right Hand, and Piano Left Hand parts.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="font-size:1rem;">Tips for using this lesson</h3>
+    <ul style="margin:0.5rem 0 0 1.25rem; padding:0; line-height:1.7;">
+      <li>Use each part's <strong>Mute</strong> checkbox to isolate just the Alto line, just the right-hand chords, or just the left-hand bass.</li>
+      <li>Scroll any keyboard horizontally to follow a part that moves outside the visible C0–C8 window.</li>
+      <li>Click any key directly to hear its pitch on its own instrument voice, independent of playback.</li>
+      <li>The Key selector transposes all three parts together, so the whole arrangement always stays in the same key relative to itself.</li>
+    </ul>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>Piano Note Trainers · &copy; <span id="year"></span> HepziBen Technologies Limited · Released under the <a href="LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/every-praise-data.js"></script>
+<script src="js/every-praise-trainer.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

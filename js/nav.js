@@ -137,6 +137,7 @@ const NAV_GROUPS = [
       { page: 'power-in-the-blood', href: 'power-in-the-blood-trainer.html', label: 'Power in the Blood' },
       { page: 'his-eye-on-the-sparrow', href: 'his-eye-on-the-sparrow-trainer.html', label: 'His Eye Is on the Sparrow' },
       { page: 'now-behold-the-lamb', href: 'now-behold-the-lamb-trainer.html', label: 'Now Behold the Lamb' },
+      { page: 'every-praise', href: 'every-praise-trainer.html', label: 'Every Praise' },
     ],
   },
 ];
