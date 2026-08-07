@@ -2,7 +2,7 @@
 // trainers, which are structurally identical (Learn / Guided Trainer /
 // Flashcard Quiz) and differ only in their note data. The page sets
 // `window.ACCIDENTAL_KIND` to 'sharp' or 'flat' before this script loads.
-// Expects audio-engine.js, piano-keyboard.js, music-services.js, and tabs.js
+// Expects audio-engine.js, piano-keyboard.js, scale-services.js, and tabs.js
 // to already be loaded as plain scripts before this one.
 
 initTabs();

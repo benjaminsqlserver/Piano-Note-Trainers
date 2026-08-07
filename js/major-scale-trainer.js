@@ -1,5 +1,5 @@
 // major-scale-trainer.js — page logic for major-scale-trainer.html
-// Expects audio-engine.js, piano-keyboard.js, music-services.js,
+// Expects audio-engine.js, piano-keyboard.js, this lesson's chord service,
 // midi-file-reader.js, and tabs.js to already be loaded as plain scripts
 // before this one.
 initTabs();
@@ -376,18 +376,16 @@ mi.stop.addEventListener('click', stopImprovDemo);
   mi.midiWarning.style.display = supported ? 'none' : '';
   if (supported) {
     const outputs = midi.getOutputDevices();
-    const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
-    el.output.innerHTML = optionsHtml;
-    mi.output.innerHTML = optionsHtml;
+    fillOutputOptions(el.output, outputs);
+    fillOutputOptions(mi.output, outputs);
     await refreshInputDevices();
   }
   midi.onDevicesChanged((outputs) => {
-    const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
     const currentOut = el.output.value;
     const currentMiOut = mi.output.value;
-    el.output.innerHTML = optionsHtml;
+    fillOutputOptions(el.output, outputs);
     el.output.value = currentOut;
-    mi.output.innerHTML = optionsHtml;
+    fillOutputOptions(mi.output, outputs);
     mi.output.value = currentMiOut;
   });
   midi.onNoteOn((note) => onMidiNoteOn(note));

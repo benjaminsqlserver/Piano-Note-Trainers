@@ -1,5 +1,5 @@
 // white-trainer.js — page logic for white-key-trainer.html
-// Expects audio-engine.js, piano-keyboard.js, music-services.js, and tabs.js
+// Expects audio-engine.js, piano-keyboard.js, scale-services.js, and tabs.js
 // to already be loaded as plain scripts before this one.
 const KeyService = WhiteKeyService;
 

@@ -1,5 +1,5 @@
 // diminished-chord-trainer.js — page logic for diminished-chord-trainer.html
-// Expects audio-engine.js, piano-keyboard.js, music-services.js, and
+// Expects audio-engine.js, piano-keyboard.js, this lesson's chord service, and
 // tabs.js to already be loaded as plain scripts before this one.
 initTabs();
 
@@ -228,6 +228,7 @@ cf.tempo.addEventListener('input', () => { cf.tempoValue.textContent = cf.tempo.
 cf.play.addEventListener('click', playCircleOfFourths);
 cf.step.addEventListener('click', stepCircleOfFourths);
 cf.stop.addEventListener('click', stopCircleOfFourths);
+document.addEventListener('tabchange', stopCircleOfFourths);
 
 // ========================================== EXERCISE 2: CHORD PROGRESSION
 
@@ -412,17 +413,13 @@ cp.stop.addEventListener('click', stopProgression);
   cp.midiWarning.style.display = supported ? 'none' : '';
   if (supported) {
     const outputs = midi.getOutputDevices();
-    const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
-    lc.output.innerHTML = optionsHtml;
-    cf.output.innerHTML = optionsHtml;
-    cp.output.innerHTML = optionsHtml;
+    fillOutputOptions(lc.output, outputs);
+    fillOutputOptions(cf.output, outputs);
+    fillOutputOptions(cp.output, outputs);
   }
   midi.onDevicesChanged((outputs) => {
-    const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
     [lc.output, cf.output, cp.output].forEach((sel) => {
-      const current = sel.value;
-      sel.innerHTML = optionsHtml;
-      sel.value = current;
+      fillOutputOptions(sel, outputs);
     });
   });
 

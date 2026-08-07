@@ -536,14 +536,10 @@ sp.stop.addEventListener('click', stopSong);
   sp.midiWarning.style.display = supported ? 'none' : '';
   if (supported) {
     const outputs = midi.getOutputDevices();
-    const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
-    sp.output.innerHTML = optionsHtml;
+    fillOutputOptions(sp.output, outputs);
   }
   midi.onDevicesChanged((outputs) => {
-    const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
-    const current = sp.output.value;
-    sp.output.innerHTML = optionsHtml;
-    sp.output.value = current;
+    fillOutputOptions(sp.output, outputs);
   });
 
   renderLearnTable();

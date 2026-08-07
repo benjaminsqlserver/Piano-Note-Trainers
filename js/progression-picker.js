@@ -6,8 +6,9 @@
 // picker is needed too, see the Chord Inversions lesson's own
 // setupProgressionExercise() in inversions-trainer.js instead.
 //
-// Expects audio-engine.js, piano-keyboard.js, music-services.js, and
-// tabs.js to already be loaded as plain scripts before this one.
+// Expects audio-engine.js, piano-keyboard.js, inversion-service.js, the
+// lesson's own progressions file, and tabs.js to already be loaded as plain
+// scripts before this one.
 
 /** Plays every note of a chord at (roughly) the same instant, as a chord. */
 function playChordNotes(midi, deviceId, midiNotes, durationMs, velocity = 100) {
@@ -19,7 +20,7 @@ function progressionPickerWait(ms) { return new Promise((resolve) => setTimeout(
 /**
  * Wires up a progression-picker exercise tab.
  * `prefix` — the DOM id prefix shared by every element on this tab (e.g. 'jz', 'gp').
- * `progressions` — array of progression defs, same shape used throughout music-services.js.
+ * `progressions` — array of progression defs, the shape every file in js/progressions/ registers.
  * `midi` — a shared AudioEngine instance.
  * Returns `{ outputSelect, midiWarning }` so the page's init() can wire up MIDI devices.
  */
@@ -217,6 +218,7 @@ function setupProgressionPicker(prefix, progressions, midi) {
   el.playAll.addEventListener('click', playInAllKeys);
   el.step.addEventListener('click', stepForward);
   el.stop.addEventListener('click', stopPlayback);
+  document.addEventListener('tabchange', stopPlayback);
 
   refresh();
 

@@ -1,0 +1,30 @@
+# This project has no build step and no package manager: everything tracked
+# here is source that ships as-is. So this list is only about keeping OS,
+# editor, and tooling droppings out of the repository.
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+.directory
+.Trash-*
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.code-workspace
+
+# Logs and scratch output
+*.log

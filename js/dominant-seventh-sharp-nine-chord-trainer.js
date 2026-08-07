@@ -1,5 +1,5 @@
 // dominant-seventh-sharp-nine-chord-trainer.js — page logic for dominant-seventh-sharp-nine-chord-trainer.html
-// Expects audio-engine.js, piano-keyboard.js, music-services.js,
+// Expects audio-engine.js, piano-keyboard.js, this lesson's chord service,
 // tabs.js, and progression-picker.js to already be loaded as plain
 // scripts before this one.
 initTabs();
@@ -229,6 +229,7 @@ cf.tempo.addEventListener('input', () => { cf.tempoValue.textContent = cf.tempo.
 cf.play.addEventListener('click', playCircleOfFourths);
 cf.step.addEventListener('click', stepCircleOfFourths);
 cf.stop.addEventListener('click', stopCircleOfFourths);
+document.addEventListener('tabchange', stopCircleOfFourths);
 
 // ================================ EXERCISES 2 & 3: JAZZ / GOSPEL PROGRESSIONS
 
@@ -247,15 +248,11 @@ const gospelExercise = setupProgressionPicker('gp', InversionService.dominantSev
 
   if (supported) {
     const outputs = midi.getOutputDevices();
-    const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
-    allOutputSelects.forEach((sel) => { sel.innerHTML = optionsHtml; });
+    allOutputSelects.forEach((sel) => { fillOutputOptions(sel, outputs); });
   }
   midi.onDevicesChanged((outputs) => {
-    const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
     allOutputSelects.forEach((sel) => {
-      const current = sel.value;
-      sel.innerHTML = optionsHtml;
-      sel.value = current;
+      fillOutputOptions(sel, outputs);
     });
   });
 

@@ -420,7 +420,12 @@ PianoNoteTrainers/
 │  ├─ tabs.js                   # Shared tab / segmented-control helper
 │  ├─ audio-engine.js           # Shared WebAudio synth + Web MIDI wrapper
 │  ├─ piano-keyboard.js         # Shared SVG piano keyboard renderer (fixed 8-octave range, C0–C8, on every lesson)
-│  ├─ music-services.js         # Shared music-theory data (white/sharp/flat/chromatic/major/Dorian/Phrygian scale + major/minor/augmented/diminished + 6th + 7th chords + augmented 7th + major 7th♭5 + major 7th♯11 + add9 + sus2/sus4/7sus4 + 6/9 + dominant extensions & alterations (9th/11th/13th, 7♭9, 7♯9, 7♭5, 7♯11, 7♭13, 9♯11, alt) + inversions/progressions)
+│  ├─ music-theory-core.js      # Shared note-name tables, the 12 keys, the circle of fourths, and makeChordService() — the factory every chord lesson is built from
+│  ├─ scale-services.js         # The white/sharp/flat key, chromatic, and major/Dorian/Phrygian scale services
+│  ├─ chords/                   # One file per chord lesson (52), each stating only that chord's intervals, tone labels, and Learn-tab prose
+│  ├─ inversion-service.js      # Inversions plus the generic chord/progression builder every progression exercise runs on
+│  ├─ progressions/             # One file per chord lesson (43), holding just that lesson's jazz and gospel progression sets
+│  ├─ tests.js                  # Music-theory test suite (see tests.html)
 │  ├─ progression-picker.js     # Shared root-position-only progression-picker exercise (Jazz/Gospel tabs on Lessons 20-21, 23, 24, 25 & 26)
 │  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader (tags each note with its source MIDI channel)
 │  ├─ midi-data.js              # Base64-embedded improvisation-demo + song MIDI data (major + Dorian + Phrygian + Power in the Blood + His Eye Is on the Sparrow + Now Behold the Lamb)
@@ -490,9 +495,47 @@ PianoNoteTrainers/
 │  ├─ every-praise-data.js      # Lesson 65 song data (Alto, Piano Right Hand, Piano Left Hand note events extracted from the source MIDI file, plus song metadata)
 │  └─ every-praise-trainer.js   # Lesson 65 page logic (self-contained synth/keyboard/transport engine driving all three simultaneous instrument keyboards)
 ├─ midi/                        # Sample MIDI files for Lessons 5-7, 12, 18 & 31's playback (one per key each; Lessons 12, 18 & 31's files each carry the right hand on channel 0 and left hand on channel 1)
+├─ tests.html                   # Music-theory test suite — open in a browser, nothing to install
 ├─ LICENSE                      # MIT License
 └─ README.md                    # This file
 ```
+
+### How a chord lesson is put together
+
+Every chord this app teaches is described the same way: a list of intervals in
+semitones from the root, a label for each of those tones, and a sentence
+explaining how a learner counts their way to it. Given those three lists, the
+note names, MIDI numbers, per-key spellings, and circle-of-fourths table all
+follow mechanically — which is what `makeChordService()` in
+`js/music-theory-core.js` does.
+
+So a chord lesson's data file states only what makes that chord different:
+
+```js
+const MajorNinthChordService = makeChordService({
+  intervals: [0, 4, 7, 11, 14],
+  labels: ['Root', 'Major 3rd', 'Perfect 5th', 'Major 7th', '9th'],
+  explanations: [ /* one per tone, shown on the Learn tab */ ],
+});
+```
+
+Each lesson page loads only the files it needs — the core, its own chord, and
+(where the lesson has progression exercises) `inversion-service.js` plus its
+own progressions file. Adding a chord lesson means adding one file to
+`js/chords/`, one to `js/progressions/`, and an entry in `js/nav.js`.
+
+## Tests
+
+Open **`tests.html`** in a browser. It checks the music theory every lesson
+rests on — chord intervals, note spellings, transposition across all 12 keys,
+inversions, progression definitions, and scale step patterns — and prints a
+pass/fail list.
+
+The interval tables are the part worth protecting: one wrong number silently
+teaches a wrong chord in all 12 keys, and nothing else in the app would
+notice. So the tests re-derive what each chord should contain rather than
+restating the tables they are testing. Like the rest of the project, they need
+no build step and no package manager.
 
 ## Running it
 
