@@ -426,7 +426,7 @@ PianoNoteTrainers/
 │  ├─ inversion-service.js      # Inversions plus the generic chord/progression builder every progression exercise runs on
 │  ├─ progressions/             # One file per chord lesson (43), holding just that lesson's jazz and gospel progression sets
 │  ├─ tests.js                  # Music-theory test suite (see tests.html)
-│  ├─ progression-picker.js     # Shared root-position-only progression-picker exercise (Jazz/Gospel tabs on Lessons 20-21, 23, 24, 25 & 26)
+│  ├─ progression-picker.js     # Shared root-position-only progression-picker exercise (the Jazz/Gospel tabs on the 43 lessons that have them)
 │  ├─ midi-file-reader.js       # Dependency-free Standard MIDI File (.mid) reader (tags each note with its source MIDI channel)
 │  ├─ midi-data.js              # Base64-embedded improvisation-demo + song MIDI data (major + Dorian + Phrygian + Power in the Blood + His Eye Is on the Sparrow + Now Behold the Lamb)
 │  ├─ home.js                   # Home page hero keyboard
@@ -436,61 +436,11 @@ PianoNoteTrainers/
 │  ├─ major-scale-trainer.js    # Lesson 5 page logic (guided trainer + improvisation demo)
 │  ├─ dorian-scale-trainer.js   # Lesson 6 page logic (guided trainer + improvisation demo)
 │  ├─ phrygian-scale-trainer.js # Lesson 7 page logic (guided trainer + improvisation demo)
-│  ├─ major-chord-trainer.js    # Lesson 8 page logic (learn tab + circle-of-fourths & chord-progression MIDI exercises)
-│  ├─ minor-chord-trainer.js    # Lesson 9 page logic
-│  ├─ augmented-chord-trainer.js # Lesson 10 page logic
-│  ├─ diminished-chord-trainer.js # Lesson 11 page logic
+│  ├─ chord-trainer.js          # The page logic all 52 chord lessons share (learn tab + circle-of-fourths + each lesson's progression exercises)
+│  ├─ <chord>-chord-trainer.js  # One per chord lesson (52): a setupChordTrainer() call naming that lesson's chord service, how it is spelled, and which progression exercise it uses
 │  ├─ power-in-the-blood-trainer.js # Lesson 12 page logic (learn tab + two-hand Song Player)
-│  ├─ dominant-seventh-chord-trainer.js # Lesson 13 page logic
-│  ├─ diminished-seventh-chord-trainer.js # Lesson 14 page logic
-│  ├─ minor-seventh-chord-trainer.js # Lesson 15 page logic
-│  ├─ major-seventh-chord-trainer.js # Lesson 16 page logic
-│  ├─ half-diminished-seventh-chord-trainer.js # Lesson 17 page logic
 │  ├─ his-eye-on-the-sparrow-trainer.js # Lesson 18 page logic (learn tab + two-hand Song Player)
-│  ├─ sixth-chord-trainer.js    # Lesson 20 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ minor-sixth-chord-trainer.js # Lesson 21 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
 │  ├─ inversions-trainer.js     # Lesson 22 page logic (learn tab + all-chord-types reference + jazz & gospel progression exercises)
-│  ├─ augmented-seventh-chord-trainer.js # Lesson 23 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ major-seventh-flat-five-chord-trainer.js # Lesson 24 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ major-seventh-sharp-eleven-chord-trainer.js # Lesson 25 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ add9-chord-trainer.js     # Lesson 26 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ sus2-chord-trainer.js     # Lesson 27 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ sus4-chord-trainer.js     # Lesson 28 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-seventh-sus4-chord-trainer.js # Lesson 29 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ six-nine-chord-trainer.js # Lesson 30 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-ninth-chord-trainer.js # Lesson 32 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-eleventh-chord-trainer.js # Lesson 33 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-thirteenth-chord-trainer.js # Lesson 34 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-seventh-flat-nine-chord-trainer.js # Lesson 35 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-seventh-sharp-nine-chord-trainer.js # Lesson 36 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-seventh-flat-five-chord-trainer.js # Lesson 37 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-seventh-sharp-eleven-chord-trainer.js # Lesson 38 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-seventh-flat-thirteen-chord-trainer.js # Lesson 39 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-ninth-sharp-eleven-chord-trainer.js # Lesson 40 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ altered-dominant-chord-trainer.js # Lesson 41 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ minor-ninth-chord-trainer.js # Lesson 42 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ minor-eleventh-chord-trainer.js # Lesson 43 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ minor-thirteenth-chord-trainer.js # Lesson 44 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ minor-six-nine-chord-trainer.js # Lesson 45 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ minor-major-seventh-chord-trainer.js # Lesson 46 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ minor-major-ninth-chord-trainer.js # Lesson 47 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ major-ninth-chord-trainer.js # Lesson 48 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ major-thirteenth-chord-trainer.js # Lesson 49 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ major-seventh-sharp-five-chord-trainer.js # Lesson 50 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-nine-sus4-chord-trainer.js # Lesson 51 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ dominant-thirteen-sus4-chord-trainer.js # Lesson 52 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ major-seventh-sus2-chord-trainer.js # Lesson 53 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ major-seventh-sus4-chord-trainer.js # Lesson 54 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ add11-chord-trainer.js # Lesson 55 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ diminished-major-seventh-chord-trainer.js # Lesson 56 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ minor-seventh-flat-nine-chord-trainer.js # Lesson 57 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ half-diminished-eleventh-chord-trainer.js # Lesson 58 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ power-chord-trainer.js # Lesson 59 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ split-third-blues-chord-trainer.js # Lesson 60 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ quartal-chord-trainer.js # Lesson 61 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ tone-cluster-chord-trainer.js # Lesson 62 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ polychord-trainer.js # Lesson 63 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
-│  ├─ neapolitan-chord-trainer.js # Lesson 64 page logic (learn tab + circle-of-fourths + jazz & gospel progression-picker exercises)
 │  ├─ now-behold-the-lamb-trainer.js # Lesson 31 page logic (learn tab + two-hand Song Player)
 │  ├─ every-praise-data.js      # Lesson 65 song data (Alto, Piano Right Hand, Piano Left Hand note events extracted from the source MIDI file, plus song metadata)
 │  └─ every-praise-trainer.js   # Lesson 65 page logic (self-contained synth/keyboard/transport engine driving all three simultaneous instrument keyboards)
@@ -521,8 +471,26 @@ const MajorNinthChordService = makeChordService({
 
 Each lesson page loads only the files it needs — the core, its own chord, and
 (where the lesson has progression exercises) `inversion-service.js` plus its
-own progressions file. Adding a chord lesson means adding one file to
-`js/chords/`, one to `js/progressions/`, and an entry in `js/nav.js`.
+own progressions file.
+
+The page logic is shared the same way. All 52 chord lessons present the same
+thing — a Learn tab that walks up the chord one tone at a time, an exercise
+that plays it around the circle of fourths in all 12 keys, and then either the
+jazz/gospel progression pickers or, for the nine oldest lessons, a progression
+of their own — so a lesson's page script says only what differs:
+
+```js
+setupChordTrainer({
+  service: MajorNinthChordService,
+  learnSuffix: ' maj9',      // "C maj9", in the Learn tab's now-playing readout
+  tableSuffix: 'maj9',       // "Cmaj9", in the reference tables
+  progressions: 'majorNinth',
+});
+```
+
+`setupChordTrainer()` lives in `js/chord-trainer.js`. Adding a chord lesson
+means adding one file to `js/chords/`, one to `js/progressions/`, a dozen-line
+page script, and an entry in `js/nav.js`.
 
 ## Tests
 
