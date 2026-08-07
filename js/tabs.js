@@ -16,6 +16,11 @@ function initTabs(root = document) {
       root.querySelectorAll('[data-tabpanel]').forEach((panel) => {
         panel.classList.toggle('is-active', panel.getAttribute('data-tabpanel') === target);
       });
+      // Exercises run their playback as an async loop that outlives the tab
+      // you started it on, so leaving a tab has to tell that loop to stop --
+      // otherwise the lesson you just navigated away from keeps playing over
+      // the one you're now looking at.
+      document.dispatchEvent(new CustomEvent('tabchange', { detail: { tab: target } }));
     });
   });
 }

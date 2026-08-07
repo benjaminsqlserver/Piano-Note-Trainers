@@ -17,6 +17,17 @@ class AudioEngine {
     this._devicesChangedHandlers = new Set();
     this._noteOnHandlers = new Set();
     this._noteOffHandlers = new Set();
+
+    // Every MIDI output we have actually sent a note-on to. Note-offs are
+    // scheduled with setTimeout, so if the page goes away before the timer
+    // fires -- navigating to another lesson, closing the tab -- a real
+    // instrument would be left holding those notes down forever, with no
+    // page left to release them. Remembering which devices we've touched
+    // lets panic() silence exactly those on the way out, including one the
+    // learner has since switched away from.
+    this._usedOutputs = new Set();
+    this._handlePageHide = () => this.panic();
+    window.addEventListener('pagehide', this._handlePageHide);
   }
 
   // ---------------------------------------------------------------- setup
@@ -137,6 +148,7 @@ class AudioEngine {
   playNote(deviceId, midiNote, durationMs = 500, velocity = 100) {
     const output = this._getOutputById(deviceId);
     if (output) {
+      this._usedOutputs.add(deviceId);
       output.send([0x90, midiNote, velocity]);
       setTimeout(() => output.send([0x80, midiNote, 0]), durationMs);
     } else {
@@ -145,14 +157,30 @@ class AudioEngine {
     }
   }
 
+  /**
+   * Silences the given output plus any other device we've played through
+   * this session, and every synth voice. Clearing the others matters when
+   * the learner changes the output picker mid-playback: the notes already
+   * sounding on the previous device would otherwise keep ringing, since
+   * nothing else will ever send them a note-off.
+   */
   stopAll(deviceId) {
-    const output = this._getOutputById(deviceId);
-    if (output) {
-      for (let n = 0; n < 128; n++) output.send([0x80, n, 0]);
-    }
+    this._silenceOutput(deviceId);
+    for (const usedId of this._usedOutputs) this._silenceOutput(usedId);
     for (const voice of Array.from(this.activeVoices)) {
       this._synthNoteOff(voice);
     }
+  }
+
+  /** Silences every device and voice — used when the page is going away. */
+  panic() {
+    this.stopAll(null);
+  }
+
+  _silenceOutput(deviceId) {
+    const output = this._getOutputById(deviceId);
+    if (!output) return;
+    for (let n = 0; n < 128; n++) output.send([0x80, n, 0]);
   }
 
   // -------------------------------------------------------------- input
@@ -186,5 +214,22 @@ class AudioEngine {
   dispose() {
     this.stopListening();
     this.stopAll(null);
+    window.removeEventListener('pagehide', this._handlePageHide);
   }
+}
+
+/**
+ * Fills a sound-output <select> with the built-in synth plus one entry per
+ * MIDI output device, keeping whatever was selected if it's still connected.
+ *
+ * Device names come from the hardware, so they're set as text rather than
+ * interpolated into markup — a device named `Yamaha "P-45"` would otherwise
+ * break the option it's supposed to label.
+ */
+function fillOutputOptions(select, outputs) {
+  const previous = select.value;
+  select.replaceChildren();
+  select.appendChild(new Option('Built-in synth (no MIDI device needed)', ''));
+  for (const device of outputs) select.appendChild(new Option(device.name, device.id));
+  select.value = previous;
 }

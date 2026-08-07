@@ -3,8 +3,8 @@
 // file and parses it into a flat, time-ordered list of notes the way the
 // rest of this app already thinks about playback (midiNote / startMs /
 // durationMs / velocity / channel) — the same shape the guided trainers
-// build by hand in music-services.js, just sourced from a real MIDI file
-// instead. The `channel` field lets a caller distinguish separate voices
+// build by hand from the chord and scale services, just sourced from a real
+// MIDI file instead. The `channel` field lets a caller distinguish separate voices
 // encoded on different MIDI channels within the same file (e.g. the Power
 // in the Blood Song Trainer's right-hand melody on channel 0 vs its
 // left-hand chords on channel 1) without changing the shape existing
@@ -132,7 +132,6 @@ function parseMidiFile(arrayBuffer) {
 
   notes.sort((a, b) => a.startMs - b.startMs);
   const totalDurationMs = notes.reduce((max, n) => Math.max(max, n.startMs + n.durationMs), 0);
-  const impliedBpm = notes.length ? Math.round(60000 / ((notes[0].durationMs || 500) * 2)) : 120;
 
   return { format, ticksPerQuarter, notes, totalDurationMs };
 }

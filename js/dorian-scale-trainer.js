@@ -1,5 +1,5 @@
 // dorian-scale-trainer.js — page logic for dorian-scale-trainer.html
-// Expects audio-engine.js, piano-keyboard.js, music-services.js,
+// Expects audio-engine.js, piano-keyboard.js, this lesson's chord service,
 // midi-file-reader.js, and tabs.js to already be loaded as plain scripts
 // before this one.
 initTabs();
@@ -376,18 +376,16 @@ di.stop.addEventListener('click', stopImprovDemo);
   di.midiWarning.style.display = supported ? 'none' : '';
   if (supported) {
     const outputs = midi.getOutputDevices();
-    const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
-    el.output.innerHTML = optionsHtml;
-    di.output.innerHTML = optionsHtml;
+    fillOutputOptions(el.output, outputs);
+    fillOutputOptions(di.output, outputs);
     await refreshInputDevices();
   }
   midi.onDevicesChanged((outputs) => {
-    const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
     const currentOut = el.output.value;
     const currentDiOut = di.output.value;
-    el.output.innerHTML = optionsHtml;
+    fillOutputOptions(el.output, outputs);
     el.output.value = currentOut;
-    di.output.innerHTML = optionsHtml;
+    fillOutputOptions(di.output, outputs);
     di.output.value = currentDiOut;
   });
   midi.onNoteOn((note) => onMidiNoteOn(note));

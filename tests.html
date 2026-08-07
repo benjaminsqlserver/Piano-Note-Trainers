@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tests — Piano Note Trainers</title>
+<meta name="description" content="Checks the music theory behind every lesson: chord intervals, note spellings, inversions, progressions, and scales. Open this file in a browser — no build step, no package manager." />
+<link rel="stylesheet" href="css/styles.css" />
+<style>
+  .test-summary { font-size: 1.1rem; font-weight: 600; }
+  .test-summary.is-pass { color: #1a7f4b; }
+  .test-summary.is-fail { color: #b3261e; }
+  .test-suite { margin-top: 1.25rem; }
+  .test-suite > h3 { font-size: 1rem; margin-bottom: 0.4rem; }
+  .test-list { list-style: none; margin: 0; padding: 0; }
+  .test-list li { padding: 0.3rem 0; border-bottom: 1px solid rgba(128,128,128,0.18); line-height: 1.5; }
+  .test-list li:last-child { border-bottom: 0; }
+  .test-status { display: inline-block; min-width: 1.6rem; font-weight: 700; }
+  .test-pass .test-status { color: #1a7f4b; }
+  .test-fail .test-status { color: #b3261e; }
+  .test-message { display: block; margin-left: 1.6rem; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.85rem; color: #b3261e; white-space: pre-wrap; word-break: break-word; }
+</style>
+</head>
+<body data-page="tests">
+
+<div id="site-nav"></div>
+
+<main class="app-main">
+
+  <header class="page-header">
+    <div class="eyebrow">Developer tools</div>
+    <h1>Music Theory Tests</h1>
+    <p>Checks the theory every lesson is built on — chord intervals, note spellings, transposition, inversions, progressions, and scales — by re-deriving what each chord should contain rather than restating the tables it is testing. Open this file in a browser; there is nothing to install and nothing to build.</p>
+  </header>
+
+  <div class="card">
+    <div id="summary" class="test-summary">Running…</div>
+    <div id="results"></div>
+  </div>
+
+</main>
+
+<script src="js/nav.js"></script>
+<script src="js/music-theory-core.js"></script>
+<script src="js/scale-services.js"></script>
+<script src="js/chords/add11-chord.js"></script>
+<script src="js/chords/add9-chord.js"></script>
+<script src="js/chords/altered-dominant-chord.js"></script>
+<script src="js/chords/augmented-chord.js"></script>
+<script src="js/chords/augmented-seventh-chord.js"></script>
+<script src="js/chords/diminished-chord.js"></script>
+<script src="js/chords/diminished-major-seventh-chord.js"></script>
+<script src="js/chords/diminished-seventh-chord.js"></script>
+<script src="js/chords/dominant-eleventh-chord.js"></script>
+<script src="js/chords/dominant-nine-sus-four-chord.js"></script>
+<script src="js/chords/dominant-ninth-chord.js"></script>
+<script src="js/chords/dominant-ninth-sharp-eleven-chord.js"></script>
+<script src="js/chords/dominant-seventh-chord.js"></script>
+<script src="js/chords/dominant-seventh-flat-five-chord.js"></script>
+<script src="js/chords/dominant-seventh-flat-nine-chord.js"></script>
+<script src="js/chords/dominant-seventh-flat-thirteen-chord.js"></script>
+<script src="js/chords/dominant-seventh-sharp-eleven-chord.js"></script>
+<script src="js/chords/dominant-seventh-sharp-nine-chord.js"></script>
+<script src="js/chords/dominant-seventh-sus-four-chord.js"></script>
+<script src="js/chords/dominant-thirteen-sus-four-chord.js"></script>
+<script src="js/chords/dominant-thirteenth-chord.js"></script>
+<script src="js/chords/half-diminished-eleventh-chord.js"></script>
+<script src="js/chords/half-diminished-seventh-chord.js"></script>
+<script src="js/chords/major-chord.js"></script>
+<script src="js/chords/major-ninth-chord.js"></script>
+<script src="js/chords/major-seventh-chord.js"></script>
+<script src="js/chords/major-seventh-flat-five-chord.js"></script>
+<script src="js/chords/major-seventh-sharp-eleven-chord.js"></script>
+<script src="js/chords/major-seventh-sharp-five-chord.js"></script>
+<script src="js/chords/major-seventh-sus-four-chord.js"></script>
+<script src="js/chords/major-seventh-sus-two-chord.js"></script>
+<script src="js/chords/major-thirteenth-chord.js"></script>
+<script src="js/chords/minor-chord.js"></script>
+<script src="js/chords/minor-eleventh-chord.js"></script>
+<script src="js/chords/minor-major-ninth-chord.js"></script>
+<script src="js/chords/minor-major-seventh-chord.js"></script>
+<script src="js/chords/minor-ninth-chord.js"></script>
+<script src="js/chords/minor-seventh-chord.js"></script>
+<script src="js/chords/minor-seventh-flat-nine-chord.js"></script>
+<script src="js/chords/minor-six-nine-chord.js"></script>
+<script src="js/chords/minor-sixth-chord.js"></script>
+<script src="js/chords/minor-thirteenth-chord.js"></script>
+<script src="js/chords/neapolitan-chord.js"></script>
+<script src="js/chords/polychord.js"></script>
+<script src="js/chords/power-chord.js"></script>
+<script src="js/chords/quartal-chord.js"></script>
+<script src="js/chords/six-nine-chord.js"></script>
+<script src="js/chords/sixth-chord.js"></script>
+<script src="js/chords/split-third-blues-chord.js"></script>
+<script src="js/chords/sus-four-chord.js"></script>
+<script src="js/chords/sus-two-chord.js"></script>
+<script src="js/chords/tone-cluster-chord.js"></script>
+<script src="js/inversion-service.js"></script>
+<script src="js/progressions/add11-progressions.js"></script>
+<script src="js/progressions/add9-progressions.js"></script>
+<script src="js/progressions/altered-dominant-progressions.js"></script>
+<script src="js/progressions/augmented-seventh-progressions.js"></script>
+<script src="js/progressions/diminished-major-seventh-progressions.js"></script>
+<script src="js/progressions/dominant-eleventh-progressions.js"></script>
+<script src="js/progressions/dominant-nine-sus-four-progressions.js"></script>
+<script src="js/progressions/dominant-ninth-progressions.js"></script>
+<script src="js/progressions/dominant-ninth-sharp-eleven-progressions.js"></script>
+<script src="js/progressions/dominant-seventh-flat-five-progressions.js"></script>
+<script src="js/progressions/dominant-seventh-flat-nine-progressions.js"></script>
+<script src="js/progressions/dominant-seventh-flat-thirteen-progressions.js"></script>
+<script src="js/progressions/dominant-seventh-sharp-eleven-progressions.js"></script>
+<script src="js/progressions/dominant-seventh-sharp-nine-progressions.js"></script>
+<script src="js/progressions/dominant-seventh-sus-four-progressions.js"></script>
+<script src="js/progressions/dominant-thirteen-sus-four-progressions.js"></script>
+<script src="js/progressions/dominant-thirteenth-progressions.js"></script>
+<script src="js/progressions/half-diminished-eleventh-progressions.js"></script>
+<script src="js/progressions/major-ninth-progressions.js"></script>
+<script src="js/progressions/major-seventh-flat-five-progressions.js"></script>
+<script src="js/progressions/major-seventh-sharp-eleven-progressions.js"></script>
+<script src="js/progressions/major-seventh-sharp-five-progressions.js"></script>
+<script src="js/progressions/major-seventh-sus-four-progressions.js"></script>
+<script src="js/progressions/major-seventh-sus-two-progressions.js"></script>
+<script src="js/progressions/major-thirteenth-progressions.js"></script>
+<script src="js/progressions/minor-eleventh-progressions.js"></script>
+<script src="js/progressions/minor-major-ninth-progressions.js"></script>
+<script src="js/progressions/minor-major-seventh-progressions.js"></script>
+<script src="js/progressions/minor-ninth-progressions.js"></script>
+<script src="js/progressions/minor-seventh-flat-nine-progressions.js"></script>
+<script src="js/progressions/minor-six-nine-progressions.js"></script>
+<script src="js/progressions/minor-sixth-progressions.js"></script>
+<script src="js/progressions/minor-thirteenth-progressions.js"></script>
+<script src="js/progressions/neapolitan-progressions.js"></script>
+<script src="js/progressions/polychord-progressions.js"></script>
+<script src="js/progressions/power-chord-progressions.js"></script>
+<script src="js/progressions/quartal-progressions.js"></script>
+<script src="js/progressions/six-nine-progressions.js"></script>
+<script src="js/progressions/sixth-progressions.js"></script>
+<script src="js/progressions/split-third-blues-progressions.js"></script>
+<script src="js/progressions/sus-four-progressions.js"></script>
+<script src="js/progressions/sus-two-progressions.js"></script>
+<script src="js/progressions/tone-cluster-progressions.js"></script>
+<script src="js/tests.js"></script>
+<script>
+(function report() {
+  const results = Test.results;
+  const passed = results.filter((r) => r.passed).length;
+  const failed = results.length - passed;
+
+  const summary = document.getElementById('summary');
+  summary.textContent = failed === 0
+    ? `All ${results.length} checks passed.`
+    : `${failed} of ${results.length} checks failed.`;
+  summary.classList.add(failed === 0 ? 'is-pass' : 'is-fail');
+
+  const bySuite = new Map();
+  for (const r of results) {
+    if (!bySuite.has(r.suite)) bySuite.set(r.suite, []);
+    bySuite.get(r.suite).push(r);
+  }
+
+  const container = document.getElementById('results');
+  for (const [suite, items] of bySuite) {
+    const section = document.createElement('section');
+    section.className = 'test-suite';
+    const heading = document.createElement('h3');
+    const suiteFailed = items.filter((i) => !i.passed).length;
+    heading.textContent = suite + (suiteFailed ? ` — ${suiteFailed} failing` : '');
+    section.appendChild(heading);
+
+    const list = document.createElement('ul');
+    list.className = 'test-list';
+    for (const item of items) {
+      const li = document.createElement('li');
+      li.className = item.passed ? 'test-pass' : 'test-fail';
+      const status = document.createElement('span');
+      status.className = 'test-status';
+      status.textContent = item.passed ? '\u2713' : '\u2717';
+      li.appendChild(status);
+      li.appendChild(document.createTextNode(item.name));
+      if (!item.passed) {
+        const message = document.createElement('span');
+        message.className = 'test-message';
+        message.textContent = item.message;
+        li.appendChild(message);
+      }
+      list.appendChild(li);
+    }
+    section.appendChild(list);
+    container.appendChild(section);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 // inversions-trainer.js — page logic for inversions-trainer.html
-// Expects audio-engine.js, piano-keyboard.js, music-services.js, and
+// Expects audio-engine.js, piano-keyboard.js, this lesson's chord service, and
 // tabs.js to already be loaded as plain scripts before this one.
 initTabs();
 
@@ -45,11 +45,8 @@ function setupSegmented(container, initialValue, onChange) {
 }
 
 function populateOutputSelects(selects, outputs) {
-  const optionsHtml = '<option value="">Built-in synth (no MIDI device needed)</option>' + outputs.map((d) => `<option value="${d.id}">${d.name}</option>`).join('');
   selects.forEach((sel) => {
-    const current = sel.value;
-    sel.innerHTML = optionsHtml;
-    sel.value = current;
+    fillOutputOptions(sel, outputs);
   });
 }
 
